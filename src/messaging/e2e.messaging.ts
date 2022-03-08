@@ -4,7 +4,7 @@
  * @param data Arbitrary data
  * @returns Promise which rejects if there was an error while sending the message, otherwise resolves with response
  */
-export function sendExtensionMessage<Response>(extensionId: string, data?: unknown): Promise<Response> {
+export function sendExtensionMessage<Response>(extensionId: string, data: unknown): Promise<Response> {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(extensionId, data, (response: Response) => {
       const { lastError } = chrome.runtime
