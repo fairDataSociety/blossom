@@ -1,31 +1,25 @@
-import { Bee } from '@ethersphere/bee-js';
-import { SwarmExtension } from './swarm-api/SwarmExtension';
-
-(async () => {
+import { Bee } from '@ethersphere/bee-js'
+import { SwarmExtension } from './swarm-api/swarm-extension'
+;(async () => {
   try {
-    const swarmExtension = new SwarmExtension(process.env.SWARM_EXTENSION_ID);
+    const swarmExtension = new SwarmExtension(process.env.SWARM_EXTENSION_ID)
 
-    await swarmExtension.register();
+    await swarmExtension.register()
 
-    chrome.runtime.onMessage.addListener(
-      (message: string, sender, sendResponse) => {
-        swarmExtension
-          .fakeBzzAddress(message)
-          .then(sendResponse)
-          .catch(console.warn);
+    chrome.runtime.onMessage.addListener((message: string, sender, sendResponse) => {
+      swarmExtension.fakeBzzAddress(message).then(sendResponse).catch(console.warn)
 
-        return true;
-      }
-    );
+      return true
+    })
 
-    const beeAddress = await swarmExtension.beeAddress();
+    const beeAddress = await swarmExtension.beeAddress()
 
-    const bee = new Bee(beeAddress);
+    const bee = new Bee(beeAddress)
 
-    await bee.checkConnection();
+    await bee.checkConnection()
 
-    console.log('Initialization completed');
+    console.log('Initialization completed')
   } catch (error) {
-    console.warn(error);
+    console.warn(error)
   }
-})();
+})()

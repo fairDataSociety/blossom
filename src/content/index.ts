@@ -1,5 +1,5 @@
-console.log('Content script...');
+console.log('Content script...')
 
 chrome.runtime.sendMessage('abc', (response) => {
-  console.log('FDP Content Script: ', response);
-});
+  console.log('FDP Content Script: ', response)
+})
