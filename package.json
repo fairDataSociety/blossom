@@ -20,6 +20,7 @@
     "@babel/core": "^7.17.5",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/runtime": "^7.17.2",
     "@ethersphere/swarm-extension": "github:ethersphere/swarm-extension",
@@ -36,6 +37,7 @@
     "eslint-plugin-jest": "^26.1.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-webpack-plugin": "^3.1.1",
+    "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
     "puppeteer": "^13.4.0",
@@ -46,6 +48,14 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@ethersphere/bee-js": "^3.3.1"
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@ethersphere/bee-js": "^3.3.1",
+    "@fairdatasociety/fairdata-protocol": "github:fairDataSociety/fair-data-protocol",
+    "@mui/material": "^5.5.0",
+    "@mui/system": "^5.5.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^7.28.0"
   }
 }

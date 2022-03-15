@@ -1,5 +1,6 @@
 import { Bee } from '@ethersphere/bee-js'
 import { SwarmExtension } from './swarm-api/swarm-extension'
+import './listeners'
 ;(async () => {
   try {
     const swarmExtension = new SwarmExtension(process.env.SWARM_EXTENSION_ID)

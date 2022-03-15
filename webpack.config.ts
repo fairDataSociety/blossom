@@ -1,8 +1,10 @@
 import path from 'path'
+import fs from 'fs'
 import CopyPlugin from 'copy-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
 import Dotenv from 'dotenv-webpack'
 import { NormalModuleReplacementPlugin } from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 import dotenv from 'dotenv'
 
 dotenv.config({ override: true })
@@ -10,8 +12,25 @@ dotenv.config({ override: true })
 const rootDir = path.resolve(__dirname)
 const srcDir = path.resolve(rootDir, 'src')
 const buildDir = path.resolve(rootDir, 'dist')
+const uiDir = path.resolve(srcDir, 'ui')
 
 const isDev = process.env.ENVIRONMENT === 'development'
+
+const pages = fs.readdirSync(uiDir).filter((page) => page !== 'common')
+
+const pageEntries = pages.reduce((pagesMap, page) => {
+  pagesMap[page] = path.resolve(uiDir, page, 'index.tsx')
+  return pagesMap
+}, {})
+
+const htmlPlugins = pages.map(
+  (page) =>
+    new HtmlWebpackPlugin({
+      filename: `${page}.html`,
+      template: path.resolve(uiDir, page, 'index.html'),
+      chunks: [page],
+    }),
+)
 
 module.exports = {
   mode: process.env.ENVIRONMENT,
@@ -20,6 +39,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
   },
   entry: {
+    ...pageEntries,
     main: path.resolve(srcDir, 'main.ts'),
     content: path.resolve(srcDir, 'content', 'index.ts'),
   },
@@ -38,6 +58,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
+              '@babel/preset-react',
               '@babel/preset-env',
               '@babel/typescript',
               {
@@ -50,6 +71,7 @@ module.exports = {
     ],
   },
   plugins: [
+    ...htmlPlugins,
     new Dotenv(),
     // Added because Bee.js uses Blob polyfill which cannot be executed in service worker script
     // https://github.com/ethersphere/bee-js/issues/586
