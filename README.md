@@ -42,6 +42,12 @@ This process will watch for changes in source files and compile files on every c
 
 ### Tests
 
+Before running tests, the Swarm extension must be built. To build the Swarm extension, run:
+
+```sh
+npm run swarm-ext:dist
+```
+
 Tests are executed by running this command:
 
 ```sh
