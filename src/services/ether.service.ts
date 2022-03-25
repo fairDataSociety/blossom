@@ -34,4 +34,8 @@ export class Ether {
 
     await this.ens.setUsernamePublicKey(username, address, this.signer.getPublicKey())
   }
+
+  public getUserData(username: string): Promise<unknown> {
+    return this.ens.getUserData(username)
+  }
 }

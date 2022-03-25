@@ -1,9 +1,10 @@
 import { utils, Contract, Signer, providers } from 'ethers'
+import { NULL_ADDRESS } from '../constants/constants'
 import ENSRegistryContract from '../contracts/ENSRegistry.json'
 import PublicResolverContract from '../contracts/PublicResolver.json'
 import SubdomainRegistrarContract from '../contracts/SubdomainRegistrar.json'
 
-const { keccak256, toUtf8Bytes } = utils
+const { keccak256, toUtf8Bytes, namehash } = utils
 
 export class ENS {
   private ensRegistryContract: Contract
@@ -47,7 +48,7 @@ export class ENS {
 
     const owner = await this.ensRegistryContract.owner(usernameHash)
 
-    return owner === '0x0000000000000000000000000000000000000000'
+    return owner === NULL_ADDRESS
   }
 
   public async createUsername(username: string, address: string): Promise<void> {
@@ -55,15 +56,12 @@ export class ENS {
       throw new Error(`ENS: Invalid username ${username}`)
     }
 
-    const usernameHash = this.hashSubdomain(username)
+    await this.subdomainRegistrarContract.register(keccak256(toUtf8Bytes(username)), address)
 
-    let result = await this.subdomainRegistrarContract.register(usernameHash, address)
-
-    console.log(result)
-
-    result = await this.ensRegistryContract.setResolver(usernameHash, this.publicResolverContract.address)
-
-    console.log('setResolver', result)
+    await this.ensRegistryContract.setResolver(
+      this.hashSubdomain(username),
+      this.publicResolverContract.address,
+    )
   }
 
   public setUsernamePublicKey(username: string, address: string, publicKey: string): Promise<void> {
@@ -84,12 +82,16 @@ export class ENS {
     )
   }
 
+  public getUserData(username: string): Promise<unknown> {
+    return this.publicResolverContract.getAll(this.hashSubdomain(username))
+  }
+
   private isUsernameValid(username: string): boolean {
     // TODO implementation
     return true
   }
 
   private hashSubdomain(subdomain: string): string {
-    return keccak256(toUtf8Bytes(`${subdomain}`))
+    return namehash(`${subdomain}.${this.domain}`)
   }
 }
