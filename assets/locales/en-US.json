@@ -1,0 +1,11 @@
+{
+  "WELCOME_TITLE": "Welcome to the Blossom browser extension",
+  "WELCOME_TEXT": "Create a new Fairdata account to start using the extension. Or login if you already have one.",
+  "REGISTER": "Register",
+  "LOGIN": "Login",
+  "LOGIN_TITLE": "Fairdata Login",
+  "USERNAME": "Username",
+  "PASSWORD": "Password",
+  "USERNAME_REQUIRED_ERROR": "Please enter username",
+  "PASSWORD_REQUIRED_ERROR": "Please enter password"
+}

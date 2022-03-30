@@ -85,6 +85,10 @@ module.exports = {
           from: path.resolve(rootDir, 'manifest.json'),
           to: path.resolve(buildDir, 'manifest.json'),
         },
+        {
+          from: path.resolve(rootDir, 'assets', 'locales'),
+          to: path.resolve(buildDir, 'locales'),
+        },
       ],
     }),
   ],

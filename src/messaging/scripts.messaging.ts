@@ -15,7 +15,7 @@ export interface MessageResponse<Data> {
  * @param action Service worker script action
  * @param data Arbitrary data
  */
-export function sendMessage<Data, Response>(action: BackgroundAction, data: Data): Promise<Response> {
+export function sendMessage<Data, Response>(action: BackgroundAction, data?: Data): Promise<Response> {
   return new Promise<Response>((resolve, reject) => {
     try {
       chrome.runtime.sendMessage<Message<Data>, MessageResponse<Response>>({ action, data }, (response) => {

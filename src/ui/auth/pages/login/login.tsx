@@ -1,8 +1,8 @@
 import { styled } from '@mui/system'
 import React, { useState } from 'react'
+import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
-import CenteredWrapper from '../../../common/components/centered-wrapper/centered-wrapper.component'
 import Title from '../../../common/components/title/title.component'
 import Form from '../../../common/components/form/form.component'
 import gateways from '../../../../constants/gateways.json'
@@ -47,58 +47,56 @@ const Login = () => {
   }
 
   return (
-    <CenteredWrapper>
-      <Wrapper>
-        <Title>Fairdrive Login</Title>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            label="Username"
+    <Wrapper>
+      <Title>{intl.get('LOGIN_TITLE')}</Title>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          label={intl.get('USERNAME')}
+          variant="outlined"
+          fullWidth
+          {...register('username', { required: true })}
+          error={Boolean(errors.username)}
+          helperText={errors.username && intl.get('USERNAME_REQUIRED_ERROR')}
+        />
+        <TextField
+          label={intl.get('PASSWORD')}
+          variant="outlined"
+          type="password"
+          fullWidth
+          {...register('password', { required: true })}
+          error={Boolean(errors.password)}
+          helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
+        />
+        <div>
+          <Select
+            defaultValue={gateways[0].value}
             variant="outlined"
             fullWidth
-            {...register('username', { required: true })}
-            error={Boolean(errors.username)}
-            helperText={errors.username && 'Please enter username'}
-          />
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            fullWidth
-            {...register('password', { required: true })}
-            error={Boolean(errors.password)}
-            helperText={errors.password && 'Please enter password'}
-          />
-          <div>
-            <Select
-              defaultValue={gateways[0].value}
-              variant="outlined"
-              fullWidth
-              {...register('gateway', { required: true })}
-            >
-              {gateways.map(({ value, label }) => (
-                <MenuItem key={value} value={value}>
-                  {label}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            size="large"
-            disabled={loading}
-            sx={{
-              marginTop: '50px',
-            }}
+            {...register('gateway', { required: true })}
           >
-            Login
-            {loading && <FieldSpinner />}
-          </Button>
-        </Form>
-      </Wrapper>
-    </CenteredWrapper>
+            {gateways.map(({ value, label }) => (
+              <MenuItem key={value} value={value}>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Button
+          color="primary"
+          variant="contained"
+          type="submit"
+          size="large"
+          disabled={loading}
+          sx={{
+            marginTop: '50px',
+          }}
+        >
+          {intl.get('LOGIN')}
+          {loading && <FieldSpinner />}
+        </Button>
+      </Form>
+    </Wrapper>
   )
 }
 

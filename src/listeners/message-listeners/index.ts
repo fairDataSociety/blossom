@@ -1,7 +1,8 @@
 import { Message, MessageResponse } from '../../messaging/scripts.messaging'
 import auth from './auth.listener'
+import locales from './locales.listener'
 
-const listenrs = [auth]
+const listenrs = [auth, locales]
 
 chrome.runtime.onMessage.addListener(
   (
