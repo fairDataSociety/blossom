@@ -7,7 +7,7 @@ import { Button, Typography } from '@mui/material'
 import { MarginLeftAuto } from '../../../common/components/utils/utils'
 import RouteCodes from '../../routes/route-codes'
 
-const Wrapper = styled('div')(({ theme }) => ({
+const Wrapper = styled('div')(() => ({
   marginTop: '20px',
   padding: '50px',
 }))

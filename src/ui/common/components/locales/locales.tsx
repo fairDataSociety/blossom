@@ -11,7 +11,7 @@ const Locales = ({ children }: LocalesProps) => {
   const [loaded, setLoaded] = useState(false)
 
   const load = async () => {
-    const { lang, locales } = await sendMessage<void, { lang: string; locales: any }>(
+    const { lang, locales } = await sendMessage<void, { lang: string; locales: { [key: string]: string } }>(
       BackgroundAction.GET_LOCALES,
     )
 

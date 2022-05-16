@@ -1,7 +1,7 @@
 enum RouteCodes {
   welcome = '/welcome',
   login = '/login',
-  register = 'register',
+  register = '/register',
 }
 
 export default RouteCodes

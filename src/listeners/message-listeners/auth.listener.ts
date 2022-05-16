@@ -1,11 +1,11 @@
 import BackgroundAction from '../../constants/background-actions.enum'
-import { NULL_ADDRESS } from '../../constants/constants'
-import { Bee } from '../../services/bee.service'
-import { Ether } from '../../services/ether.service'
+import { Network } from '../../constants/networks'
+import { generateMnemonic } from '../../utils/ethers'
 
 interface LoginData {
   username: string
   password: string
+  network: Network
 }
 
 interface RegisterData {
@@ -13,35 +13,17 @@ interface RegisterData {
   password: string
 }
 
-const etherService = new Ether()
-const bee = new Bee(process.env.SWARM_EXTENSION_ID)
-
-export async function login(username: string, password: string): Promise<void> {
+export function login(username: string, password: string, network: Network): Promise<void> {
   console.log('Logging in user', username)
 
-  const data = await etherService.getUserData(username)
-
-  if ((data as any).addr === NULL_ADDRESS) {
-    throw new Error(`auth.listener: Username ${username} doesn't exist`)
-  }
+  return Promise.resolve()
 }
 
-export async function register(username: string, password: string): Promise<void> {
+export function register(username: string, password: string): Promise<void> {
   try {
-    await etherService.registerUsername(username)
-
-    // TODO Get batch ID
-    const batchId = 'ddb50acc0d03ae68a00c89e967e319bf73b726005865d76454864804082dd690'
-
-    const signerProvider = etherService.getSignerProvider()
-    await bee.createFeed(
-      username,
-      batchId,
-      password,
-      signerProvider.getPublicKey(),
-      signerProvider.getSigner(),
-    )
     console.log(`auth.listener: Successfully registered user ${username}`)
+
+    return Promise.resolve()
   } catch (error) {
     console.error(`auth.listeer: Error while trying to register new user ${username}`, error)
     throw error
@@ -54,13 +36,15 @@ export default function handler(
   sender: chrome.runtime.MessageSender,
 ): Promise<unknown> {
   if (action === BackgroundAction.LOGIN) {
-    const { username, password } = data as LoginData
+    const { username, password, network } = data as LoginData
 
-    return login(username, password)
+    return login(username, password, network)
   } else if (action === BackgroundAction.REGISTER) {
     const { username, password } = data as RegisterData
 
     return register(username, password)
+  } else if (action === BackgroundAction.GENERATE_MNEMONIC) {
+    return Promise.resolve(generateMnemonic())
   }
 
   return null

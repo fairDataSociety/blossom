@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Title from '../../../common/components/title/title.component'
 import Form from '../../../common/components/form/form.component'
-import gateways from '../../../../constants/gateways.json'
+import { Network, networks } from '../../../../constants/networks'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
 import FieldSpinner from '../../../common/components/field-spinner/field-spinner.component'
 import { sendMessage } from '../../../../messaging/scripts.messaging'
@@ -32,7 +32,7 @@ const Login = () => {
     setLoading(true)
 
     try {
-      await sendMessage<{ username: string; password: string; gateway: string }, void>(
+      await sendMessage<{ username: string; password: string; network: Network }, void>(
         BackgroundAction.LOGIN,
         data,
       )
@@ -69,13 +69,13 @@ const Login = () => {
         />
         <div>
           <Select
-            defaultValue={gateways[0].value}
+            defaultValue={networks[0].id}
             variant="outlined"
             fullWidth
-            {...register('gateway', { required: true })}
+            {...register('network', { required: true })}
           >
-            {gateways.map(({ value, label }) => (
-              <MenuItem key={value} value={value}>
+            {networks.map(({ id, label }) => (
+              <MenuItem key={id} value={id}>
                 {label}
               </MenuItem>
             ))}
