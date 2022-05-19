@@ -3,7 +3,7 @@ import { BlossomMessages } from './blossom-messages'
 export class E2EBlossomMessages implements BlossomMessages {
   constructor(private extensionId: string) {}
 
-  public sendMessge<Response>(action: string, parameters?: unknown): Promise<Response> {
+  public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         this.extensionId,

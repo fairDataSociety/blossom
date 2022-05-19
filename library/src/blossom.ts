@@ -9,6 +9,6 @@ export class Blossom {
   }
 
   public login(username: string, password: string): Promise<void> {
-    return this.messages.sendMessge<void>('login', { username, password })
+    return this.messages.sendMessage<void>('login', { username, password })
   }
 }

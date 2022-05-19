@@ -5,5 +5,5 @@ export interface BlossomMessages {
    * @param parameters Depends of the action
    * @returns Promise with response from the extension
    */
-  sendMessge<Response>(action: string, parameters?: unknown): Promise<Response>
+  sendMessage<Response>(action: string, parameters?: unknown): Promise<Response>
 }

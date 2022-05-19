@@ -13,7 +13,7 @@ export class DappBlossomMessages implements BlossomMessages {
     this.setListener()
   }
 
-  public sendMessge<Response>(action: string, parameters?: unknown): Promise<Response> {
+  public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
     return new Promise((resolve, reject) => {
       const requestId = this.webRequestId++
 
