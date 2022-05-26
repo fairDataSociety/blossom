@@ -6,7 +6,7 @@ class PromiseHandles<Data> {
 }
 
 export class DappBlossomMessages implements BlossomMessages {
-  private webRequestId = 1
+  static webRequestId = 1
   private requests: Map<number, PromiseHandles<any>> = new Map()
 
   constructor() {
@@ -15,7 +15,7 @@ export class DappBlossomMessages implements BlossomMessages {
 
   public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const requestId = this.webRequestId++
+      const requestId = DappBlossomMessages.webRequestId++
 
       this.requests.set(requestId, new PromiseHandles<Response>(resolve, reject))
 

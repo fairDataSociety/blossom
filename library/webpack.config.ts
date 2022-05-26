@@ -26,13 +26,20 @@ const config = (env: ENV) => {
       path: buildDir,
       sourceMapFilename: '[name][ext].map',
       libraryTarget: 'umd',
-      library: 'blossom',
+      library: ['blossom'],
       globalObject: 'this',
       clean: true,
     },
     optimization: {
       minimize: isProduction,
       minimizer: [new TerserPlugin({ extractComments: false })],
+    },
+    devServer: {
+      static: {
+        directory: rootDir,
+      },
+      compress: true,
+      port: 9000,
     },
     module: {
       rules: [
