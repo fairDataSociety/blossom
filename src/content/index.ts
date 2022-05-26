@@ -40,7 +40,7 @@ document.addEventListener(BLOSSOM_API_EVENT, async (event: any) => {
   try {
     const response = await sendMessage<unknown, MessageResponse<unknown>>(action, data)
 
-    createResponseEvent(requestId, response)
+    createResponseEvent(requestId, { data: response })
   } catch (error) {
     createResponseEvent(requestId, { error })
   }

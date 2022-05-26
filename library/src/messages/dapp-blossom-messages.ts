@@ -8,6 +8,7 @@ class PromiseHandles<Data> {
 export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
   private requests: Map<number, PromiseHandles<any>> = new Map()
+  private listener: ((event: any) => void) | undefined
 
   constructor() {
     this.setListener()
@@ -15,6 +16,9 @@ export class DappBlossomMessages implements BlossomMessages {
 
   public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
     return new Promise((resolve, reject) => {
+      if (!this.listener) {
+        reject(new Error('Connection closed'))
+      }
       const requestId = DappBlossomMessages.webRequestId++
 
       this.requests.set(requestId, new PromiseHandles<Response>(resolve, reject))
@@ -32,30 +36,39 @@ export class DappBlossomMessages implements BlossomMessages {
   }
 
   private setListener() {
-    document.addEventListener(BLOSSOM_API_RESPONSE_EVENT, (event: any) => {
-      const { detail } = event
+    document.addEventListener(
+      BLOSSOM_API_RESPONSE_EVENT,
+      (this.listener = (event: any) => {
+        const { detail } = event
 
-      if (!detail) {
-        console.warn('Blossom: Received an invalid event from the extension')
-        return
-      }
+        if (!detail) {
+          console.warn('Blossom: Received an invalid event from the extension')
+          return
+        }
 
-      const { requestId, data, error } = detail
+        const { requestId, data, error } = detail
 
-      if (!this.requests.has(requestId)) {
-        console.warn(`Blossom: Received an invalid event from the extension (requestId=${requestId})`)
-        return
-      }
+        if (!this.requests.has(requestId)) {
+          return
+        }
 
-      const promiseHandles = this.requests.get(requestId)
+        const promiseHandles = this.requests.get(requestId)
 
-      this.requests.delete(requestId)
+        this.requests.delete(requestId)
 
-      if (error) {
-        promiseHandles?.reject(error)
-      } else {
-        promiseHandles?.resolve(data)
-      }
-    })
+        if (error) {
+          promiseHandles?.reject(error)
+        } else {
+          promiseHandles?.resolve(data)
+        }
+      }),
+    )
+  }
+
+  closeConnection() {
+    if (this.listener) {
+      document.removeEventListener(BLOSSOM_API_RESPONSE_EVENT, this.listener)
+      this.listener = undefined
+    }
   }
 }

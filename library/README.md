@@ -38,6 +38,9 @@ Th second optional parameter is the Blossom extension ID. By default it will use
 extension in the Chrome store. But you can provide different one if you are running your own version of the
 extension.
 
+There might be multiple instances of the class, but when an instance is not needed anymore, the connection of
+that instance should be closed by calling the `closeConnection` method.
+
 Here is an example how to register a new user using the library:
 
 ```typescript

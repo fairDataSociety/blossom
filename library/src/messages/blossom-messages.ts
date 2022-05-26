@@ -6,4 +6,6 @@ export interface BlossomMessages {
    * @returns Promise with response from the extension
    */
   sendMessage<Response>(action: string, parameters?: unknown): Promise<Response>
+
+  closeConnection(): void
 }

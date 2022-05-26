@@ -26,4 +26,6 @@ export class E2EBlossomMessages implements BlossomMessages {
       )
     })
   }
+
+  closeConnection() {}
 }

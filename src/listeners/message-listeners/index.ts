@@ -1,8 +1,9 @@
 import { Message, MessageResponse } from '../../messaging/scripts.messaging'
 import auth from './auth.listener'
 import locales from './locales.listener'
+import test from './test.listener'
 
-const listenrs = [auth, locales]
+const listenrs = [auth, locales, test]
 
 export function messageHandler(
   message: Message<unknown>,

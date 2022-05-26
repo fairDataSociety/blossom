@@ -1,4 +1,5 @@
 import { Page } from 'puppeteer'
+import { waitForElementText } from './utils/assert'
 import { getPageUrl } from './utils/url'
 
 describe('Blossom authentication tests', () => {
@@ -10,12 +11,13 @@ describe('Blossom authentication tests', () => {
     blossomId = global.__BLOSSOM_ID__
   })
 
+  afterAll(async () => {
+    await page.close()
+  })
+
   test('Registration should be successfull', async () => {
     await page.goto(getPageUrl('registration', blossomId))
     await page.click('#register-btn')
-    const placeHolderSelector = '#registration'
-    await page.waitForSelector(placeHolderSelector)
-    const value = await page.$eval(placeHolderSelector, e => e.innerHTML)
-    expect(value).toBe('success')
+    expect(await waitForElementText(page, '#registration')).toBe('success')
   })
 })
