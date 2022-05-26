@@ -40,6 +40,9 @@ const config = (env: ENV) => {
       },
       compress: true,
       port: 9000,
+      devMiddleware: {
+        writeToDisk: true,
+      },
     },
     module: {
       rules: [
