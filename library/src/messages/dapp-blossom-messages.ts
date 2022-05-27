@@ -2,11 +2,12 @@ import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/even
 import { BlossomMessages } from './blossom-messages'
 
 class PromiseHandles<Data> {
-  constructor(public resolve: (data: Data) => void, public reject: (error: any) => void) {}
+  constructor(public resolve: (data: Data) => void, public reject: (error: unknown) => void) {}
 }
 
 export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private requests: Map<number, PromiseHandles<any>> = new Map()
   private listener: ((event: any) => void) | undefined
 
@@ -38,11 +39,13 @@ export class DappBlossomMessages implements BlossomMessages {
   private setListener() {
     document.addEventListener(
       BLOSSOM_API_RESPONSE_EVENT,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.listener = (event: any) => {
         const { detail } = event
 
         if (!detail) {
           console.warn('Blossom: Received an invalid event from the extension')
+
           return
         }
 

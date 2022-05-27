@@ -7,6 +7,8 @@
     "start": "webpack --watch --env mode=development",
     "build": "webpack --env mode=production",
     "serve": "webpack serve --env mode=production",
+    "lint": "eslint --resolve-plugins-relative-to . --fix \"src/**/*.ts\" \"test/**/*.ts\" && prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint:check": "eslint --resolve-plugins-relative-to . \"src/**/*.ts\" \"test/**/*.ts\" && prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "jest"
   },
   "repository": {
