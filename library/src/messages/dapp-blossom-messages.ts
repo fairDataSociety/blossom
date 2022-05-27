@@ -9,6 +9,7 @@ export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private requests: Map<number, PromiseHandles<any>> = new Map()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private listener: ((event: any) => void) | undefined
 
   constructor() {

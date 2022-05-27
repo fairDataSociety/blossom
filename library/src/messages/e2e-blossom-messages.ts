@@ -27,5 +27,6 @@ export class E2EBlossomMessages implements BlossomMessages {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   closeConnection() {}
 }
