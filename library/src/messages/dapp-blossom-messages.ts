@@ -20,6 +20,8 @@ export class DappBlossomMessages implements BlossomMessages {
     return new Promise((resolve, reject) => {
       if (!this.listener) {
         reject(new Error('Connection closed'))
+
+        return
       }
       const requestId = DappBlossomMessages.webRequestId++
 
