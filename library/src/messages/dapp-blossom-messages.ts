@@ -1,4 +1,5 @@
 import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/events'
+import { ApiResponse } from '../model/api-response.model'
 import { BlossomMessages } from './blossom-messages'
 
 class PromiseHandles<Data> {
@@ -9,8 +10,7 @@ export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private requests: Map<number, PromiseHandles<any>> = new Map()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private listener: ((event: any) => void) | undefined
+  private listener: ((event: CustomEventInit<ApiResponse>) => void) | undefined
 
   constructor() {
     this.setListener()
@@ -40,8 +40,7 @@ export class DappBlossomMessages implements BlossomMessages {
   private setListener() {
     document.addEventListener(
       BLOSSOM_API_RESPONSE_EVENT,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.listener = (event: any) => {
+      (this.listener = (event: CustomEventInit<ApiResponse>) => {
         const { detail } = event
 
         if (!detail) {
