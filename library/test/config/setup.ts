@@ -3,9 +3,8 @@ import puppeteer, { Browser } from 'puppeteer'
 import { getExtensionId } from '../utils/extension'
 
 const EXTENSION_PATH = path.join(__dirname, '..', '..', '..', 'dist')
-const EXTENSION_NAME = 'Blossom'
 
-export default async function () {
+export default async () => {
   const browser: Browser = await puppeteer.launch({
     headless: false,
     args: [
@@ -17,5 +16,5 @@ export default async function () {
 
   // This global is not available inside tests but only in global teardown
   global.__BROWSER__ = browser
-  global.__BLOSSOM_ID__ = await getExtensionId(browser, EXTENSION_NAME)
+  global.__BLOSSOM_ID__ = await getExtensionId(browser)
 }
