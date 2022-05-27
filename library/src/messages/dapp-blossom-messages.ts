@@ -2,14 +2,17 @@ import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/even
 import { ApiResponse } from '../model/api-response.model'
 import { BlossomMessages } from './blossom-messages'
 
-class PromiseHandles<Data> {
-  constructor(public resolve: (data: Data) => void, public reject: (error: unknown) => void) {}
+/**
+ * Object that contains the resolve and reject functions of a promise
+ */
+class PromiseHandles {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public resolve: (data: any) => void, public reject: (error: Error | string) => void) {}
 }
 
 export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private requests: Map<number, PromiseHandles<any>> = new Map()
+  private pendingRequests: Map<number, PromiseHandles> = new Map()
   private listener: ((event: CustomEventInit<ApiResponse>) => void) | undefined
 
   constructor() {
@@ -17,7 +20,7 @@ export class DappBlossomMessages implements BlossomMessages {
   }
 
   public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
-    return new Promise((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       if (!this.listener) {
         reject(new Error('Connection closed'))
 
@@ -25,7 +28,7 @@ export class DappBlossomMessages implements BlossomMessages {
       }
       const requestId = DappBlossomMessages.webRequestId++
 
-      this.requests.set(requestId, new PromiseHandles<Response>(resolve, reject))
+      this.pendingRequests.set(requestId, new PromiseHandles(resolve, reject))
 
       const event = new CustomEvent(BLOSSOM_API_EVENT, {
         detail: {
@@ -53,13 +56,13 @@ export class DappBlossomMessages implements BlossomMessages {
 
         const { requestId, data, error } = detail
 
-        if (!this.requests.has(requestId)) {
+        if (!this.pendingRequests.has(requestId)) {
           return
         }
 
-        const promiseHandles = this.requests.get(requestId)
+        const promiseHandles = this.pendingRequests.get(requestId)
 
-        this.requests.delete(requestId)
+        this.pendingRequests.delete(requestId)
 
         if (error) {
           promiseHandles?.reject(error)
