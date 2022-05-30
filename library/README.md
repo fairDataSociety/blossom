@@ -90,6 +90,9 @@ Also a web server that will serve the test web pages:
 npm run serve
 ```
 
+The Blossom extension and the Swarm extension must be compiled. For that, check the readme file of the root
+project.
+
 Now when the environment is ready, tests are executed by running:
 
 ```bash
