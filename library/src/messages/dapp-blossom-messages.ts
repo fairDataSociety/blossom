@@ -2,12 +2,43 @@ import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/even
 import { ApiResponse } from '../model/api-response.model'
 import { BlossomMessages } from './blossom-messages'
 
+const MESSAGE_TIMEOUT = 30000
 /**
  * Object that contains the resolve and reject functions of a promise
  */
 class PromiseHandles {
+  private timeoutHandle: NodeJS.Timeout | null = null
+  constructor(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private resolveHandle: (data: any) => void,
+    private rejectHandle: (error: Error | string) => void,
+    onTimeout: (() => void) | null = null,
+  ) {
+    if (onTimeout) {
+      this.timeoutHandle = setTimeout(() => {
+        this.clearTimeout()
+        onTimeout()
+      }, MESSAGE_TIMEOUT)
+    }
+  }
+
+  private clearTimeout() {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle)
+      this.timeoutHandle = null
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(public resolve: (data: any) => void, public reject: (error: Error | string) => void) {}
+  public resolve(data: any) {
+    this.clearTimeout()
+    this.resolveHandle(data)
+  }
+
+  public reject(error: Error | string) {
+    this.clearTimeout()
+    this.rejectHandle(error)
+  }
 }
 
 export class DappBlossomMessages implements BlossomMessages {
@@ -28,7 +59,16 @@ export class DappBlossomMessages implements BlossomMessages {
       }
       const requestId = DappBlossomMessages.webRequestId++
 
-      this.pendingRequests.set(requestId, new PromiseHandles(resolve, reject))
+      this.pendingRequests.set(
+        requestId,
+        new PromiseHandles(resolve, reject, () => {
+          this.completeRequest({
+            requestId,
+            data: null,
+            error: new Error('Request timeout'),
+          })
+        }),
+      )
 
       const event = new CustomEvent(BLOSSOM_API_EVENT, {
         detail: {
@@ -40,6 +80,13 @@ export class DappBlossomMessages implements BlossomMessages {
 
       document.dispatchEvent(event)
     })
+  }
+
+  public closeConnection() {
+    if (this.listener) {
+      document.removeEventListener(BLOSSOM_API_RESPONSE_EVENT, this.listener)
+      this.listener = undefined
+    }
   }
 
   private setListener() {
@@ -54,29 +101,26 @@ export class DappBlossomMessages implements BlossomMessages {
           return
         }
 
-        const { requestId, data, error } = detail
-
-        if (!this.pendingRequests.has(requestId)) {
-          return
-        }
-
-        const promiseHandles = this.pendingRequests.get(requestId)
-
-        this.pendingRequests.delete(requestId)
-
-        if (error) {
-          promiseHandles?.reject(error)
-        } else {
-          promiseHandles?.resolve(data)
-        }
+        this.completeRequest(detail)
       }),
     )
   }
 
-  closeConnection() {
-    if (this.listener) {
-      document.removeEventListener(BLOSSOM_API_RESPONSE_EVENT, this.listener)
-      this.listener = undefined
+  private completeRequest(response: ApiResponse) {
+    const { requestId, data, error } = response
+
+    if (!this.pendingRequests.has(requestId)) {
+      return
+    }
+
+    const promiseHandles = this.pendingRequests.get(requestId)
+
+    this.pendingRequests.delete(requestId)
+
+    if (error) {
+      promiseHandles?.reject(error)
+    } else {
+      promiseHandles?.resolve(data)
     }
   }
 }
