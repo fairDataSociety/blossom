@@ -1,0 +1,17 @@
+{
+  "name": "Blossom",
+  "description": "Blossom Fairdata Protocol Browser Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "main.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": ["https://*/*", "http://*/*"]
+}
