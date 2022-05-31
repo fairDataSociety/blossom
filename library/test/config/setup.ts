@@ -4,7 +4,7 @@ import { getExtensionId } from '../utils/extension'
 
 const EXTENSION_ROOT = path.join(__dirname, '..', '..', '..')
 const EXTENSION_PATH = path.join(EXTENSION_ROOT, 'dist')
-const SWARM_EXTENSION_PATH = path.join(EXTENSION_ROOT, 'node_modules/@ethersphere/swarm-extension/dist')
+const SWARM_EXTENSION_PATH = path.join(EXTENSION_ROOT, 'swarm-extension/dist')
 
 export default async () => {
   const browser: Browser = await puppeteer.launch({
