@@ -8,9 +8,7 @@
     "build": "webpack",
     "lint": "eslint --fix \"src/**/*.ts\" \"test/**/*.ts\" && prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint:check": "eslint \"src/**/*.ts\" \"test/**/*.ts\" && prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
-    "swarm-ext:install": "npm explore @ethersphere/swarm-extension -- npm install",
-    "swarm-ext:build": "npm explore @ethersphere/swarm-extension -- npm run compile",
-    "swarm-ext:dist": "npm run swarm-ext:install && npm run swarm-ext:build",
+    "swarm-ext": "./scripts/compile-swarm-extension.sh",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -23,7 +21,6 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/runtime": "^7.17.2",
-    "@ethersphere/swarm-extension": "github:ethersphere/swarm-extension",
     "@types/chrome": "^0.0.178",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",

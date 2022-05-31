@@ -1,9 +1,23 @@
+import { getExtensionId } from './utils/extension.util'
+
 describe('Swarm extension API tests', () => {
-  it('Test extension', async () => {
-    const page = await global.__BROWSER__.newPage()
+  let swarmExtensionId: string = null
 
-    await page.goto('chrome://extensions')
+  beforeAll(async () => {
+    try {
+      swarmExtensionId = await getExtensionId('Swarm')
 
-    // TODO Add test
+      if (!swarmExtensionId) {
+        throw new Error('Missing the Swarm extension ID')
+      }
+    } catch (error) {
+      throw new Error('Cannot find the Swarm extension: ' + error)
+    }
+  })
+
+  it('Test extension present', async () => {
+    const extensionId = await getExtensionId('Blossom')
+
+    expect(extensionId).toBeTruthy()
   })
 })
