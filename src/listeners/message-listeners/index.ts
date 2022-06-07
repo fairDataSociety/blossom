@@ -1,17 +1,18 @@
 import { Message, MessageResponse } from '../../messaging/scripts.messaging'
 import auth from './auth.listener'
 import locales from './locales.listener'
+import test from './test.listener'
 
-const listenrs = [auth, locales]
+const listenrs = [auth, locales, test]
 
-chrome.runtime.onMessage.addListener(
-  (
-    message: Message<unknown>,
-    sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: MessageResponse<unknown>) => void,
-  ) => {
+export function messageHandler(
+  message: Message<unknown>,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: MessageResponse<unknown>) => void,
+) {
+  setTimeout(() => {
     try {
-      const { action, data } = message
+      const { action, data } = message || {}
 
       if (!action) {
         sendResponse({ error: 'MessageListener: No action specified' })
@@ -29,6 +30,16 @@ chrome.runtime.onMessage.addListener(
     } catch (error) {
       sendResponse({ error })
     }
+  })
+}
+
+chrome.runtime.onMessage.addListener(
+  (
+    message: Message<unknown>,
+    sender: chrome.runtime.MessageSender,
+    sendResponse: (response?: MessageResponse<unknown>) => void,
+  ) => {
+    messageHandler(message, sender, sendResponse)
 
     return true
   },
