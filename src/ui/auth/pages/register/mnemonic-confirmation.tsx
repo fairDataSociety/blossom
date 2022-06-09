@@ -4,9 +4,10 @@ import intl from 'react-intl-universal'
 import { shuffleArray } from '../../../common/utils/array'
 import { FlexColumnDiv } from '../../../common/components/utils/utils'
 import { Button, Chip, Typography } from '@mui/material'
+import { Mnemonic } from '../../../../model/general.types'
 
 export interface MnemonicConfirmationProps {
-  phrase: string
+  phrase: Mnemonic
   onConfirm: () => void
 }
 
@@ -25,7 +26,7 @@ const ListDiv = styled('div')({
 
 const MnemonicConfirmation = ({ phrase, onConfirm }: MnemonicConfirmationProps) => {
   const [selected, setSelected] = useState<string[]>([])
-  const words = useMemo(() => shuffleArray(phrase.split(' ')), [phrase])
+  const words = useMemo<string[]>(() => shuffleArray(phrase.split(' ')), [phrase])
 
   const isSelected = (word: string): boolean => {
     return selected.indexOf(word) >= 0
@@ -46,12 +47,12 @@ const MnemonicConfirmation = ({ phrase, onConfirm }: MnemonicConfirmationProps) 
   return (
     <FlexColumnDiv>
       <ContainerDiv>
-        {words.map((word) => {
+        {words.map((word, index) => {
           const selected = isSelected(word)
 
           return (
             <Chip
-              key={word}
+              key={index}
               label={word}
               onClick={() => (selected ? removeSelected(word) : addSelected(word))}
               variant={selected ? 'filled' : 'outlined'}

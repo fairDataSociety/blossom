@@ -20,6 +20,7 @@ const pages = fs.readdirSync(uiDir).filter((page) => page !== 'common')
 
 const pageEntries = pages.reduce((pagesMap, page) => {
   pagesMap[page] = path.resolve(uiDir, page, 'index.tsx')
+
   return pagesMap
 }, {})
 

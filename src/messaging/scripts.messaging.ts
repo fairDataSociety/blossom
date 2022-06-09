@@ -10,6 +10,10 @@ export interface MessageResponse<Data> {
   data?: Data
 }
 
+export interface ContentPageMessage<Data> extends Message<Data> {
+  requestId: number
+}
+
 /**
  * Sends a message to the service worker script.
  * @param action Service worker script action

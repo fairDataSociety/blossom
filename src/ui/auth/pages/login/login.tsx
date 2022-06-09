@@ -37,6 +37,8 @@ const Login = () => {
         data,
       )
     } catch (err) {
+      console.error(err)
+
       if (err?.status === 500 && err?.json?.message?.includes('invalid password')) {
         return setError('Invalid password')
       }

@@ -1,9 +1,10 @@
 import { Message, MessageResponse } from '../../messaging/scripts.messaging'
 import auth from './auth.listener'
 import locales from './locales.listener'
+import account from './account.listener'
 import test from './test.listener'
 
-const listenrs = [auth, locales, test]
+const listenrs = [auth, locales, account, test]
 
 export function messageHandler(
   message: Message<unknown>,
@@ -19,7 +20,7 @@ export function messageHandler(
       }
 
       const actionPromise = listenrs
-        .map((listener) => listener(action, data, sender))
+        .map((listener) => listener(action, data))
         .find((promise) => Boolean(promise))
 
       if (!actionPromise) {
@@ -32,15 +33,3 @@ export function messageHandler(
     }
   })
 }
-
-chrome.runtime.onMessage.addListener(
-  (
-    message: Message<unknown>,
-    sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: MessageResponse<unknown>) => void,
-  ) => {
-    messageHandler(message, sender, sendResponse)
-
-    return true
-  },
-)

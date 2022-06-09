@@ -1,6 +1,6 @@
 import { DAPP_ACTIONS } from '../constants/dapp-actions.enum'
 import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/events'
-import { MessageResponse, sendMessage } from '../messaging/scripts.messaging'
+import { ContentPageMessage, MessageResponse, sendMessage } from '../messaging/scripts.messaging'
 import { isNumber, isBackgroundAction } from '../utils/asserts'
 
 function createResponseEvent(requestId: number, response: MessageResponse<unknown>) {
@@ -14,7 +14,7 @@ function createResponseEvent(requestId: number, response: MessageResponse<unknow
   document.dispatchEvent(event)
 }
 
-document.addEventListener(BLOSSOM_API_EVENT, async (event: any) => {
+document.addEventListener(BLOSSOM_API_EVENT, async (event: CustomEventInit<ContentPageMessage<unknown>>) => {
   const { detail } = event
 
   if (!detail) {

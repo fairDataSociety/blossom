@@ -2,13 +2,13 @@ import intl from 'react-intl-universal'
 
 type Dictionary = { [label: string]: string }
 
-interface LocaleDate {
+export interface LocaleData {
   lang: string
   locales: Dictionary
 }
 
 export class Locales {
-  private loadingPromise: Promise<LocaleDate> = null
+  private loadingPromise: Promise<LocaleData> = null
 
   constructor() {
     this.getLocales()

@@ -1,16 +1,19 @@
 import React from 'react'
 import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
-import { Button, TextField } from '@mui/material'
+import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Form from '../../../common/components/form/form.component'
+import { networks } from '../../../../constants/networks'
+import { RegisterData } from '../../../../model/internal-messages.model'
 
 export interface UsernamePasswordProps {
-  onSubmit: (username: string, password: string) => void
+  onSubmit: (data: RegisterData) => void
 }
 
 interface FormFields {
   username: string
   password: string
+  networkId: string
 }
 
 const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
@@ -20,8 +23,13 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const onSubmitInternal = ({ username, password }: FormFields) => {
-    onSubmit(username, password)
+  const onSubmitInternal = ({ username, password, networkId }: FormFields) => {
+    onSubmit({
+      username,
+      password,
+      privateKey: '',
+      network: networks.find((network) => network.id === Number(networkId)),
+    })
   }
 
   return (
@@ -43,6 +51,20 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         error={Boolean(errors.password)}
         helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
       />
+      <div>
+        <Select
+          defaultValue={networks[0].id}
+          variant="outlined"
+          fullWidth
+          {...register('networkId', { required: true })}
+        >
+          {networks.map(({ id, label }) => (
+            <MenuItem key={id} value={id}>
+              {label}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
       <Button
         color="primary"
         variant="contained"

@@ -8,11 +8,14 @@
   "PASSWORD": "Password",
   "USERNAME_REQUIRED_ERROR": "Please enter username",
   "PASSWORD_REQUIRED_ERROR": "Please enter password",
-  "REGISTER_TITLE": "Fairdata Register",
+  "REGISTER_TITLE": "Fairdata Registration",
   "REGISTRATION_INSTRUCTIONS": "Please choose a username and password for your Fairdata account.",
   "MNEMONIC_INSTRUCTIONS": "Write down the recovery phrase and don't share it with anyone.",
   "MNEMONIC_CONFIRMATION_INSTRUCTIONS": "Select words of the recovery phrase in the correct order.",
   "OK": "OK",
   "REGISTRATION_ERROR": "Error while registering your account. Please try again later.",
-  "REGISTRATION_COMPLETE": "Congratulations, you have created a Fairdata account."
+  "WAITING_FOR_PAYMENT_INSTRUCTIONS": "To complete registration you need to provide funds to your newly created account. Registration will continue afterwards.",
+  "REGISTRATION_COMPLETE": "Congratulations, you have created a Fairdata account.",
+  "TRY_AGAIN": "Try Again",
+  "COPY_TO_CLIPBOARD_MESSAGE": "Text copied to clipboard"
 }
