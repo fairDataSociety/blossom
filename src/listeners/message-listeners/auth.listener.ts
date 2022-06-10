@@ -9,8 +9,9 @@ import { createMessageHandler } from './message-handler'
 const fdp = new FdpStorage('http://localhost:1633', 'http://localhost:1635')
 
 export async function login({ username, password }: LoginData): Promise<void> {
-  console.log('Logging in user', username)
   await fdp.account.login(username, password)
+
+  console.log(`auth.listener: Successfully logged in user ${username}`)
 }
 
 export async function register({ username, password, privateKey }: RegisterData): Promise<void> {

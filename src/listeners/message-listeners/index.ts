@@ -27,7 +27,9 @@ export function messageHandler(
         sendResponse({ error: `MessageListener: No handler registered for action ${action}` })
       }
 
-      actionPromise.then((data) => sendResponse({ data })).catch((error) => sendResponse({ error }))
+      actionPromise
+        .then((data) => sendResponse({ data }))
+        .catch((error) => sendResponse({ error: error.toString() }))
     } catch (error) {
       sendResponse({ error })
     }

@@ -5,11 +5,10 @@ import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Title from '../../../common/components/title/title.component'
 import Form from '../../../common/components/form/form.component'
-import { Network, networks } from '../../../../constants/networks'
+import { networks } from '../../../../constants/networks'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
 import FieldSpinner from '../../../common/components/field-spinner/field-spinner.component'
-import { sendMessage } from '../../../../messaging/scripts.messaging'
-import BackgroundAction from '../../../../constants/background-actions.enum'
+import { login } from '../../../../messaging/content-api.messaging'
 
 const Wrapper = styled('div')(({ theme }) => ({
   marginTop: '50px',
@@ -17,6 +16,12 @@ const Wrapper = styled('div')(({ theme }) => ({
   borderRadius: '20px',
   border: `1px solid ${theme.palette.border.main}`,
 }))
+
+interface FormFields {
+  username: string
+  password: string
+  networkId: string
+}
 
 const Login = () => {
   const {
@@ -27,22 +32,30 @@ const Login = () => {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const onSubmit = async (data) => {
+  const onSubmit = async ({ username, password, networkId }: FormFields) => {
     setError(null)
     setLoading(true)
 
     try {
-      await sendMessage<{ username: string; password: string; network: Network }, void>(
-        BackgroundAction.LOGIN,
-        data,
-      )
-    } catch (err) {
-      console.error(err)
+      await login({
+        username,
+        password,
+        network: networks.find((network) => network.id === Number(networkId)),
+      })
+    } catch (error) {
+      console.error(error)
 
-      if (err?.status === 500 && err?.json?.message?.includes('invalid password')) {
-        return setError('Invalid password')
+      if (typeof error === 'string') {
+        if (error.includes('Incorrect password')) {
+          return setError(intl.get('INVALID_PASSWORD'))
+        }
+
+        if (error.includes('does not exists')) {
+          return setError(intl.get('INVALID_USERNAME'))
+        }
       }
-      setError('Error')
+
+      setError(intl.get('GENERAL_ERROR_MESSAGE'))
     } finally {
       setLoading(false)
     }
@@ -74,7 +87,7 @@ const Login = () => {
             defaultValue={networks[0].id}
             variant="outlined"
             fullWidth
-            {...register('network', { required: true })}
+            {...register('networkId', { required: true })}
           >
             {networks.map(({ id, label }) => (
               <MenuItem key={id} value={id}>

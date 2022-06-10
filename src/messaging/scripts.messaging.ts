@@ -30,9 +30,7 @@ export function sendMessage<Data, Response>(action: BackgroundAction, data?: Dat
         }
 
         if (response?.error) {
-          const responseError = response.error
-
-          return reject(typeof responseError === 'string' ? new Error(responseError) : responseError)
+          reject(response.error)
         }
 
         resolve(response?.data)

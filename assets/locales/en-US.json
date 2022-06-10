@@ -17,5 +17,8 @@
   "WAITING_FOR_PAYMENT_INSTRUCTIONS": "To complete registration you need to provide funds to your newly created account. Registration will continue afterwards.",
   "REGISTRATION_COMPLETE": "Congratulations, you have created a Fairdata account.",
   "TRY_AGAIN": "Try Again",
-  "COPY_TO_CLIPBOARD_MESSAGE": "Text copied to clipboard"
+  "COPY_TO_CLIPBOARD_MESSAGE": "Text copied to clipboard",
+  "INVALID_PASSWORD": "Invalid password.",
+  "INVALID_USERNAME": "Invalid username.",
+  "GENERAL_ERROR_MESSAGE": "Couldn't complete request at the moment."
 }
