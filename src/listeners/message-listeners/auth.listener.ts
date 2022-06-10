@@ -1,8 +1,13 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isLoginData, isRegisterData } from '../../messaging/message.asserts'
-import { LoginData, RegisterData, RegisterResponse } from '../../model/internal-messages.model'
+import { isLoginData, isRegisterData, isUsernameCheckData } from '../../messaging/message.asserts'
+import {
+  LoginData,
+  RegisterData,
+  RegisterResponse,
+  UsernameCheckData,
+} from '../../model/internal-messages.model'
 import { createMessageHandler } from './message-handler'
 
 // TODO should be configurable
@@ -31,6 +36,10 @@ export async function register({ username, password, privateKey }: RegisterData)
   }
 }
 
+export function isUsernameAvailable({ username }: UsernameCheckData): Promise<boolean> {
+  return fdp.ens.isUsernameAvailable(username)
+}
+
 export async function generateWallet(): Promise<RegisterResponse> {
   try {
     const wallet = Wallet.createRandom()
@@ -57,6 +66,11 @@ const messageHandler = createMessageHandler([
     action: BackgroundAction.REGISTER,
     assert: isRegisterData,
     handler: register,
+  },
+  {
+    action: BackgroundAction.CHECK_USERNAME,
+    assert: isUsernameCheckData,
+    handler: isUsernameAvailable,
   },
   {
     action: BackgroundAction.GENERATE_WALLET,

@@ -30,7 +30,7 @@ export function sendMessage<Data, Response>(action: BackgroundAction, data?: Dat
         }
 
         if (response?.error) {
-          reject(response.error)
+          return reject(response.error)
         }
 
         resolve(response?.data)

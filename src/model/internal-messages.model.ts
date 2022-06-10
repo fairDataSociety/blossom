@@ -14,6 +14,11 @@ export interface RegisterData {
   network: Network
 }
 
+export interface UsernameCheckData {
+  username: string
+  network: Network
+}
+
 export interface RegisterResponse {
   account: Account
   mnemonic: Mnemonic

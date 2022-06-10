@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Form from '../../../common/components/form/form.component'
 import { networks } from '../../../../constants/networks'
 import { RegisterData } from '../../../../model/internal-messages.model'
+import { isUsernameAvailable } from '../../../../messaging/content-api.messaging'
 
 export interface UsernamePasswordProps {
   onSubmit: (data: RegisterData) => void
@@ -22,14 +23,37 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
+  const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
 
-  const onSubmitInternal = ({ username, password, networkId }: FormFields) => {
-    onSubmit({
-      username,
-      password,
-      privateKey: '',
-      network: networks.find((network) => network.id === Number(networkId)),
-    })
+  const onSubmitInternal = async ({ username, password, networkId }: FormFields) => {
+    try {
+      const network = networks.find((network) => network.id === Number(networkId))
+
+      const usernameAvailable = await isUsernameAvailable({ username, network })
+
+      if (!usernameAvailable) {
+        return setUsernameTaken(true)
+      }
+
+      onSubmit({
+        username,
+        password,
+        privateKey: '',
+        network: networks.find((network) => network.id === Number(networkId)),
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getUsernameError = () => {
+    if (errors.username) {
+      return intl.get('USERNAME_REQUIRED_ERROR')
+    }
+
+    if (usernameTaken) {
+      return intl.get('USERNAME_NOT_AVAILABLE')
+    }
   }
 
   return (
@@ -39,8 +63,9 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         variant="outlined"
         fullWidth
         {...register('username', { required: true })}
-        error={Boolean(errors.username)}
-        helperText={errors.username && intl.get('USERNAME_REQUIRED_ERROR')}
+        onChange={() => setUsernameTaken(false)}
+        error={Boolean(errors.username || usernameTaken)}
+        helperText={getUsernameError()}
       />
       <TextField
         label={intl.get('PASSWORD')}

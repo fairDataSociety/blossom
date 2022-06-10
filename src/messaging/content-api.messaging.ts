@@ -1,7 +1,12 @@
 import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
 import { Account } from '../model/general.types'
-import { LoginData, RegisterData, RegisterResponse } from '../model/internal-messages.model'
+import {
+  LoginData,
+  RegisterData,
+  RegisterResponse,
+  UsernameCheckData,
+} from '../model/internal-messages.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
 
@@ -11,6 +16,10 @@ export function login(data: LoginData): Promise<void> {
 
 export function register(data: RegisterData): Promise<RegisterResponse> {
   return sendMessage<RegisterData, RegisterResponse>(BackgroundAction.REGISTER, data)
+}
+
+export function isUsernameAvailable(data: UsernameCheckData): Promise<boolean> {
+  return sendMessage<UsernameCheckData, boolean>(BackgroundAction.CHECK_USERNAME, data)
 }
 
 export function generateWallet(): Promise<RegisterResponse> {
