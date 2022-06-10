@@ -1,6 +1,6 @@
 # Blossom
 
-Browser Extension based on Fair Data Protocol
+Browser Extension based on Fair Data Protocol.
 
 ## Configuration
 
@@ -10,18 +10,12 @@ All configuration is stored inside the `.env` file. The configuration properties
 
 - **ENVIRONMENT** - It can be set to `production` or `development` and determines how the project will be built.
 - **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode. In production mode, this property is ignored.
-- **ETH_GATEWAY** - Ethereum RPC gateway address
-- **ENS_DOMAIN** - ENS domain which is used to generate user subdomains
-- **ENS_REGISTRY_ADDRESS** - ENS Registry smart contract address
-- **ENS_SUBDOMAIN_REGISTRAR_ADDRESS** - ENS Subdomain registrar smart contract address
-- **ENS_PUBLIC_RESOLVER_ADDRESS** - ENS Public resolver smart contract address
 
 ## Installation
 
-The extension is built by running these commands:
+The extension is built by running this command:
 
 ```sh
-npm install
 npm run build
 ```
 
@@ -39,29 +33,27 @@ To load the extension in Chrome browser:
 
 **Running fdp-contracts**
 
-For development, an ethereum development environment is needed with required smart contracts already deployed. For that purpose it's best to use [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
-
-Checkout the `fdp-contracts` repository, install dependencies, and run the local node:
+For development, an ethereum development environment is needed with required smart contracts already deployed. To run such an environment locally, execute:
 
 ```bash
-git checkout https://github.com/fairDataSociety/fdp-contracts
-cd fdp-contracts
-npm install
-npx hardhat node
+docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
 ```
 
-In a separate terminal, compile and deploy the contracts:
+> **_NOTE_:** For more information regarding the swarm-test-blockchain image check [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
+
+**Running bee-factory**
+
+Also a local instance of Bee is required. For that purpose it's best to use the [bee-factory](https://github.com/ethersphere/bee-factory) application. First install it globally:
 
 ```bash
-npx hardhat compile
-npm run deploy
+npm install -g @ethersphere/bee-factory
 ```
 
-The script will output addresses of `PublicResolver`, `SubdomainRegistrar` and `ENSRegistry`. Copy each value and set as values of `ENS_PUBLIC_RESOLVER_ADDRESS`, `ENS_SUBDOMAIN_REGISTRAR_ADDRESS` and `ENS_REGISTRY_ADDRESS` in the `.env` file, respectively.
+And run it:
 
-Also set the address of the local node `http://127.0.0.1:8545/` to `ETH_GATEWAY` property in the `.env` file. The `ENS_DOMAIN` property can be any `.eth` subdomain.
-
-> **_NOTE_:** The extension must be rebuilt to reflect changes in the .env file
+```bash
+bee-factory start
+```
 
 **Running the extension**
 
