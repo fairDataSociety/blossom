@@ -6,7 +6,7 @@ Browser Extension based on Fair Data Protocol.
 
 Before running the extension, it should be configured so it can be properly built and executed.
 
-All configuration is stored inside the `.env` file. The configuration properties are:
+All configuration is stored inside the `.env` file, in the root directory. That file should be created first. There is the template `.default.env` file which can be used for start. The configuration properties are:
 
 - **ENVIRONMENT** - It can be set to `production` or `development` and determines how the project will be built.
 - **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode. In production mode, this property is ignored.
@@ -29,11 +29,43 @@ To load the extension in Chrome browser:
 
 > **_NOTE_:** At the moment, only Chrome browser is supported
 
-### Development
+## Setting up the environment
 
-**Running fdp-contracts**
+### Swarm extension
 
-For development, an ethereum development environment is needed with required smart contracts already deployed. To run such an environment locally, execute:
+In order to properly use the extension locally or to run tests, the required environment must be executed first.
+
+The [Swarm extension](https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia) must be installed in the same browser as where the Blossom extension. You can install it from the browser's extension store page, or you can build it locally.
+
+To build and run a local version of the Swarm extension check [the extension's repo`](https://github.com/ethersphere/swarm-extension) or execute the following script from the root directory:
+
+```bash
+./scripts/compile-swarm-extension.sh
+```
+
+> **_NOTE_:** If you plan to run tests, compiling the Swarm extension using this script is required.
+
+This script will generate the `swarm-extension` directory inside the root directory. You can load the compiled Swarm extension the same way as the Blossom extension by loading the `swarm-extension/dist` directory. Check the [Installation](#installation) section for the details how to load the extension.
+
+> **_NOTE_:** If you are running your version of the Swarm extension, the `.env` file should be updated with its extension ID.
+
+### Bee node
+
+Running a Bee node locally on port `1633` along with debug API on port `1635` is also requred. To run such an image, execute:
+
+```bash
+docker run -p 1633-1635:1633-1635 ethersphere/bee dev --debug-api-enable --verbosity=4 --cors-allowed-origins="*"
+```
+
+There must be at least one postage stamp created. To create a postage stamp in the Bee node, run:
+
+```bash
+curl -s -XPOST http://localhost:1635/stamps/10000000/18
+```
+
+### FDP contracts
+
+Also, an instance of the `fdp-contracts` image should be running locally:
 
 ```bash
 docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
@@ -41,21 +73,7 @@ docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
 
 > **_NOTE_:** For more information regarding the swarm-test-blockchain image check [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
 
-**Running bee-factory**
-
-Also a local instance of Bee is required. For that purpose it's best to use the [bee-factory](https://github.com/ethersphere/bee-factory) application. First install it globally:
-
-```bash
-npm install -g @ethersphere/bee-factory
-```
-
-And run it:
-
-```bash
-bee-factory start
-```
-
-**Running the extension**
+### Development
 
 To start the project in development mode execute this command:
 
@@ -67,17 +85,21 @@ This process will watch for changes in source files and compile files on every c
 
 ### Tests
 
-Tests are executed by running this command:
+Tests include both unit and integration tests.
+
+Unit test folder structure replicate source folder structure. For example, if there is a file in the `src` folder with the path `src/a/b/c.ts` its unit test will be in the path `test/a/b/c.spec.ts`.
+
+Integration tests are located directly in the `test` directory. These tests use [Puppeteer](https://github.com/puppeteer/puppeteer) library to test the extension in a real browser.
+
+In order to successfully execute tests, all the dependencies must be started. Check the [Setting up the environment](#setting-up-the-environment) section for detailed instructions.
+
+Once when the complete environment is running, execute:
 
 ```sh
 npm test
 ```
 
-Tests include both unit and integration tests.
-
-Unit test folder structure replicate source folder structure. For example, if there is a file in `src` folder with the path `src/a/b/c.ts` its unit test will be in the path `test/a/b/c.spec.ts`.
-
-Integration tests are located directly in the `test` directory. These tests use [Puppeteer](https://github.com/puppeteer/puppeteer) library to test the extension in a real browser.
+> **_NOTE_:** Tests rely on fresh state of the running services. If tests need to be run more than once, then all docker containers must be restarted as well.
 
 ## Architecture
 
