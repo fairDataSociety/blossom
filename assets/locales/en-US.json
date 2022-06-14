@@ -21,5 +21,6 @@
   "INVALID_PASSWORD": "Invalid password.",
   "INVALID_USERNAME": "Invalid username.",
   "GENERAL_ERROR_MESSAGE": "Couldn't complete request at the moment.",
-  "USERNAME_NOT_AVAILABLE": "Username is not available"
+  "USERNAME_NOT_AVAILABLE": "Username is not available",
+  "CANNOT_CHECK_USERNAME": "Cannot check username. Network currently unavailable"
 }

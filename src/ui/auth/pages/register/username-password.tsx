@@ -23,10 +23,15 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
+  const [networkError, setNetworkError] = useState<boolean>(false)
 
   const onSubmitInternal = async ({ username, password, networkId }: FormFields) => {
     try {
+      setLoading(true)
+      setNetworkError(false)
+
       const network = networks.find((network) => network.id === Number(networkId))
 
       const usernameAvailable = await isUsernameAvailable({ username, network })
@@ -42,7 +47,10 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         network: networks.find((network) => network.id === Number(networkId)),
       })
     } catch (error) {
+      setNetworkError(true)
       console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -54,6 +62,10 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     if (usernameTaken) {
       return intl.get('USERNAME_NOT_AVAILABLE')
     }
+
+    if (networkError) {
+      return intl.get('CANNOT_CHECK_USERNAME')
+    }
   }
 
   return (
@@ -64,8 +76,10 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         fullWidth
         {...register('username', { required: true })}
         onChange={() => setUsernameTaken(false)}
-        error={Boolean(errors.username || usernameTaken)}
+        disabled={loading}
+        error={Boolean(errors.username || usernameTaken || networkError)}
         helperText={getUsernameError()}
+        data-testid="username"
       />
       <TextField
         label={intl.get('PASSWORD')}
@@ -73,14 +87,18 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         type="password"
         fullWidth
         {...register('password', { required: true })}
+        disabled={loading}
         error={Boolean(errors.password)}
         helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
+        data-testid="password"
       />
       <div>
         <Select
           defaultValue={networks[0].id}
           variant="outlined"
           fullWidth
+          disabled={loading}
+          data-testid="network"
           {...register('networkId', { required: true })}
         >
           {networks.map(({ id, label }) => (
@@ -95,6 +113,8 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         variant="contained"
         type="submit"
         size="large"
+        disabled={loading}
+        data-testid="submit"
         sx={{
           marginTop: '50px',
         }}
