@@ -3,6 +3,7 @@ import { styled } from '@mui/system'
 import intl from 'react-intl-universal'
 import Title from '../../../common/components/title/title.component'
 import { Button, CircularProgress, Typography } from '@mui/material'
+import DoneAll from '@mui/icons-material/DoneAll'
 import UsernamePassword from './username-password'
 import MnemonicConfirmation from './mnemonic-confirmation'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
@@ -159,6 +160,7 @@ const Register = () => {
       {step === Steps.WaitingPayment && (
         <WaitingPayment account={data.account} onPaymentDetected={onPaymentConfirmed} onError={onError} />
       )}
+      {step === Steps.Complete && <DoneAll sx={{ margin: 'auto' }} data-testid="complete" />}
       {step === Steps.Loading && (
         <LoaderWrapperDiv>
           <CircularProgress sx={{ margin: 'auto' }} />

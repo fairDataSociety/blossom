@@ -51,7 +51,7 @@ const WaitingPayment = ({ account, onPaymentDetected, onError }: WaitingPaymentP
   return (
     <ContainerDiv>
       <Typography variant="h5" sx={{ margin: 'auto' }}>
-        {account}
+        <span data-testid="account">{account}</span>
         <ClipboardButton text={account} />
       </Typography>
     </ContainerDiv>

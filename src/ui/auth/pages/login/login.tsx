@@ -72,6 +72,7 @@ const Login = () => {
           {...register('username', { required: true })}
           error={Boolean(errors.username)}
           helperText={errors.username && intl.get('USERNAME_REQUIRED_ERROR')}
+          data-testid="username"
         />
         <TextField
           label={intl.get('PASSWORD')}
@@ -81,6 +82,7 @@ const Login = () => {
           {...register('password', { required: true })}
           error={Boolean(errors.password)}
           helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
+          data-testid="password"
         />
         <div>
           <Select
@@ -103,6 +105,7 @@ const Login = () => {
           type="submit"
           size="large"
           disabled={loading}
+          data-testid="submit"
           sx={{
             marginTop: '50px',
           }}

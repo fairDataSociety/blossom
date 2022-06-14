@@ -22,7 +22,7 @@ const MnemonicComponent = ({ phrase, onConfirm }: MnemonicProps) => {
   return (
     <FlexColumnDiv>
       <FlexDiv>
-        <ContainerDiv>
+        <ContainerDiv data-testid="mnemonic">
           {words.map((word, index) => (
             <Typography variant="h6" key={index} sx={{ margin: '4px 0' }}>
               {index + 1}.
@@ -36,6 +36,7 @@ const MnemonicComponent = ({ phrase, onConfirm }: MnemonicProps) => {
         color="primary"
         variant="contained"
         size="large"
+        data-testid="submit"
         sx={{
           padding: '10px 50px',
           margin: '50px auto 0 auto',

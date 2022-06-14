@@ -46,7 +46,7 @@ const MnemonicConfirmation = ({ phrase, onConfirm }: MnemonicConfirmationProps) 
 
   return (
     <FlexColumnDiv>
-      <ContainerDiv>
+      <ContainerDiv data-testid="mnemonic-confirmation">
         {words.map((word, index) => {
           const selected = isSelected(word)
 
@@ -74,6 +74,7 @@ const MnemonicConfirmation = ({ phrase, onConfirm }: MnemonicConfirmationProps) 
         color="primary"
         variant="contained"
         size="large"
+        data-testid="submit"
         sx={{
           padding: '10px 50px',
           margin: '50px auto 0 auto',

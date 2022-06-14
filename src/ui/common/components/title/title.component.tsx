@@ -7,7 +7,7 @@ export interface TitleProps {
 
 const Title = ({ children }: TitleProps) => {
   return (
-    <Typography variant="h4" align="center">
+    <Typography variant="h4" align="center" data-testid="title">
       {children}
     </Typography>
   )

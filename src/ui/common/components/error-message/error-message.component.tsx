@@ -10,6 +10,7 @@ const ErrorMessage = ({ children }: ErrorMessageProps) => {
     <Typography
       variant="body1"
       align="center"
+      data-testid="error-message"
       sx={{
         color: (theme) => theme.palette.error.main,
         marginTop: '20px',

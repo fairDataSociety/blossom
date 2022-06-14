@@ -44,6 +44,7 @@ const Welcome = () => {
           size="large"
           sx={buttonStyle}
           onClick={() => navigate(RouteCodes.register)}
+          data-testid="register"
         >
           {intl.get('REGISTER')}
         </Button>
@@ -54,6 +55,7 @@ const Welcome = () => {
             size="large"
             sx={buttonStyle}
             onClick={() => navigate(RouteCodes.login)}
+            data-testid="login"
           >
             {intl.get('LOGIN')}
           </Button>
