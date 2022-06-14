@@ -6,7 +6,7 @@ jest.mock('../../src/swarm-api/swarm-utils', () => ({
 }))
 
 describe('SwarmExtension class tests', () => {
-  const swarmExtensionId = 'swarm-extension-id'
+  const swarmExtensionId: string = global.__SWARM_ID__
   let swarmExtension: SwarmExtension = null
 
   beforeAll(() => {

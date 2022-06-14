@@ -12,7 +12,6 @@ export default {
   coveragePathIgnorePatterns: ['/node_modules/'],
   globalSetup: join(__dirname, 'test/config/setup.ts'),
   globalTeardown: join(__dirname, 'test/config/teardown.ts'),
-  testEnvironment: join(__dirname, 'test/config/puppeteer-environment.ts'),
   rootDir: 'test',
   testTimeout: 60000,
   testPathIgnorePatterns: ['/node_modules/'],
