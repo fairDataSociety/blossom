@@ -13,6 +13,7 @@ import { generateWallet, register } from '../../../../messaging/content-api.mess
 import WaitingPayment from './waiting-payment'
 import { Account, Mnemonic } from '../../../../model/general.types'
 import MnemonicComponent from './mnemonic'
+import { FlexColumnDiv } from '../../../common/components/utils/utils'
 
 enum Steps {
   UsernamePassword,
@@ -160,7 +161,11 @@ const Register = () => {
       {step === Steps.WaitingPayment && (
         <WaitingPayment account={data.account} onPaymentDetected={onPaymentConfirmed} onError={onError} />
       )}
-      {step === Steps.Complete && <DoneAll sx={{ margin: 'auto' }} data-testid="complete" />}
+      {step === Steps.Complete && (
+        <FlexColumnDiv>
+          <DoneAll sx={{ margin: 'auto' }} data-testid="complete" />
+        </FlexColumnDiv>
+      )}
       {step === Steps.Loading && (
         <LoaderWrapperDiv>
           <CircularProgress sx={{ margin: 'auto' }} />
