@@ -25,7 +25,7 @@ export async function getExtensionId(extensionName: string): Promise<string> {
     return ids[0]
   }, extensionName)
 
-  page.close()
+  await page.close()
 
   return extensionId
 }

@@ -26,6 +26,29 @@ async function getMnemonic(page: Page): Promise<string[]> {
   return extractMnemonic(wordElements)
 }
 
+async function getMnemonicConfirmationElements(
+  page: Page,
+  mnemonic: string[],
+): Promise<ElementHandle<Element>[]> {
+  const wordElements = await getElementChildren(await getElementByTestId(page, 'mnemonic-confirmation'))
+
+  const words = await extractMnemonic(wordElements)
+
+  return mnemonic.map((word, index) => {
+    let occurrence = 0
+
+    for (let i = 0; i <= index; i++) {
+      if (mnemonic[i] === word) {
+        occurrence += 1
+      }
+    }
+
+    const wordIndex = words.findIndex((currentWord) => currentWord === word && --occurrence === 0)
+
+    return wordElements[wordIndex]
+  })
+}
+
 async function fillUsernamePasswordForm(page: Page, username: string, password: string): Promise<void> {
   const usernameInput = await getElementByTestId(page, 'username')
 
@@ -36,7 +59,7 @@ async function fillUsernamePasswordForm(page: Page, username: string, password: 
 
   await passwordInput.click()
   await passwordInput.type(password)
-  ;(await getElementByTestId(page, 'submit')).click()
+  await (await getElementByTestId(page, 'submit')).click()
 }
 
 const blossomId: string = global.__BLOSSOM_ID__
@@ -57,7 +80,7 @@ describe('Successful registration tests', () => {
   })
 
   test('The Username/Password form should accept new account', async () => {
-    ;(await getElementByTestId(page, 'register')).click()
+    await (await getElementByTestId(page, 'register')).click()
 
     await fillUsernamePasswordForm(page, username, password)
 
@@ -66,18 +89,14 @@ describe('Successful registration tests', () => {
 
   test('Should prevent next steps if mnemonic is not correct and continue if the order is correct', async () => {
     mnemonic = await getMnemonic(page)
-    ;(await getElementByTestId(page, 'submit')).click()
+    await (await getElementByTestId(page, 'submit')).click()
 
-    const wordElements = await getElementChildren(await getElementByTestId(page, 'mnemonic-confirmation'))
-
-    const words = await extractMnemonic(wordElements)
-
-    const rightOrderWordElements = mnemonic.map((word) => wordElements[words.indexOf(word)])
+    const rightOrderWordElements = await getMnemonicConfirmationElements(page, mnemonic)
 
     await rightOrderWordElements.slice(0, 10).reduce(async (prevPromise, element) => {
       await prevPromise
 
-      return element.click()
+      return await element.click()
     }, Promise.resolve())
 
     expect(await isElementDisabled(page, 'submit')).toBeTruthy()
@@ -89,12 +108,12 @@ describe('Successful registration tests', () => {
 
     await rightOrderWordElements[11].click()
     await rightOrderWordElements[10].click()
-    page.waitForTimeout(50)
+    await page.waitForTimeout(50)
     await rightOrderWordElements[10].click()
     await rightOrderWordElements[11].click()
 
     expect(await isElementDisabled(page, 'submit')).toBeFalsy()
-    ;(await getElementByTestId(page, 'submit')).click()
+    await (await getElementByTestId(page, 'submit')).click()
   })
 
   test('Should proceed after successful payment', async () => {
@@ -118,7 +137,7 @@ describe('Unsuccessful registration tests', () => {
   })
 
   test("Shouldn't proceed with existing username", async () => {
-    ;(await getElementByTestId(page, 'register')).click()
+    await (await getElementByTestId(page, 'register')).click()
 
     await fillUsernamePasswordForm(page, username, password)
 
@@ -140,7 +159,7 @@ describe('Login tests', () => {
   })
 
   test("Shouldn't login with wrong password", async () => {
-    ;(await getElementByTestId(page, 'login')).click()
+    await (await getElementByTestId(page, 'login')).click()
 
     await fillUsernamePasswordForm(page, username, 'wrongPassword')
 
