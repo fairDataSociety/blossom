@@ -1,3 +1,3 @@
 export default async () => {
-  await global.__BROWSER__.close()
+  if (!process.argv.includes('--demo=true')) await global.__BROWSER__.close()
 }
