@@ -3,6 +3,11 @@ import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/even
 import { ContentPageMessage, MessageResponse, sendMessage } from '../messaging/scripts.messaging'
 import { isNumber, isBackgroundAction } from '../utils/asserts'
 
+/**
+ * Utility function that creates a CustomEvent that sends response back to the library
+ * @param requestId Request ID sent by the library
+ * @param response MessageResponse object that is sent back
+ */
 function createResponseEvent(requestId: number, response: MessageResponse<unknown>) {
   const event = new CustomEvent(BLOSSOM_API_RESPONSE_EVENT, {
     detail: {

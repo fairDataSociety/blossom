@@ -10,12 +10,12 @@ import {
   waitForElementTextByTestId,
 } from './utils/page'
 
-function extractWordFromElement(wordElement: ElementHandle<Element>): Promise<string> {
+function extractTextFromSpan(wordElement: ElementHandle<Element>): Promise<string> {
   return wordElement.$eval('span', (e) => e.innerHTML)
 }
 
 function extractMnemonic(wordElements: ElementHandle<Element>[]): Promise<string[]> {
-  return Promise.all(wordElements.map((element) => extractWordFromElement(element)))
+  return Promise.all(wordElements.map((element) => extractTextFromSpan(element)))
 }
 
 async function getMnemonic(page: Page): Promise<string[]> {
