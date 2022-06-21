@@ -49,6 +49,16 @@ This script will generate the `swarm-extension` directory inside the root direct
 
 > **_NOTE_:** If you are running your version of the Swarm extension, the `.env` file should be updated with its extension ID.
 
+### FDP contracts
+
+Also, an instance of the `fdp-contracts` image should be running locally:
+
+```bash
+docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
+```
+
+> **_NOTE_:** For more information regarding the swarm-test-blockchain image check [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
+
 ### Bee node
 
 Running a Bee node locally on port `1633` along with debug API on port `1635` is also requred. To run such an image, execute:
@@ -62,16 +72,6 @@ There must be at least one postage stamp created. To create a postage stamp in t
 ```bash
 curl -s -XPOST http://localhost:1635/stamps/10000000/18
 ```
-
-### FDP contracts
-
-Also, an instance of the `fdp-contracts` image should be running locally:
-
-```bash
-docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
-```
-
-> **_NOTE_:** For more information regarding the swarm-test-blockchain image check [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
 
 ### Development
 
