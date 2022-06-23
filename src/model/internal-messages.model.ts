@@ -10,7 +10,8 @@ export interface LoginData {
 export interface RegisterData {
   username: string
   password: string
-  privateKey: PrivateKey
+  privateKey?: PrivateKey
+  mnemonic?: Mnemonic
   network: Network
 }
 

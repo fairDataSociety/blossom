@@ -2,6 +2,11 @@
   "WELCOME_TITLE": "Welcome to the Blossom browser extension",
   "WELCOME_TEXT": "Create a new Fairdata account to start using the extension. Or login if you already have one.",
   "REGISTER": "Register",
+  "NEW_ACCOUNT": "New account",
+  "EXISTING_ACCOUNT": "Existing account",
+  "EXISTING_ACCOUNT_INSTRUCTIONS": "Enter your recovery phrase of your existing account to register.",
+  "INVALID_MEMONIC": "The recovery phrase that you entered is not valid.",
+  "MNEMONIC_REQUIRED": "Please enter your recovery phrase.",
   "LOGIN": "Login",
   "LOGIN_TITLE": "Fairdata Login",
   "USERNAME": "Username",
@@ -9,9 +14,12 @@
   "USERNAME_REQUIRED_ERROR": "Please enter username",
   "PASSWORD_REQUIRED_ERROR": "Please enter password",
   "REGISTER_TITLE": "Fairdata Registration",
+  "REGISTRATION_OPTIONS_DESCRIPTION": "You can register by creating a new address or by using an existing one.",
   "REGISTRATION_INSTRUCTIONS": "Please choose a username and password for your Fairdata account.",
   "MNEMONIC_INSTRUCTIONS": "Write down the recovery phrase and don't share it with anyone.",
   "MNEMONIC_CONFIRMATION_INSTRUCTIONS": "Select words of the recovery phrase in the correct order.",
+  "RECOVERY_PHRASE": "Recovery phrase",
+  "SHOW_RECOVERY_PHRASE": "Show recovery phrase",
   "OK": "OK",
   "REGISTRATION_ERROR": "Error while registering your account. Please try again later.",
   "WAITING_FOR_PAYMENT_INSTRUCTIONS": "To complete registration you need to provide funds to your newly created account. Registration will continue afterwards.",
@@ -22,5 +30,6 @@
   "INVALID_USERNAME": "Invalid username.",
   "GENERAL_ERROR_MESSAGE": "Couldn't complete request at the moment.",
   "USERNAME_NOT_AVAILABLE": "Username is not available",
-  "CANNOT_CHECK_USERNAME": "Cannot check username. Network currently unavailable"
+  "CANNOT_CHECK_USERNAME": "Cannot check username. Network currently unavailable",
+  "CONFIRM": "Confirm"
 }
