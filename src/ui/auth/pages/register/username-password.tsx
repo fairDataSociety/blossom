@@ -26,9 +26,26 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
   const [networkError, setNetworkError] = useState<boolean>(false)
+  const [passwordError, setPasswordError] = useState<string>(false)
+
+  const validatePassword = (password: string): string => {
+    if (!password || password.length < 8) {
+      return intl.get('PASSWORD_TOO_SHORT')
+    }
+
+    return null
+
+    // TODO check if password contains lowercase and uppercase letters
+  }
 
   const onSubmitInternal = async ({ username, password, networkId }: FormFields) => {
     try {
+      const passError = validatePassword(password)
+
+      if (passError) {
+        return setPasswordError(passError)
+      }
+
       setLoading(true)
       setNetworkError(false)
 
@@ -88,8 +105,8 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         fullWidth
         {...register('password', { required: true })}
         disabled={loading}
-        error={Boolean(errors.password)}
-        helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
+        error={Boolean(errors.password || passwordError)}
+        helperText={passwordError || (errors.password && intl.get('PASSWORD_REQUIRED_ERROR'))}
         data-testid="password"
       />
       <div>

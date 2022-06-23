@@ -6,6 +6,7 @@
   "LOGIN_TITLE": "Fairdata Login",
   "USERNAME": "Username",
   "PASSWORD": "Password",
+  "PASSWORD_TOO_SHORT": "Password is too short. It should be at least 8 characters long.",
   "USERNAME_REQUIRED_ERROR": "Please enter username",
   "PASSWORD_REQUIRED_ERROR": "Please enter password",
   "REGISTER_TITLE": "Fairdata Registration",
