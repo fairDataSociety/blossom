@@ -64,7 +64,7 @@ async function fillUsernamePasswordForm(page: Page, username: string, password: 
 
 const blossomId: string = global.__BLOSSOM_ID__
 const username = 'test_user'
-const password = 'pass123'
+const password = 'pass12345'
 
 describe('Successful registration tests', () => {
   let page: Page
