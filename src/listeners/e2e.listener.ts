@@ -9,7 +9,7 @@ chrome.runtime.onMessageExternal.addListener((request: Message<unknown>, sender,
   if (!isBackgroundAction(action) || !E2E_ACTIONS.includes(action)) {
     sendResponse({ error: `Blossom: invalid action received from the extension with ID ${sender.id}` })
 
-    return true
+    return false
   }
 
   messageHandler(request, sender, sendResponse)
