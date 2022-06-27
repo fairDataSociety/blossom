@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "noEmit": true,
+    "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,

@@ -1,3 +1,5 @@
+import { Page } from 'puppeteer'
+
 export async function getExtensionId(extensionName: string): Promise<string> {
   const page = await global.__BROWSER__.newPage()
   await page.goto('chrome://extensions', { waitUntil: 'networkidle0' })
@@ -23,7 +25,16 @@ export async function getExtensionId(extensionName: string): Promise<string> {
     return ids[0]
   }, extensionName)
 
-  page.close()
+  await page.close()
 
   return extensionId
+}
+
+export async function openExtensionOptionsPage(extensionId: string, page: string): Promise<Page> {
+  const extensionPage = await global.__BROWSER__.newPage()
+  await extensionPage.goto(`chrome-extension://${extensionId}/${page}`, {
+    waitUntil: 'networkidle0',
+  })
+
+  return extensionPage
 }

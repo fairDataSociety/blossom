@@ -1,5 +1,52 @@
-console.log('Content script...')
+import { DAPP_ACTIONS } from '../constants/dapp-actions.enum'
+import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/events'
+import { ContentPageMessage, MessageResponse, sendMessage } from '../messaging/scripts.messaging'
+import { isNumber, isBackgroundAction } from '../utils/asserts'
 
-chrome.runtime.sendMessage('abc', (response) => {
-  console.log('FDP Content Script: ', response)
+/**
+ * Utility function that creates a CustomEvent that sends response back to the library
+ * @param requestId Request ID sent by the library
+ * @param response MessageResponse object that is sent back
+ */
+function createResponseEvent(requestId: number, response: MessageResponse<unknown>) {
+  const event = new CustomEvent(BLOSSOM_API_RESPONSE_EVENT, {
+    detail: {
+      ...response,
+      requestId,
+    },
+  })
+
+  document.dispatchEvent(event)
+}
+
+document.addEventListener(BLOSSOM_API_EVENT, async (event: CustomEventInit<ContentPageMessage<unknown>>) => {
+  const { detail } = event
+
+  if (!detail) {
+    console.warn('Blossom: Received invalid request from the page')
+
+    return
+  }
+
+  const { requestId, action, data } = detail
+
+  if (!isNumber(requestId)) {
+    console.warn('Blossom: Invalid request ID')
+
+    return
+  }
+
+  if (!isBackgroundAction(action) || !DAPP_ACTIONS.includes(action)) {
+    console.warn('Blossom: Invalid action')
+
+    return
+  }
+
+  try {
+    const response = await sendMessage<unknown, MessageResponse<unknown>>(action, data)
+
+    createResponseEvent(requestId, { data: response })
+  } catch (error) {
+    createResponseEvent(requestId, { error })
+  }
 })

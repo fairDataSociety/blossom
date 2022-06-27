@@ -6,12 +6,16 @@
   "background": {
     "service_worker": "main.js"
   },
+  "action": {
+    "default_popup": "menu.html"
+  },
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
       "js": ["content.js"]
     }
   ],
+  "options_page": "auth.html",
   "permissions": ["storage"],
   "host_permissions": ["https://*/*", "http://*/*"]
 }
