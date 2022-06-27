@@ -1,4 +1,3 @@
-import { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
 import { isLoginData, isRegisterData, isUsernameCheckData } from '../../messaging/message.asserts'
@@ -8,12 +7,14 @@ import {
   RegisterResponse,
   UsernameCheckData,
 } from '../../model/internal-messages.model'
+import { FdpStorageProvider } from '../../services/fdp-storage.provider'
 import { createMessageHandler } from './message-handler'
 
-// TODO should be configurable
-const fdp = new FdpStorage('http://localhost:1633', 'http://localhost:1635')
+const fdpStorageProvider = new FdpStorageProvider()
 
 export async function login({ username, password }: LoginData): Promise<void> {
+  const fdp = await fdpStorageProvider.getService()
+
   await fdp.account.login(username, password)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
@@ -22,6 +23,8 @@ export async function login({ username, password }: LoginData): Promise<void> {
 export async function register({ username, password, privateKey }: RegisterData): Promise<void> {
   try {
     const wallet = new Wallet(privateKey)
+
+    const fdp = await fdpStorageProvider.getService()
 
     fdp.account.setActiveAccount(wallet)
 
@@ -36,7 +39,9 @@ export async function register({ username, password, privateKey }: RegisterData)
   }
 }
 
-export function isUsernameAvailable({ username }: UsernameCheckData): Promise<boolean> {
+export async function isUsernameAvailable({ username }: UsernameCheckData): Promise<boolean> {
+  const fdp = await fdpStorageProvider.getService()
+
   return fdp.ens.isUsernameAvailable(username)
 }
 

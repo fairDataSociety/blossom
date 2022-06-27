@@ -19,6 +19,8 @@ export default async () => {
   global.__BLOSSOM_ID__ = await getExtensionId('Blossom')
   global.__SWARM_ID__ = await getExtensionId('Swarm')
 
+  process.env.SWARM_EXTENSION_ID = global.__SWARM_ID__
+
   if (!global.__BLOSSOM_ID__) {
     throw new Error('Cannot find the Blossom extension')
   }
