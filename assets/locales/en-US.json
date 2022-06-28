@@ -20,6 +20,7 @@
   "MNEMONIC_CONFIRMATION_INSTRUCTIONS": "Select words of the recovery phrase in the correct order.",
   "RECOVERY_PHRASE": "Recovery phrase",
   "SHOW_RECOVERY_PHRASE": "Show recovery phrase",
+  "PASSWORD_TOO_SHORT": "Password is too short. It should be at least 8 characters long.",
   "OK": "OK",
   "REGISTRATION_ERROR": "Error while registering your account. Please try again later.",
   "WAITING_FOR_PAYMENT_INSTRUCTIONS": "To complete registration you need to provide funds to your newly created account. Registration will continue afterwards.",
