@@ -26,7 +26,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
   const [networkError, setNetworkError] = useState<boolean>(false)
-  const [passwordError, setPasswordError] = useState<string>(false)
+  const [passwordError, setPasswordError] = useState<string>(null)
 
   const validatePassword = (password: string): string => {
     if (!password || password.length < 8) {
