@@ -14,23 +14,21 @@ import WaitingPayment from './waiting-payment'
 import { Account, Mnemonic } from '../../../../model/general.types'
 import MnemonicComponent from './mnemonic'
 import { FlexColumnDiv } from '../../../common/components/utils/utils'
+import Wrapper from '../components/wrapper'
+import RegisterMethods from './register-methods'
+import EnterMnemonic from './enter-mnemonic'
 
 enum Steps {
   UsernamePassword,
+  ChooseMethod,
   Mnemonic,
   MnemonicConfirmation,
+  EnterMnemonic,
   WaitingPayment,
   Complete,
   Loading,
   Error,
 }
-
-const Wrapper = styled('div')(({ theme }) => ({
-  marginTop: '50px',
-  padding: '50px',
-  borderRadius: '20px',
-  border: `1px solid ${theme.palette.border.main}`,
-}))
 
 const LoaderWrapperDiv = styled('div')({
   width: '100%',
@@ -61,7 +59,16 @@ const Register = () => {
       ...data,
       ...registerData,
     })
+    setStep(Steps.ChooseMethod)
+  }
+
+  const onNewAccountSelect = () => {
     setStep(Steps.Loading)
+    getMnemonic()
+  }
+
+  const onExistingAccountSelect = () => {
+    setStep(Steps.EnterMnemonic)
   }
 
   const getMnemonic = async () => {
@@ -86,6 +93,13 @@ const Register = () => {
     setStep(Steps.WaitingPayment)
   }
 
+  const onMnemonicEntered = (mnemonic: string) => {
+    setData({
+      ...data,
+      mnemonic,
+    })
+  }
+
   const onPaymentConfirmed = () => {
     setStep(Steps.Loading)
     registerUser()
@@ -97,12 +111,13 @@ const Register = () => {
 
   const registerUser = async () => {
     try {
-      const { username, password, privateKey, network } = data
+      const { username, password, privateKey, mnemonic, network } = data
 
       await register({
         username,
         password,
         privateKey,
+        mnemonic,
         network,
       })
       setStep(Steps.Complete)
@@ -117,10 +132,14 @@ const Register = () => {
 
     if (step === Steps.UsernamePassword) {
       message = 'REGISTRATION_INSTRUCTIONS'
+    } else if (step === Steps.ChooseMethod) {
+      message = 'REGISTRATION_OPTIONS_DESCRIPTION'
     } else if (step === Steps.Mnemonic) {
       message = 'MNEMONIC_INSTRUCTIONS'
     } else if (step === Steps.MnemonicConfirmation) {
       message = 'MNEMONIC_CONFIRMATION_INSTRUCTIONS'
+    } else if (step === Steps.EnterMnemonic) {
+      message = 'EXISTING_ACCOUNT_INSTRUCTIONS'
     } else if (step === Steps.WaitingPayment) {
       message = 'WAITING_FOR_PAYMENT_INSTRUCTIONS'
     } else if (step === Steps.Complete) {
@@ -136,10 +155,17 @@ const Register = () => {
   }
 
   useEffect(() => {
-    if (data.username) {
-      getMnemonic()
+    if (data.mnemonic && step === Steps.EnterMnemonic) {
+      setStep(Steps.Loading)
+      registerUser()
     }
-  }, [data.username])
+  }, [data.mnemonic])
+
+  useEffect(() => {
+    if (step === Steps.UsernamePassword) {
+      setData(emptyState)
+    }
+  }, [step])
 
   return (
     <Wrapper>
@@ -154,10 +180,17 @@ const Register = () => {
         {getStepInstructionMessage(step)}
       </Typography>
       {step === Steps.UsernamePassword && <UsernamePassword onSubmit={onUsernamePasswordSubmit} />}
+      {step === Steps.ChooseMethod && (
+        <RegisterMethods
+          onNewAccountSelect={onNewAccountSelect}
+          onExistingAccountSelect={onExistingAccountSelect}
+        />
+      )}
       {step === Steps.Mnemonic && <MnemonicComponent phrase={data.mnemonic} onConfirm={onMnemonicRead} />}
       {step === Steps.MnemonicConfirmation && (
         <MnemonicConfirmation phrase={data.mnemonic} onConfirm={onMnemonicConfirmed} />
       )}
+      {step === Steps.EnterMnemonic && <EnterMnemonic onSubmit={onMnemonicEntered} />}
       {step === Steps.WaitingPayment && (
         <WaitingPayment account={data.account} onPaymentDetected={onPaymentConfirmed} onError={onError} />
       )}

@@ -65,11 +65,11 @@ async function fillUsernamePasswordForm(page: Page, username: string, password: 
 const blossomId: string = global.__BLOSSOM_ID__
 const username = 'test_user'
 const password = 'pass12345'
+let mnemonic: string[]
 
 describe('Successful registration tests', () => {
   let page: Page
   const privateKey = '0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d'
-  let mnemonic: string[]
 
   beforeAll(async () => {
     page = await openExtensionOptionsPage(blossomId, 'auth.html')
@@ -83,6 +83,8 @@ describe('Successful registration tests', () => {
     await (await getElementByTestId(page, 'register')).click()
 
     await fillUsernamePasswordForm(page, username, password)
+
+    await (await getElementByTestId(page, 'register-new')).click()
 
     expect(await page.waitForSelector(dataTestId('mnemonic'))).toBeTruthy()
   })
@@ -144,6 +146,36 @@ describe('Unsuccessful registration tests', () => {
     expect(await waitForElementText(page, `${dataTestId('username')} > p`)).toEqual(
       'Username is not available',
     )
+  })
+})
+
+describe('Registration with an existing account', () => {
+  let page: Page
+  const username = 'test_user_2'
+
+  beforeAll(async () => {
+    page = await openExtensionOptionsPage(blossomId, 'auth.html')
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+
+  test('Should successfully register with previously created account', async () => {
+    await (await getElementByTestId(page, 'register')).click()
+
+    await fillUsernamePasswordForm(page, username, password)
+
+    await (await getElementByTestId(page, 'existing-account')).click()
+
+    const mnemonicInput = await getElementByTestId(page, 'mnemonic-input')
+
+    await mnemonicInput.click()
+    await mnemonicInput.type(mnemonic.join(' '))
+
+    await (await getElementByTestId(page, 'submit')).click()
+
+    expect(await waitForElementTextByTestId(page, 'complete')).toBeTruthy()
   })
 })
 
