@@ -1,4 +1,3 @@
-import { styled } from '@mui/system'
 import React, { useState } from 'react'
 import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
@@ -9,13 +8,7 @@ import { networks } from '../../../../constants/networks'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
 import FieldSpinner from '../../../common/components/field-spinner/field-spinner.component'
 import { login } from '../../../../messaging/content-api.messaging'
-
-const Wrapper = styled('div')(({ theme }) => ({
-  marginTop: '50px',
-  padding: '50px',
-  borderRadius: '20px',
-  border: `1px solid ${theme.palette.border.main}`,
-}))
+import Wrapper from '../components/wrapper'
 
 interface FormFields {
   username: string
