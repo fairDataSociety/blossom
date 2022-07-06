@@ -7,13 +7,21 @@ export interface LoginData {
   network: Network
 }
 
-export interface RegisterData {
+export interface RegisterDataBase {
   username: string
   password: string
-  privateKey?: PrivateKey
-  mnemonic?: Mnemonic
   network: Network
 }
+
+export interface RegisterDataMnemonic extends RegisterDataBase {
+  mnemonic: Mnemonic
+}
+
+export interface RegisterDataPrivateKey extends RegisterDataBase {
+  privateKey: PrivateKey
+}
+
+export type RegisterData = RegisterDataMnemonic | RegisterDataPrivateKey
 
 export interface UsernameCheckData {
   username: string
