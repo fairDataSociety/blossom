@@ -1,6 +1,12 @@
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isLoginData, isRegisterData, isUsernameCheckData } from '../../messaging/message.asserts'
+import {
+  isLoginData,
+  isRegisterData,
+  isRegisterDataMnemonic,
+  isRegisterDataPrivateKey,
+  isUsernameCheckData,
+} from '../../messaging/message.asserts'
 import {
   LoginData,
   RegisterData,
@@ -20,14 +26,16 @@ export async function login({ username, password }: LoginData): Promise<void> {
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
 
-export async function register({ username, password, privateKey, mnemonic }: RegisterData): Promise<void> {
+export async function register(data: RegisterData): Promise<void> {
+  const { username, password } = data
+
   try {
     let wallet: Wallet
 
-    if (privateKey) {
-      wallet = new Wallet(privateKey)
-    } else if (mnemonic) {
-      wallet = Wallet.fromMnemonic(mnemonic)
+    if (isRegisterDataPrivateKey(data)) {
+      wallet = new Wallet(data.privateKey)
+    } else if (isRegisterDataMnemonic(data)) {
+      wallet = Wallet.fromMnemonic(data.mnemonic)
     } else {
       throw new Error('Private key or mnemonic must be set in order to register account')
     }

@@ -7,7 +7,11 @@ import DoneAll from '@mui/icons-material/DoneAll'
 import UsernamePassword from './username-password'
 import MnemonicConfirmation from './mnemonic-confirmation'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
-import { RegisterData } from '../../../../model/internal-messages.model'
+import {
+  RegisterData,
+  RegisterDataMnemonic,
+  RegisterDataPrivateKey,
+} from '../../../../model/internal-messages.model'
 import { networks } from '../../../../constants/networks'
 import { generateWallet, register } from '../../../../messaging/content-api.messaging'
 import WaitingPayment from './waiting-payment'
@@ -36,7 +40,7 @@ const LoaderWrapperDiv = styled('div')({
   display: 'flex',
 })
 
-interface RegistrationState extends RegisterData {
+interface RegistrationState extends RegisterDataMnemonic, RegisterDataPrivateKey {
   account: Account
   mnemonic: Mnemonic
 }
