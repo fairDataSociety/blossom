@@ -3,9 +3,9 @@ import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Form from '../../../common/components/form/form.component'
-import { networks } from '../../../../constants/networks'
 import { RegisterData } from '../../../../model/internal-messages.model'
 import { isUsernameAvailable } from '../../../../messaging/content-api.messaging'
+import { useNetworks } from '../../../hooks/networks.hooks'
 
 export interface UsernamePasswordProps {
   onSubmit: (data: RegisterData) => void
@@ -14,7 +14,7 @@ export interface UsernamePasswordProps {
 interface FormFields {
   username: string
   password: string
-  networkId: string
+  networkLabel: string
 }
 
 const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
@@ -27,6 +27,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
   const [networkError, setNetworkError] = useState<boolean>(false)
   const [passwordError, setPasswordError] = useState<string>(null)
+  const networks = useNetworks()
 
   const validatePassword = (password: string): string => {
     if (!password || password.length < 8) {
@@ -38,7 +39,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     // TODO check if password contains lowercase and uppercase letters
   }
 
-  const onSubmitInternal = async ({ username, password, networkId }: FormFields) => {
+  const onSubmitInternal = async ({ username, password, networkLabel }: FormFields) => {
     try {
       const passError = validatePassword(password)
 
@@ -49,7 +50,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       setLoading(true)
       setNetworkError(false)
 
-      const network = networks.find((network) => network.id === Number(networkId))
+      const network = networks.find((network) => network.label === networkLabel)
 
       const usernameAvailable = await isUsernameAvailable({ username, network })
 
@@ -61,7 +62,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         username,
         password,
         privateKey: '',
-        network: networks.find((network) => network.id === Number(networkId)),
+        network: networks.find((network) => network.label === networkLabel),
       })
     } catch (error) {
       setNetworkError(true)
@@ -83,6 +84,10 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     if (networkError) {
       return intl.get('CANNOT_CHECK_USERNAME')
     }
+  }
+
+  if (!networks) {
+    return null
   }
 
   return (
@@ -111,15 +116,15 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       />
       <div>
         <Select
-          defaultValue={networks[0].id}
+          defaultValue={networks[0].label}
           variant="outlined"
           fullWidth
           disabled={loading}
           data-testid="network"
-          {...register('networkId', { required: true })}
+          {...register('networkLabel', { required: true })}
         >
-          {networks.map(({ id, label }) => (
-            <MenuItem key={id} value={id}>
+          {networks.map(({ label }) => (
+            <MenuItem key={label} value={label}>
               {label}
             </MenuItem>
           ))}

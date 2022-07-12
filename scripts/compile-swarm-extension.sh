@@ -5,8 +5,7 @@ cd "$SCRIPTS_DIR/.."
 
 rm -r swarm-extension
 
-# E2E not merged yet
-git clone -b feature/e2e-api https://github.com/ethersphere/swarm-extension.git
+git clone https://github.com/ethersphere/swarm-extension.git
 
 cd swarm-extension
 

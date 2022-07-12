@@ -32,5 +32,18 @@
   "GENERAL_ERROR_MESSAGE": "Couldn't complete request at the moment.",
   "USERNAME_NOT_AVAILABLE": "Username is not available",
   "CANNOT_CHECK_USERNAME": "Cannot check username. Network currently unavailable",
-  "CONFIRM": "Confirm"
+  "CONFIRM": "Confirm",
+  "SETTINGS": "Settings",
+  "NETWORK": "Network",
+  "NETWORK_SETTINGS_DESCRIPTION": "Configure your network settings here, like RPC server...",
+  "NETWORK_NAME": "Network name",
+  "RPC_ADDRESS": "RPC provider address",
+  "FIELD_REQUIRED": "This field is required.",
+  "CONTRACT_ADDRESSES": "Contract addresses",
+  "ENS_REGISTRY_ADDRESS": "ENS Registry address",
+  "SUBDOMAIN_REGISTRAR_ADDRESS": "Subdomain Registrar Address",
+  "PUBLIC_RESOLVER_ADDRESS": "Public Resolver Address",
+  "SAVE": "Save",
+  "ADD": "Add",
+  "ADDRESS_NOT_VALID": "Address is not valid."
 }

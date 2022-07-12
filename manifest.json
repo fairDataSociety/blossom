@@ -7,7 +7,8 @@
     "service_worker": "main.js"
   },
   "action": {
-    "default_popup": "menu.html"
+    "default_popup": "settings.html",
+    "default_title": "Click to configure the extension"
   },
   "content_scripts": [
     {

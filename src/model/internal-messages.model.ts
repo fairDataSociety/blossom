@@ -33,3 +33,8 @@ export interface RegisterResponse {
   mnemonic: Mnemonic
   privateKey: PrivateKey
 }
+
+export interface NetworkEditData {
+  label: string
+  network: Network
+}

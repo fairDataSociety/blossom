@@ -1,6 +1,6 @@
 import { Network } from '../../model/storage/network.model'
 import { removeAllValues } from '../../utils/array'
-import { networkFactory } from './storage-factories'
+import { networkFactory, networkListFactory } from './storage-factories'
 import migrate from './storage-migration'
 
 /**
@@ -59,6 +59,29 @@ export async function getObject<T extends object>(key: string, factory: () => T)
 }
 
 /**
+ * Stores an array to the extension storage.
+ * The new array is replaced with the existing one.
+ * @param key entry's key
+ * @param array array to store
+ * @returns promise
+ */
+export function setArray<T extends object>(key: string, array: T[]): Promise<void> {
+  return setEntry<T[]>(key, array)
+}
+
+/**
+ * Retreives array from the extension storage
+ * @param key entry's key
+ * @param factory function that creates default array if it is not found
+ * @returns array from the extension storage or an array with default values
+ */
+export async function getArray<T extends object>(key: string, factory: () => T[]): Promise<T[]> {
+  const array = await getEntry<T>(key)
+
+  return Array.isArray(array) ? array : factory()
+}
+
+/**
  * Abstracts access to the extension storage.
  * Provides default values for non existing entries
  */
@@ -66,9 +89,43 @@ export class Storage {
   private listeners: Record<string, Array<(entry: unknown) => void>> = {}
 
   static readonly networkKey = 'network'
+  static readonly networkListKey = 'network-list'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
+  }
+
+  public getNetworkList(): Promise<Network[]> {
+    return getArray<Network>(Storage.networkListKey, networkListFactory)
+  }
+
+  public async addNetworkToList(network: Network): Promise<void> {
+    const networks = await this.getNetworkList()
+
+    if (!networks.find(({ label }) => network.label === label)) {
+      networks.push(network)
+      await setArray<Network>(Storage.networkListKey, networks)
+    }
+  }
+
+  public async updateNetworkInList(label: string, network: Network): Promise<void> {
+    const networks = await this.getNetworkList()
+    const index = networks.findIndex((net) => net.label === label)
+
+    if (index >= 0) {
+      networks[index] = network
+      await setEntry<Network[]>(Storage.networkListKey, networks)
+    }
+  }
+
+  public async deleteNetworkFromList(network: Network): Promise<void> {
+    const networks = await this.getNetworkList()
+    const index = networks.findIndex(({ label }) => network.label === label)
+
+    if (index >= 0) {
+      networks.splice(index, 1)
+      await setEntry<Network[]>(Storage.networkListKey, networks)
+    }
   }
 
   public getNetwork(): Promise<Network> {

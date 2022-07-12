@@ -5,6 +5,10 @@ enum BackgroundAction {
   GET_LOCALES = 'get-locales',
   GENERATE_WALLET = 'generate-wallet',
   GET_BALANCE = 'get-balance',
+  SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',
+  SETTINGS_ADD_NETWORK = 'settings-add-network',
+  SETTINGS_EDIT_NETWORK = 'settings-edit-network',
+  SETTINGS_DELETE_NETWORK = 'settings-delete-network',
   ECHO = 'echo',
 }
 
