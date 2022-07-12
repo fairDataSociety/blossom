@@ -45,5 +45,7 @@
   "PUBLIC_RESOLVER_ADDRESS": "Public Resolver Address",
   "SAVE": "Save",
   "ADD": "Add",
-  "ADDRESS_NOT_VALID": "Address is not valid."
+  "ADDRESS_NOT_VALID": "Address is not valid.",
+  "LOGIN_OR_REGISTER": "Login or Register",
+  "LOGIN_REGISTER_DESCRIPTION": "Create a new account or login with existing one"
 }

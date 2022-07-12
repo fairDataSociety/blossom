@@ -1,4 +1,5 @@
 import BackgroundAction from '../../constants/background-actions.enum'
+import { networks } from '../../constants/networks'
 import { isNetwork, isNetworkEditData } from '../../messaging/message.asserts'
 import { NetworkEditData } from '../../model/internal-messages.model'
 import { Network } from '../../model/storage/network.model'
@@ -15,12 +16,24 @@ export function addNetwork(network: Network): Promise<void> {
   return storage.addNetworkToList(network)
 }
 
-export function editNetwork({ label, network }: NetworkEditData): Promise<void> {
-  return storage.updateNetworkInList(label, network)
+export async function editNetwork({ label, network }: NetworkEditData): Promise<void> {
+  await storage.updateNetworkInList(label, network)
+
+  const currentNetwork = await storage.getNetwork()
+
+  if (currentNetwork.label === network.label) {
+    storage.setNetwork(network)
+  }
 }
 
-export function deleteNetwork(network: Network): Promise<void> {
-  return storage.deleteNetworkFromList(network)
+export async function deleteNetwork(network: Network): Promise<void> {
+  await storage.deleteNetworkFromList(network)
+
+  const currentNetwork = await storage.getNetwork()
+
+  if (currentNetwork.label === network.label) {
+    storage.setNetwork(networks[0])
+  }
 }
 
 const messageHandler = createMessageHandler([

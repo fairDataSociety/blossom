@@ -28,6 +28,10 @@ export function generateWallet(): Promise<RegisterResponse> {
   return sendMessage<void, RegisterResponse>(BackgroundAction.GENERATE_WALLET)
 }
 
+export function openAuthPage(): Promise<void> {
+  return sendMessage<void, void>(BackgroundAction.OPEN_AUTH_PAGE)
+}
+
 export function getLocales(): Promise<LocaleData> {
   return sendMessage<void, LocaleData>(BackgroundAction.GET_LOCALES)
 }

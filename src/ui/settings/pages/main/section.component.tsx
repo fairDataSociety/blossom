@@ -11,7 +11,7 @@ export interface SectionProps {
 
 const Section = ({ children, description, image, onClick }: SectionProps) => {
   return (
-    <FlexColumnDiv sx={{ borderTop: '1px solid #ddd', padding: '5px 0' }}>
+    <FlexColumnDiv sx={{ borderTop: '1px solid #ddd', padding: '5px 0', marginBottom: '10px' }}>
       <Typography variant="subtitle2" align="center" sx={{ marginBottom: '10px' }}>
         {description}
       </Typography>
