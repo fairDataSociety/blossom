@@ -15,4 +15,8 @@ export abstract class AsyncConfigService<Config> {
   protected updateConfig(config: Config) {
     this.configPromise = Promise.resolve(config)
   }
+
+  protected updateConfigAsync(configPromise: Promise<Config>) {
+    this.configPromise = configPromise
+  }
 }

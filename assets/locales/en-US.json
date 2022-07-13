@@ -47,5 +47,8 @@
   "ADD": "Add",
   "ADDRESS_NOT_VALID": "Address is not valid.",
   "LOGIN_OR_REGISTER": "Login or Register",
-  "LOGIN_REGISTER_DESCRIPTION": "Create a new account or login with existing one"
+  "LOGIN_REGISTER_DESCRIPTION": "Create a new account or login with existing one",
+  "SWARM": "Swarm",
+  "SWARM_DESCRIPTION": "Configure your Swarm extension",
+  "SWARM_EXTENSION_ID": "Swarm Extension ID"
 }

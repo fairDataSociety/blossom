@@ -1,8 +1,9 @@
 import BackgroundAction from '../../constants/background-actions.enum'
 import { networks } from '../../constants/networks'
-import { isNetwork, isNetworkEditData } from '../../messaging/message.asserts'
+import { isNetwork, isNetworkEditData, isSwarm } from '../../messaging/message.asserts'
 import { NetworkEditData } from '../../model/internal-messages.model'
 import { Network } from '../../model/storage/network.model'
+import { Swarm } from '../../model/storage/swarm.model'
 import { Storage } from '../../services/storage/storage.service'
 import { createMessageHandler } from './message-handler'
 
@@ -36,6 +37,14 @@ export async function deleteNetwork(network: Network): Promise<void> {
   }
 }
 
+export function getSwarmSettings(): Promise<Swarm> {
+  return storage.getSwarm()
+}
+
+export function setSwarmSettings(swarm: Swarm): Promise<void> {
+  return storage.setSwarm(swarm)
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.SETTINGS_GET_NETWORK_LIST,
@@ -55,6 +64,15 @@ const messageHandler = createMessageHandler([
     action: BackgroundAction.SETTINGS_DELETE_NETWORK,
     assert: isNetwork,
     handler: deleteNetwork,
+  },
+  {
+    action: BackgroundAction.SETTINGS_GET_SWARM,
+    handler: getSwarmSettings,
+  },
+  {
+    action: BackgroundAction.SETTINGS_SET_SWARM,
+    assert: isSwarm,
+    handler: setSwarmSettings,
   },
 ])
 

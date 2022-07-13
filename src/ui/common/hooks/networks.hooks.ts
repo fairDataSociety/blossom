@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getNetworkList } from '../../messaging/content-api.messaging'
-import { Network } from '../../model/storage/network.model'
+import { getNetworkList } from '../../../messaging/content-api.messaging'
+import { Network } from '../../../model/storage/network.model'
 
 export function useNetworks(): Network[] {
   const [networks, setNetworks] = useState<Network[]>(null)

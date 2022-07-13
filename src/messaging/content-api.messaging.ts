@@ -9,6 +9,7 @@ import {
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
+import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
 
@@ -56,6 +57,14 @@ export function editNetwork(label: string, network: Network): Promise<void> {
 
 export function deleteNetwork(network: Network): Promise<void> {
   return sendMessage<Network, void>(BackgroundAction.SETTINGS_DELETE_NETWORK, network)
+}
+
+export function getSwarmSettings(): Promise<Swarm> {
+  return sendMessage<void, Swarm>(BackgroundAction.SETTINGS_GET_SWARM)
+}
+
+export function setSwarmSettings(swarm: Swarm): Promise<void> {
+  return sendMessage<Swarm, void>(BackgroundAction.SETTINGS_SET_SWARM, swarm)
 }
 
 export function echo<Data>(data: Data): Promise<Data> {

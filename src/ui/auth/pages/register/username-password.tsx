@@ -5,7 +5,7 @@ import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Form from '../../../common/components/form/form.component'
 import { RegisterData } from '../../../../model/internal-messages.model'
 import { isUsernameAvailable } from '../../../../messaging/content-api.messaging'
-import { useNetworks } from '../../../hooks/networks.hooks'
+import { useNetworks } from '../../../common/hooks/networks.hooks'
 
 export interface UsernamePasswordProps {
   onSubmit: (data: RegisterData) => void

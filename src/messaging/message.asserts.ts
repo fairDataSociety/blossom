@@ -9,6 +9,7 @@ import {
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
+import { Swarm } from '../model/storage/swarm.model'
 
 export function isLoginData(data: unknown): data is LoginData {
   const { username, password, network } = (data || {}) as LoginData
@@ -58,4 +59,10 @@ export function isNetworkEditData(data: unknown): data is NetworkEditData {
   const { label, network } = (data || {}) as NetworkEditData
 
   return Boolean(label && isNetwork(network))
+}
+
+export function isSwarm(data: unknown): data is Swarm {
+  const { extensionId } = (data || {}) as Swarm
+
+  return typeof extensionId === 'string'
 }

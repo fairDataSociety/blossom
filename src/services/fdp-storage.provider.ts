@@ -1,41 +1,42 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { networks } from '../constants/networks'
 import { Network } from '../model/storage/network.model'
+import { Swarm } from '../model/storage/swarm.model'
 import { SwarmExtension } from '../swarm-api/swarm-extension'
-import { areNetworksEqual } from '../utils/asserts'
+import { AsyncConfigService } from './async-config.service'
 import { Storage } from './storage/storage.service'
 
-export class FdpStorageProvider {
-  private fdpStorage: FdpStorage
-  private swarmExtension: SwarmExtension = new SwarmExtension(process.env.SWARM_EXTENSION_ID)
+export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
   private storage: Storage = new Storage()
-  private beeAddress: string
-  private beeDebugAddress: string
-  private currentNetwork: Network
+  private network: Network
+  private swarm: Swarm
 
-  public async getService(): Promise<FdpStorage> {
-    const [network, beeAddresses] = await Promise.all([
-      this.storage.getNetwork(),
-      this.swarmExtension.beeAddress(),
-    ])
-    let { beeApiUrl, beeDebugApiUrl } = beeAddresses || {}
-    beeApiUrl = beeApiUrl || 'http://localhost:1633'
-    beeDebugApiUrl = beeDebugApiUrl || 'http://localhost:1635'
+  constructor() {
+    super()
+    super.initialize(async () => {
+      const [network, swarm] = await Promise.all([this.storage.getNetwork(), this.storage.getSwarm()])
+      this.network = network
+      this.swarm = swarm
 
-    if (
-      beeApiUrl !== this.beeAddress ||
-      beeDebugApiUrl !== this.beeDebugAddress ||
-      !areNetworksEqual(this.currentNetwork, network)
-    ) {
-      this.createFdpStorage(network, beeApiUrl, beeDebugApiUrl)
-    }
+      this.storage.onNetworkChange((network: Network) =>
+        super.updateConfigAsync(this.createFdpStorage((this.network = network), this.swarm)),
+      )
 
-    return this.fdpStorage
+      this.storage.onSwarmChange((swarm: Swarm) =>
+        super.updateConfigAsync(this.createFdpStorage(this.network, (this.swarm = swarm))),
+      )
+
+      return this.createFdpStorage(network, swarm)
+    })
   }
 
-  private createFdpStorage(network: Network, beeApiUrl: string, beeDebugApiUrl: string) {
-    const { ensRegistry, subdomainRegistrar, publicResolver, rpc, label } = network
+  public getService(): Promise<FdpStorage> {
+    return super.getConfig()
+  }
 
+  private async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
+    const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
+    const { ensRegistry, subdomainRegistrar, publicResolver, rpc, label } = network
     let options: any
 
     // TODO A workaround until the fdp-storage is updated to re-export ENS environments
@@ -54,11 +55,27 @@ export class FdpStorageProvider {
       }
     }
 
-    this.currentNetwork = network
-    this.fdpStorage = new FdpStorage(
-      (this.beeAddress = beeApiUrl),
-      (this.beeDebugAddress = beeDebugApiUrl),
-      options as unknown,
-    )
+    return new FdpStorage(beeApiUrl, beeDebugApiUrl, options as unknown)
+  }
+
+  private async getBeeAddresses(swarm: Swarm): Promise<{
+    beeApiUrl: string
+    beeDebugApiUrl: string
+  }> {
+    let beeApiUrl = 'http://localhost:1633',
+      beeDebugApiUrl = 'http://localhost:1635'
+
+    try {
+      const swarmExtension = new SwarmExtension(swarm.extensionId)
+      const beeAddresses = await swarmExtension.beeAddress()
+
+      beeApiUrl = beeAddresses.beeApiUrl
+      beeDebugApiUrl = beeAddresses.beeDebugApiUrl
+    } catch (error) {
+      // TODO What if cannot connect to the swarm extension?
+      console.error("Blossom: Couldn't connect to the Swarm extension.")
+    }
+
+    return { beeApiUrl, beeDebugApiUrl }
   }
 }

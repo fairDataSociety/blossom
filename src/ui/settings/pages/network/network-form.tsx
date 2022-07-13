@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import intl from 'react-intl-universal'
-import { styled } from '@mui/system'
 import { useForm } from 'react-hook-form'
 import { Checkbox, FormControlLabel, TextField } from '@mui/material'
 import SaveButton from '../../components/save-button/save-button.component'
@@ -9,12 +8,7 @@ import { EthAddressRegex } from '../../../../utils/asserts'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
 import DeleteButton from '../../components/delete-button/delete-button.component'
 import { FlexDiv } from '../../../common/components/utils/utils'
-
-const Form = styled('form')({
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '20px',
-})
+import Form from '../../components/form/form.component'
 
 const FIELD_MARGIN = '20px'
 

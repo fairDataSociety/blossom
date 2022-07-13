@@ -1,6 +1,7 @@
 import { Network } from '../../model/storage/network.model'
+import { Swarm } from '../../model/storage/swarm.model'
 import { removeAllValues } from '../../utils/array'
-import { networkFactory, networkListFactory } from './storage-factories'
+import { networkFactory, networkListFactory, swarmFactory } from './storage-factories'
 import migrate from './storage-migration'
 
 /**
@@ -90,6 +91,7 @@ export class Storage {
 
   static readonly networkKey = 'network'
   static readonly networkListKey = 'network-list'
+  static readonly swarmKey = 'swarm'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -136,8 +138,20 @@ export class Storage {
     return setObject<Network>(Storage.networkKey, network)
   }
 
+  public getSwarm(): Promise<Swarm> {
+    return getObject<Swarm>(Storage.swarmKey, swarmFactory)
+  }
+
+  public setSwarm(swarm: Swarm): Promise<void> {
+    return setObject<Swarm>(Storage.swarmKey, swarm)
+  }
+
   public onNetworkChange(listener: (network: Network) => void) {
     this.setListener(Storage.networkKey, listener)
+  }
+
+  public onSwarmChange(listener: (swarm: Swarm) => void) {
+    this.setListener(Storage.swarmKey, listener)
   }
 
   public removeListener(listener: (entry: unknown) => void) {

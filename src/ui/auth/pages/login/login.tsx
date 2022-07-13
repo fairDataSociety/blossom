@@ -8,7 +8,7 @@ import ErrorMessage from '../../../common/components/error-message/error-message
 import FieldSpinner from '../../../common/components/field-spinner/field-spinner.component'
 import { login } from '../../../../messaging/content-api.messaging'
 import Wrapper from '../components/wrapper'
-import { useNetworks } from '../../../hooks/networks.hooks'
+import { useNetworks } from '../../../common/hooks/networks.hooks'
 
 interface FormFields {
   username: string
@@ -87,7 +87,7 @@ const Login = () => {
             defaultValue={networks[0].label}
             variant="outlined"
             fullWidth
-            {...register('networkId', { required: true })}
+            {...register('networkLabel', { required: true })}
           >
             {networks.map(({ label }) => (
               <MenuItem key={label} value={label}>

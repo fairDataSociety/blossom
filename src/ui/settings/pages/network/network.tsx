@@ -5,7 +5,7 @@ import { FlexColumnDiv } from '../../../common/components/utils/utils'
 import Header from '../../components/header/header.component'
 import NetworkList from './network-list'
 import { useNavigate } from 'react-router-dom'
-import { useNetworks } from '../../../hooks/networks.hooks'
+import { useNetworks } from '../../../common/hooks/networks.hooks'
 
 const NetworkComponent = () => {
   const navigate = useNavigate()
