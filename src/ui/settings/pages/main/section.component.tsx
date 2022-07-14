@@ -7,15 +7,22 @@ export interface SectionProps {
   description: string
   image: JSX.Element
   onClick: () => void
+  dataTestId?: string
 }
 
-const Section = ({ children, description, image, onClick }: SectionProps) => {
+const Section = ({ children, description, image, onClick, dataTestId }: SectionProps) => {
   return (
     <FlexColumnDiv sx={{ borderTop: '1px solid #ddd', padding: '5px 0', marginBottom: '10px' }}>
       <Typography variant="subtitle2" align="center" sx={{ marginBottom: '10px' }}>
         {description}
       </Typography>
-      <Button variant="contained" endIcon={image} onClick={onClick}>
+      <Button
+        variant="contained"
+        endIcon={image}
+        onClick={onClick}
+        data-testid={`${dataTestId}-button`}
+        size="small"
+      >
         {children}
       </Button>
     </FlexColumnDiv>

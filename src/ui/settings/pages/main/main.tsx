@@ -22,6 +22,7 @@ const Main = () => {
           description={intl.get('LOGIN_REGISTER_DESCRIPTION')}
           image={<VpnKey />}
           onClick={openAuthPage}
+          dataTestId="settings-registration-login"
         >
           {intl.get('LOGIN_OR_REGISTER')}
         </Section>
@@ -29,6 +30,7 @@ const Main = () => {
           description={intl.get('NETWORK_SETTINGS_DESCRIPTION')}
           image={<Router />}
           onClick={() => navigate(RouteCodes.network)}
+          dataTestId="settings-network"
         >
           {intl.get('NETWORK')}
         </Section>
@@ -36,6 +38,7 @@ const Main = () => {
           description={intl.get('SWARM_DESCRIPTION')}
           image={<Hive />}
           onClick={() => navigate(RouteCodes.swarm)}
+          dataTestId="settings-swarm"
         >
           {intl.get('SWARM')}
         </Section>

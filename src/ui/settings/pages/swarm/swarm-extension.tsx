@@ -47,11 +47,11 @@ const SwarmExtension = ({ extensionId, onUpdate }: SwarmExtensionProps) => {
         {...register('extensionId', { required: true })}
         error={Boolean(errors.extensionId)}
         helperText={errors.extensionId && intl.get('FIELD_REQUIRED')}
-        data-testid="label"
+        data-testid="swarm-extension-id-input"
         sx={{ marginBottom: '20px' }}
       />
       {error && <ErrorMessage>{intl.get('GENERAL_ERROR_MESSAGE')}</ErrorMessage>}
-      <SaveButton disabled={loading} />
+      <SaveButton disabled={loading} data-testid="swarm-extension-id-submit" />
     </Form>
   )
 }

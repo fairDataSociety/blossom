@@ -1,7 +1,8 @@
 import { ElementHandle, Page } from 'puppeteer'
 import { sendFunds } from './utils/ethers'
-import { openExtensionOptionsPage } from './utils/extension.util'
+import { openExtensionOptionsPage, setSwarmExtensionId } from './utils/extension.util'
 import {
+  click,
   dataTestId,
   getElementByTestId,
   getElementChildren,
@@ -72,6 +73,7 @@ describe('Successful registration tests', () => {
   const privateKey = '0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d'
 
   beforeAll(async () => {
+    await setSwarmExtensionId()
     page = await openExtensionOptionsPage(blossomId, 'auth.html')
   })
 
@@ -80,18 +82,18 @@ describe('Successful registration tests', () => {
   })
 
   test('The Username/Password form should accept new account', async () => {
-    await (await getElementByTestId(page, 'register')).click()
+    await click(page, 'register')
 
     await fillUsernamePasswordForm(page, username, password)
 
-    await (await getElementByTestId(page, 'register-new')).click()
+    await click(page, 'register-new')
 
     expect(await page.waitForSelector(dataTestId('mnemonic'))).toBeTruthy()
   })
 
   test('Should prevent next steps if mnemonic is not correct and continue if the order is correct', async () => {
     mnemonic = await getMnemonic(page)
-    await (await getElementByTestId(page, 'submit')).click()
+    await click(page, 'submit')
 
     const rightOrderWordElements = await getMnemonicConfirmationElements(page, mnemonic)
 
@@ -115,7 +117,7 @@ describe('Successful registration tests', () => {
     await rightOrderWordElements[11].click()
 
     expect(await isElementDisabled(page, 'submit')).toBeFalsy()
-    await (await getElementByTestId(page, 'submit')).click()
+    await click(page, 'submit')
   })
 
   test('Should proceed after successful payment', async () => {
@@ -139,7 +141,7 @@ describe('Unsuccessful registration tests', () => {
   })
 
   test("Shouldn't proceed with existing username", async () => {
-    await (await getElementByTestId(page, 'register')).click()
+    await click(page, 'register')
 
     await fillUsernamePasswordForm(page, username, password)
 
@@ -162,18 +164,18 @@ describe('Registration with an existing account', () => {
   })
 
   test('Should successfully register with previously created account', async () => {
-    await (await getElementByTestId(page, 'register')).click()
+    await click(page, 'register')
 
     await fillUsernamePasswordForm(page, username, password)
 
-    await (await getElementByTestId(page, 'existing-account')).click()
+    await click(page, 'existing-account')
 
     const mnemonicInput = await getElementByTestId(page, 'mnemonic-input')
 
     await mnemonicInput.click()
     await mnemonicInput.type(mnemonic.join(' '))
 
-    await (await getElementByTestId(page, 'submit')).click()
+    await click(page, 'submit')
 
     expect(await waitForElementTextByTestId(page, 'complete')).toBeTruthy()
   })
@@ -191,7 +193,7 @@ describe('Login tests', () => {
   })
 
   test("Shouldn't login with wrong password", async () => {
-    await (await getElementByTestId(page, 'login')).click()
+    await click(page, 'login')
 
     await fillUsernamePasswordForm(page, username, 'wrongPassword')
 

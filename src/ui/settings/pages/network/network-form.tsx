@@ -105,6 +105,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
             value={contractsEnabled}
             onChange={() => setContractsEnabled(!contractsEnabled)}
             disabled={disabled}
+            data-testid="show-contract-addresses-checkbox"
           />
         }
         label={intl.get('CONTRACT_ADDRESSES')}
@@ -118,7 +119,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
             {...register('ensRegistry', { required: true, pattern: EthAddressRegex })}
             error={Boolean(errors.ensRegistry)}
             helperText={errors.ensRegistry && intl.get('ADDRESS_NOT_VALID')}
-            data-testid="ensRegistry"
+            data-testid="ens-registry-input"
             disabled={disabled}
             sx={{ marginBottom: FIELD_MARGIN }}
           />
@@ -129,7 +130,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
             {...register('subdomainRegistrar', { required: true, pattern: EthAddressRegex })}
             error={Boolean(errors.subdomainRegistrar)}
             helperText={errors.subdomainRegistrar && intl.get('ADDRESS_NOT_VALID')}
-            data-testid="subdomainRegistrar"
+            data-testid="subdomain-registrar-input"
             disabled={disabled}
             sx={{ marginBottom: FIELD_MARGIN }}
           />
@@ -140,7 +141,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
             {...register('publicResolver', { required: true, pattern: EthAddressRegex })}
             error={Boolean(errors.publicResolver)}
             helperText={errors.publicResolver && intl.get('ADDRESS_NOT_VALID')}
-            data-testid="publicResolver"
+            data-testid="public-resolver-input"
             disabled={disabled}
             sx={{ marginBottom: FIELD_MARGIN }}
           />
@@ -148,8 +149,15 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
       )}
       {error && <ErrorMessage>{intl.get('GENERAL_ERROR_MESSAGE')}</ErrorMessage>}
       <FlexDiv sx={{ marginTop: '20px' }}>
-        <SaveButton disabled={loading || disabled} sx={{ flexGrow: 7 }} />
-        {canDelete && <DeleteButton sx={{ flexGrow: 1 }} onClick={onDeleteInternal} disabled={disabled} />}
+        <SaveButton disabled={loading || disabled} sx={{ flexGrow: 7 }} data-testid="save-network-button" />
+        {canDelete && (
+          <DeleteButton
+            sx={{ flexGrow: 1 }}
+            onClick={onDeleteInternal}
+            disabled={disabled}
+            data-testid="delete-network-button"
+          />
+        )}
       </FlexDiv>
     </Form>
   )

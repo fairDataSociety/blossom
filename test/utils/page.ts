@@ -34,3 +34,19 @@ export function getElementChildren(element: ElementHandle<Element>): Promise<Ele
 export async function isElementDisabled(page: Page, id: string): Promise<boolean> {
   return (await page.$(`${dataTestId(id)}[disabled]`)) !== null
 }
+
+export async function typeToInput(page: Page, inputTestId: string, text: string): Promise<void> {
+  const inputElement = await getElementByTestId(page, inputTestId)
+  await inputElement.click({ clickCount: 3 })
+  await inputElement.type(text)
+}
+
+export async function getTextFromInput(page: Page, id: string): Promise<string> {
+  const input = await getElementByTestId(page, id)
+
+  return page.evaluate((e) => e.value, await input.$('input'))
+}
+
+export async function click(page: Page, id: string): Promise<void> {
+  return (await getElementByTestId(page, id)).click()
+}

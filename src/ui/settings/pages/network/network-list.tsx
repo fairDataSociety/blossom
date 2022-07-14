@@ -15,7 +15,7 @@ const NetworkList = ({ networks, onSelect }: NetworkListProps) => {
 
   return (
     <>
-      <MenuList>
+      <MenuList data-testid="network-list">
         {networks.map((network, index) => (
           <div key={network.label}>
             <MenuItem onClick={() => onSelect(network)}>
@@ -30,6 +30,7 @@ const NetworkList = ({ networks, onSelect }: NetworkListProps) => {
         fullWidth
         sx={{ marginTop: '20px' }}
         onClick={() => navigate(RouteCodes.networkAdd)}
+        data-testid="add-network-button"
       >
         {intl.get('ADD')}
       </Button>
