@@ -27,7 +27,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
   const [networkError, setNetworkError] = useState<boolean>(false)
   const [passwordError, setPasswordError] = useState<string>(null)
-  const networks = useNetworks()
+  const { networks, selectedNetwork } = useNetworks()
 
   const validatePassword = (password: string): string => {
     if (!password || password.length < 8) {
@@ -73,16 +73,16 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   }
 
   const getUsernameError = () => {
+    if (networkError) {
+      return intl.get('CANNOT_CHECK_USERNAME')
+    }
+
     if (errors.username) {
       return intl.get('USERNAME_REQUIRED_ERROR')
     }
 
     if (usernameTaken) {
       return intl.get('USERNAME_NOT_AVAILABLE')
-    }
-
-    if (networkError) {
-      return intl.get('CANNOT_CHECK_USERNAME')
     }
   }
 
@@ -116,7 +116,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       />
       <div>
         <Select
-          defaultValue={networks[0].label}
+          defaultValue={selectedNetwork.label}
           variant="outlined"
           fullWidth
           disabled={loading}

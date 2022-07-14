@@ -24,7 +24,7 @@ const Login = () => {
   } = useForm()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const networks = useNetworks()
+  const { networks, selectedNetwork } = useNetworks()
 
   const onSubmit = async ({ username, password, networkLabel }: FormFields) => {
     setError(null)
@@ -84,7 +84,7 @@ const Login = () => {
         />
         <div>
           <Select
-            defaultValue={networks[0].label}
+            defaultValue={selectedNetwork.label}
             variant="outlined"
             fullWidth
             {...register('networkLabel', { required: true })}

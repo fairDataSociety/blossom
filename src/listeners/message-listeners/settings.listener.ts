@@ -9,6 +9,10 @@ import { createMessageHandler } from './message-handler'
 
 const storage = new Storage()
 
+export function getSelectedNetwork(): Promise<Network> {
+  return storage.getNetwork()
+}
+
 export function getNetworkList(): Promise<Network[]> {
   return storage.getNetworkList()
 }
@@ -46,6 +50,10 @@ export function setSwarmSettings(swarm: Swarm): Promise<void> {
 }
 
 const messageHandler = createMessageHandler([
+  {
+    action: BackgroundAction.SETTINGS_GET_SELECTED_NETWORK,
+    handler: getSelectedNetwork,
+  },
   {
     action: BackgroundAction.SETTINGS_GET_NETWORK_LIST,
     handler: getNetworkList,

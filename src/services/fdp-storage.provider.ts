@@ -31,7 +31,11 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
   }
 
   public getService(): Promise<FdpStorage> {
-    return super.getConfig()
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(super.getConfig())
+      })
+    })
   }
 
   private async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {

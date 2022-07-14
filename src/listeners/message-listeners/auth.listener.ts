@@ -62,7 +62,9 @@ export async function register(data: RegisterData): Promise<void> {
   }
 }
 
-export async function isUsernameAvailable({ username }: UsernameCheckData): Promise<boolean> {
+export async function isUsernameAvailable({ username, network }: UsernameCheckData): Promise<boolean> {
+  await storage.setNetwork(network)
+
   const fdp = await fdpStorageProvider.getService()
 
   return fdp.ens.isUsernameAvailable(username)

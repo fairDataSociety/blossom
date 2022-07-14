@@ -9,7 +9,7 @@ import { useNetworks } from '../../../common/hooks/networks.hooks'
 
 const NetworkComponent = () => {
   const navigate = useNavigate()
-  const networks = useNetworks()
+  const { networks } = useNetworks()
 
   if (!networks) {
     return null

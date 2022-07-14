@@ -43,6 +43,10 @@ export async function getAccountBalance(account: Account): Promise<BigNumber> {
   return BigNumber.from(hex)
 }
 
+export function getSelectedNetwork(): Promise<Network> {
+  return sendMessage<void, Network>(BackgroundAction.SETTINGS_GET_SELECTED_NETWORK)
+}
+
 export function getNetworkList(): Promise<Network[]> {
   return sendMessage<void, Network[]>(BackgroundAction.SETTINGS_GET_NETWORK_LIST)
 }
