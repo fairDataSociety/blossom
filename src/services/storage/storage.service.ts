@@ -41,7 +41,7 @@ export function deleteEntry(key: string): Promise<void> {
  * @param object object to store
  * @returns promise
  */
-export async function setObject<T extends object>(key: string, object: T): Promise<void> {
+export async function updateObject<T extends object>(key: string, object: T): Promise<void> {
   const existingObject = await getObject<T>(key, () => ({} as T))
 
   return setEntry<T>(key, { ...existingObject, ...object })
@@ -107,6 +107,8 @@ export class Storage {
     if (!networks.find(({ label }) => network.label === label)) {
       networks.push(network)
       await setArray<Network>(Storage.networkListKey, networks)
+    } else {
+      throw new Error('Storage: cannot add network, it already exists')
     }
   }
 
@@ -117,6 +119,8 @@ export class Storage {
     if (index >= 0) {
       networks[index] = network
       await setEntry<Network[]>(Storage.networkListKey, networks)
+    } else {
+      throw new Error("Storage: cannot update network, it doesn't exist")
     }
   }
 
@@ -135,7 +139,7 @@ export class Storage {
   }
 
   public setNetwork(network: Network): Promise<void> {
-    return setObject<Network>(Storage.networkKey, network)
+    return updateObject<Network>(Storage.networkKey, network)
   }
 
   public getSwarm(): Promise<Swarm> {
@@ -143,7 +147,7 @@ export class Storage {
   }
 
   public setSwarm(swarm: Swarm): Promise<void> {
-    return setObject<Swarm>(Storage.swarmKey, swarm)
+    return updateObject<Swarm>(Storage.swarmKey, swarm)
   }
 
   public onNetworkChange(listener: (network: Network) => void) {

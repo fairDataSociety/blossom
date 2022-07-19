@@ -3,7 +3,7 @@ import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 
 export function networkFactory(): Network {
-  return Object.assign({}, networks[0])
+  return { ...networks[0] }
 }
 
 export function networkListFactory(): Network[] {

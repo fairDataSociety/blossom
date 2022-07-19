@@ -50,5 +50,6 @@
   "LOGIN_REGISTER_DESCRIPTION": "Create a new account or login with existing one",
   "SWARM": "Swarm",
   "SWARM_DESCRIPTION": "Configure your Swarm extension",
-  "SWARM_EXTENSION_ID": "Swarm Extension ID"
+  "SWARM_EXTENSION_ID": "Swarm Extension ID",
+  "SWARM_EXTENSION_ERROR": "Couldn't connect to the Swarm extension. Check if you set the correct extension ID."
 }

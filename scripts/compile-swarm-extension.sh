@@ -3,7 +3,7 @@ SCRIPTS_DIR=$( dirname "$0" )
 
 cd "$SCRIPTS_DIR/.."
 
-rm -r swarm-extension
+rm -rf swarm-extension
 
 git clone https://github.com/ethersphere/swarm-extension.git
 
