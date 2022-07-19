@@ -76,8 +76,8 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
       beeApiUrl = beeAddresses.beeApiUrl
       beeDebugApiUrl = beeAddresses.beeDebugApiUrl
     } catch (error) {
-      // TODO What if cannot connect to the swarm extension?
       console.error("Blossom: Couldn't connect to the Swarm extension.")
+      throw error
     }
 
     return { beeApiUrl, beeDebugApiUrl }

@@ -6,6 +6,7 @@ import Form from '../../../common/components/form/form.component'
 import { RegisterData } from '../../../../model/internal-messages.model'
 import { isUsernameAvailable } from '../../../../messaging/content-api.messaging'
 import { useNetworks } from '../../../common/hooks/networks.hooks'
+import { isSwarmExtensionError } from '../../../../utils/extension'
 
 export interface UsernamePasswordProps {
   onSubmit: (data: RegisterData) => void
@@ -25,7 +26,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   } = useForm<FormFields>()
   const [loading, setLoading] = useState<boolean>(false)
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
-  const [networkError, setNetworkError] = useState<boolean>(false)
+  const [networkError, setNetworkError] = useState<string>(null)
   const [passwordError, setPasswordError] = useState<string>(null)
   const { networks, selectedNetwork } = useNetworks()
 
@@ -48,7 +49,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       }
 
       setLoading(true)
-      setNetworkError(false)
+      setNetworkError(null)
 
       const network = networks.find((network) => network.label === networkLabel)
 
@@ -65,8 +66,12 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         network: networks.find((network) => network.label === networkLabel),
       })
     } catch (error) {
-      setNetworkError(true)
       console.error(error)
+
+      if (isSwarmExtensionError(error.toString())) {
+        return setNetworkError(intl.get('SWARM_EXTENSION_ERROR'))
+      }
+      setNetworkError(intl.get('CANNOT_CHECK_USERNAME'))
     } finally {
       setLoading(false)
     }
@@ -74,7 +79,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
 
   const getUsernameError = () => {
     if (networkError) {
-      return intl.get('CANNOT_CHECK_USERNAME')
+      return networkError
     }
 
     if (errors.username) {

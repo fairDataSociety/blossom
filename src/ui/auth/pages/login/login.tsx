@@ -9,6 +9,7 @@ import FieldSpinner from '../../../common/components/field-spinner/field-spinner
 import { login } from '../../../../messaging/content-api.messaging'
 import Wrapper from '../components/wrapper'
 import { useNetworks } from '../../../common/hooks/networks.hooks'
+import { isSwarmExtensionError } from '../../../../utils/extension'
 
 interface FormFields {
   username: string
@@ -46,6 +47,10 @@ const Login = () => {
 
         if (error.includes('does not exists')) {
           return setError(intl.get('INVALID_USERNAME'))
+        }
+
+        if (isSwarmExtensionError(error)) {
+          return setError(intl.get('SWARM_EXTENSION_ERROR'))
         }
       }
 
