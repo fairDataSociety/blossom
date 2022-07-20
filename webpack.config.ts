@@ -3,7 +3,6 @@ import fs from 'fs'
 import CopyPlugin from 'copy-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
 import Dotenv from 'dotenv-webpack'
-import { NormalModuleReplacementPlugin } from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import dotenv from 'dotenv'
 
@@ -74,9 +73,6 @@ module.exports = {
   plugins: [
     ...htmlPlugins,
     new Dotenv(),
-    // Added because Bee.js uses Blob polyfill which cannot be executed in service worker script
-    // https://github.com/ethersphere/bee-js/issues/586
-    new NormalModuleReplacementPlugin(/blob-polyfill/, path.join(srcDir, 'polyfills', 'Blob.js')),
     new ESLintPlugin({
       extensions: ['js', 'jsx', 'ts', 'tsx'],
     }),
