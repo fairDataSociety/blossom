@@ -1,4 +1,4 @@
-import { Network } from '../constants/networks'
+import { Network } from './storage/network.model'
 import { Account, Mnemonic, PrivateKey } from './general.types'
 
 export interface LoginData {
@@ -32,4 +32,9 @@ export interface RegisterResponse {
   account: Account
   mnemonic: Mnemonic
   privateKey: PrivateKey
+}
+
+export interface NetworkEditData {
+  label: string
+  network: Network
 }

@@ -1,4 +1,3 @@
-import { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
 import {
@@ -14,22 +13,31 @@ import {
   RegisterResponse,
   UsernameCheckData,
 } from '../../model/internal-messages.model'
+import { FdpStorageProvider } from '../../services/fdp-storage.provider'
+import { Storage } from '../../services/storage/storage.service'
+import { openTab } from '../../utils/tabs'
 import { createMessageHandler } from './message-handler'
 
-// TODO should be configurable
-const fdp = new FdpStorage('http://localhost:1633', 'http://localhost:1635')
+const fdpStorageProvider = new FdpStorageProvider()
+const storage = new Storage()
 
-export async function login({ username, password }: LoginData): Promise<void> {
+export async function login({ username, password, network }: LoginData): Promise<void> {
+  await storage.setNetwork(network)
+
+  const fdp = await fdpStorageProvider.getService()
+
   await fdp.account.login(username, password)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
 
 export async function register(data: RegisterData): Promise<void> {
-  const { username, password } = data
+  const { username, password, network } = data
 
   try {
     let wallet: Wallet
+
+    await storage.setNetwork(network)
 
     if (isRegisterDataPrivateKey(data)) {
       wallet = new Wallet(data.privateKey)
@@ -38,6 +46,8 @@ export async function register(data: RegisterData): Promise<void> {
     } else {
       throw new Error('Private key or mnemonic must be set in order to register account')
     }
+
+    const fdp = await fdpStorageProvider.getService()
 
     fdp.account.setActiveAccount(wallet)
 
@@ -52,7 +62,11 @@ export async function register(data: RegisterData): Promise<void> {
   }
 }
 
-export function isUsernameAvailable({ username }: UsernameCheckData): Promise<boolean> {
+export async function isUsernameAvailable({ username, network }: UsernameCheckData): Promise<boolean> {
+  await storage.setNetwork(network)
+
+  const fdp = await fdpStorageProvider.getService()
+
   return fdp.ens.isUsernameAvailable(username)
 }
 
@@ -70,6 +84,12 @@ export async function generateWallet(): Promise<RegisterResponse> {
     console.error(`auth.listeer: Couldn't generate mnemonic`, error)
     throw error
   }
+}
+
+export function openAuthPage(): Promise<void> {
+  openTab('auth.html')
+
+  return Promise.resolve()
 }
 
 const messageHandler = createMessageHandler([
@@ -92,6 +112,10 @@ const messageHandler = createMessageHandler([
     action: BackgroundAction.GENERATE_WALLET,
     assert: null,
     handler: generateWallet,
+  },
+  {
+    action: BackgroundAction.OPEN_AUTH_PAGE,
+    handler: openAuthPage,
   },
 ])
 

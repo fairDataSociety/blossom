@@ -47,7 +47,7 @@ export class SwarmExtension {
     })
   }
 
-  public beeAddress(): Promise<string> {
+  public beeAddress(): Promise<{ beeApiUrl: string; beeDebugApiUrl: string }> {
     return sendSwarmExtensionMessage(this.extensionId, 'web2Helper.beeAddress', this.sessionId)
   }
 }

@@ -3,9 +3,10 @@ import intl from 'react-intl-universal'
 import { useForm } from 'react-hook-form'
 import { Button, MenuItem, Select, TextField } from '@mui/material'
 import Form from '../../../common/components/form/form.component'
-import { networks } from '../../../../constants/networks'
 import { RegisterData } from '../../../../model/internal-messages.model'
 import { isUsernameAvailable } from '../../../../messaging/content-api.messaging'
+import { useNetworks } from '../../../common/hooks/networks.hooks'
+import { isSwarmExtensionError } from '../../../../utils/extension'
 
 export interface UsernamePasswordProps {
   onSubmit: (data: RegisterData) => void
@@ -14,7 +15,7 @@ export interface UsernamePasswordProps {
 interface FormFields {
   username: string
   password: string
-  networkId: string
+  networkLabel: string
 }
 
 const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
@@ -25,8 +26,9 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
   } = useForm<FormFields>()
   const [loading, setLoading] = useState<boolean>(false)
   const [usernameTaken, setUsernameTaken] = useState<boolean>(false)
-  const [networkError, setNetworkError] = useState<boolean>(false)
+  const [networkError, setNetworkError] = useState<string>(null)
   const [passwordError, setPasswordError] = useState<string>(null)
+  const { networks, selectedNetwork } = useNetworks()
 
   const validatePassword = (password: string): string => {
     if (!password || password.length < 8) {
@@ -38,7 +40,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     // TODO check if password contains lowercase and uppercase letters
   }
 
-  const onSubmitInternal = async ({ username, password, networkId }: FormFields) => {
+  const onSubmitInternal = async ({ username, password, networkLabel }: FormFields) => {
     try {
       const passError = validatePassword(password)
 
@@ -47,9 +49,9 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       }
 
       setLoading(true)
-      setNetworkError(false)
+      setNetworkError(null)
 
-      const network = networks.find((network) => network.id === Number(networkId))
+      const network = networks.find((network) => network.label === networkLabel)
 
       const usernameAvailable = await isUsernameAvailable({ username, network })
 
@@ -61,17 +63,25 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
         username,
         password,
         privateKey: '',
-        network: networks.find((network) => network.id === Number(networkId)),
+        network: networks.find((network) => network.label === networkLabel),
       })
     } catch (error) {
-      setNetworkError(true)
       console.error(error)
+
+      if (isSwarmExtensionError(error.toString())) {
+        return setNetworkError(intl.get('SWARM_EXTENSION_ERROR'))
+      }
+      setNetworkError(intl.get('CANNOT_CHECK_USERNAME'))
     } finally {
       setLoading(false)
     }
   }
 
   const getUsernameError = () => {
+    if (networkError) {
+      return networkError
+    }
+
     if (errors.username) {
       return intl.get('USERNAME_REQUIRED_ERROR')
     }
@@ -79,10 +89,10 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
     if (usernameTaken) {
       return intl.get('USERNAME_NOT_AVAILABLE')
     }
+  }
 
-    if (networkError) {
-      return intl.get('CANNOT_CHECK_USERNAME')
-    }
+  if (!networks) {
+    return null
   }
 
   return (
@@ -111,15 +121,15 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       />
       <div>
         <Select
-          defaultValue={networks[0].id}
+          defaultValue={selectedNetwork.label}
           variant="outlined"
           fullWidth
           disabled={loading}
           data-testid="network"
-          {...register('networkId', { required: true })}
+          {...register('networkLabel', { required: true })}
         >
-          {networks.map(({ id, label }) => (
-            <MenuItem key={id} value={id}>
+          {networks.map(({ label }) => (
+            <MenuItem key={label} value={label}>
               {label}
             </MenuItem>
           ))}

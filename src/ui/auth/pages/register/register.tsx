@@ -21,6 +21,7 @@ import { FlexColumnDiv } from '../../../common/components/utils/utils'
 import Wrapper from '../components/wrapper'
 import RegisterMethods from './register-methods'
 import EnterMnemonic from './enter-mnemonic'
+import { isSwarmExtensionError } from '../../../../utils/extension'
 
 enum Steps {
   UsernamePassword,
@@ -57,6 +58,7 @@ const emptyState: RegistrationState = {
 const Register = () => {
   const [step, setStep] = useState<Steps>(Steps.UsernamePassword)
   const [data, setData] = useState<RegistrationState>(emptyState)
+  const [error, setError] = useState<string>(null)
 
   const onUsernamePasswordSubmit = (registerData: RegisterData) => {
     setData({
@@ -117,6 +119,8 @@ const Register = () => {
     try {
       const { username, password, privateKey, mnemonic, network } = data
 
+      setError(null)
+
       await register({
         username,
         password,
@@ -127,6 +131,11 @@ const Register = () => {
       setStep(Steps.Complete)
     } catch (error) {
       console.error(error)
+
+      if (isSwarmExtensionError(error.toString())) {
+        setError(intl.get('SWARM_EXTENSION_ERROR'))
+      }
+
       setStep(Steps.Error)
     }
   }
@@ -210,7 +219,7 @@ const Register = () => {
       )}
       {step === Steps.Error && (
         <LoaderWrapperDiv sx={{ flexDirection: 'column' }}>
-          <ErrorMessage>{intl.get('REGISTRATION_ERROR')}</ErrorMessage>
+          <ErrorMessage>{error || intl.get('REGISTRATION_ERROR')}</ErrorMessage>
           <Button onClick={reset} sx={{ marginTop: '20px' }}>
             {intl.get('TRY_AGAIN')}
           </Button>

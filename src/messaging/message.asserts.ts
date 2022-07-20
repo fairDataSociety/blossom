@@ -1,17 +1,20 @@
 import { Account } from '../model/general.types'
 import {
   LoginData,
+  NetworkEditData,
   RegisterData,
   RegisterDataBase,
   RegisterDataMnemonic,
   RegisterDataPrivateKey,
   UsernameCheckData,
 } from '../model/internal-messages.model'
+import { Network } from '../model/storage/network.model'
+import { Swarm } from '../model/storage/swarm.model'
 
 export function isLoginData(data: unknown): data is LoginData {
-  const loginData = (data || {}) as LoginData
+  const { username, password, network } = (data || {}) as LoginData
 
-  return Boolean(loginData.username && loginData.password && loginData.network)
+  return Boolean(username && password && isNetwork(network))
 }
 
 export function isRegisterData(data: unknown): data is RegisterData {
@@ -31,9 +34,9 @@ export function isRegisterDataPrivateKey(data: unknown): data is RegisterDataPri
 }
 
 export function isRegisterDataBase(data: unknown): data is RegisterDataBase {
-  const registerData = (data || {}) as RegisterDataBase
+  const { username, password, network } = (data || {}) as RegisterDataBase
 
-  return Boolean(registerData.username && registerData.password && registerData.network)
+  return Boolean(username && password && isNetwork(network))
 }
 
 export function isAccount(data: unknown): data is Account {
@@ -44,4 +47,22 @@ export function isUsernameCheckData(data: unknown): data is UsernameCheckData {
   const usernameCheckData = (data || {}) as UsernameCheckData
 
   return Boolean(usernameCheckData.username && usernameCheckData.network)
+}
+
+export function isNetwork(data: unknown): data is Network {
+  const network = (data || {}) as Network
+
+  return Boolean(network.label && network.rpc)
+}
+
+export function isNetworkEditData(data: unknown): data is NetworkEditData {
+  const { label, network } = (data || {}) as NetworkEditData
+
+  return Boolean(label && isNetwork(network))
+}
+
+export function isSwarm(data: unknown): data is Swarm {
+  const { extensionId } = (data || {}) as Swarm
+
+  return typeof extensionId === 'string'
 }
