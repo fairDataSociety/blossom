@@ -53,7 +53,12 @@ export async function updateObject<T extends object>(key: string, object: T): Pr
  * @param factory function that creates default object if it is not found
  * @returns object from the extension storage or an object with default values
  */
-export async function getObject<T extends object>(key: string, factory: () => T): Promise<T> {
+export async function getObject<T extends object>(
+  key: string,
+  factory: () => T = () => {
+    throw new Error('A factory function must be provided')
+  },
+): Promise<T> {
   const object = await getEntry<T>(key)
 
   return typeof object === 'object' ? object : factory()
@@ -76,7 +81,12 @@ export function setArray<T extends object>(key: string, array: T[]): Promise<voi
  * @param factory function that creates default array if it is not found
  * @returns array from the extension storage or an array with default values
  */
-export async function getArray<T extends object>(key: string, factory: () => T[]): Promise<T[]> {
+export async function getArray<T extends object>(
+  key: string,
+  factory: () => T[] = () => {
+    throw new Error('A factory function must be provided')
+  },
+): Promise<T[]> {
   const array = await getEntry<T>(key)
 
   return Array.isArray(array) ? array : factory()
