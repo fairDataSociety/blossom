@@ -2,11 +2,11 @@ name: Run tests
 
 on:
   push:
-    branches: [master, ci/ci-implementation-test]
+    branches: ['**']
     paths-ignore:
       - 'library/**'
   pull_request:
-    branches: [master, ci/ci-implementation-test]
+    branches: ['**']
     paths-ignore:
       - 'library/**'
 
