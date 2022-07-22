@@ -23,24 +23,6 @@ export class Blossom {
   }
 
   /**
-   * Logs in a user
-   * @param username Fairdata username
-   * @param password Password
-   */
-  public login(username: string, password: string): Promise<void> {
-    return this.messages.sendMessage<void>(ApiActions.LOGIN, { username, password, rpc: this.network })
-  }
-
-  /**
-   * Registeres a new user
-   * @param username Fairdata username
-   * @param password Password
-   */
-  public register(username: string, password: string): Promise<void> {
-    return this.messages.sendMessage<void>(ApiActions.REGISTER, { username, password, rpc: this.network })
-  }
-
-  /**
    * Test function, to check communication with the extension
    * @param data Any data
    * @returns The same data
