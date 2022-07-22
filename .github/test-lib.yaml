@@ -2,11 +2,11 @@ name: Run tests
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - 'library/**'
   pull_request:
-    branches: [main]
+    branches: [master]
     paths:
       - 'library/**'
 
