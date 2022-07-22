@@ -16,8 +16,8 @@ describe('Blossom authentication tests', () => {
   })
 
   test('Registration should be successfull', async () => {
-    await page.goto(getPageUrl('registration', blossomId))
-    await page.click('#register-btn')
-    expect(await waitForElementText(page, '#registration')).toBe('success')
+    await page.goto(getPageUrl('echo', blossomId))
+    await page.click('#echo-btn')
+    expect(await waitForElementText(page, '#echo')).toBe('Echo message')
   })
 })
