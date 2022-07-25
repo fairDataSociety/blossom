@@ -38,7 +38,7 @@ jobs:
 
       - name: Install library dependencies
         run: npm ci --prefix library
-        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'false' }}
 
       - name: Lint
         run: npm run lint:check --prefix library

@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'false' }}
 
       - name: Lint
         run: npm run lint:check
