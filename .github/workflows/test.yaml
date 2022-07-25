@@ -75,8 +75,8 @@ jobs:
       - name: Run fdp-play
         run: fdp-play start -d
 
-      - name: Run tests
-        uses: vojtechsimetka/puppeteer-headful@master
+      - name: Test Code
+        uses: mujo-code/puppeteer-headful@v2
         env:
           CI: 'true'
         with:

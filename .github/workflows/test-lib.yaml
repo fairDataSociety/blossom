@@ -86,8 +86,8 @@ jobs:
       - name: Build Blossom Extension
         run: npm run build
 
-      - name: Run tests
-        uses: vojtechsimetka/puppeteer-headful@master
+      - name: Test Code
+        uses: mujo-code/puppeteer-headful@v2
         env:
           CI: 'true'
         with:
