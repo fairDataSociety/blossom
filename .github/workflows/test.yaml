@@ -28,17 +28,24 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
       - name: Cache node modules
         id: cache-npm-ext
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-ext-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-ext-
 
       - name: Install dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'false' }}
+        if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
 
       - name: Lint
         run: npm run lint:check
