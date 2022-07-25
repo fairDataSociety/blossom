@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
@@ -49,7 +49,7 @@ jobs:
 
       - name: Lint
         run: npm run lint:check --prefix library
-      
+
       - name: Copy configuration
         run: cp .prod.env .env
 
@@ -70,11 +70,25 @@ jobs:
         run: npm ci
         if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
 
+      - name: Cache Swarm extension
+        id: cache-swarm-ext
+        uses: actions/cache@v3
+        with:
+          path: swarm-extension
+          key: ${{ runner.os }}-swarm-ext-${{ hashFiles('**/swarm-extension/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-swarm-ext-
+
       - name: Compile Swarm Extension
         run: npm run swarm-ext
+        if: ${{ steps.cache-swarm-ext.outputs.cache-hit != 'true' }}
 
       - name: Build Blossom Extension
         run: npm run build
 
-      - name: Test
-        run: npm test --prefix library
+      - name: Run tests
+        uses: vojtechsimetka/puppeteer-headful@master
+        env:
+          CI: 'true'
+        with:
+          args: npm test --prefix library
