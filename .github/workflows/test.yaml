@@ -43,12 +43,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ext-
 
-      - name: Install Dependencies
-        uses: actions/setup-node@v3
+      - name: Install dependencies
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
-        with:
-          args: install
+        run: npm ci
         if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
 
       - name: Lint
