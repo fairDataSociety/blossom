@@ -52,6 +52,9 @@ jobs:
 
       - name: Compile Swarm Extension
         run: npm run swarm-ext
+      
+      - name: Copy configuration
+        run: cp .prod.env .env
 
       - name: Build
         run: npm run build

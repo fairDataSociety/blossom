@@ -26,16 +26,23 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Cache node library modules
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache library node modules
         id: cache-npm-lib
         uses: actions/cache@v3
         with:
-          path: library/node_modules
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-lib-${{ hashFiles('**/library/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-lib-
 
       - name: Install library dependencies
         run: npm ci --prefix library
-        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-lib.outputs.cache-hit != 'true' }}
 
       - name: Build
         run: npm run build --prefix library
@@ -56,6 +63,9 @@ jobs:
 
       - name: Compile Swarm Extension
         run: npm run swarm-ext
+      
+      - name: Copy configuration
+        run: cp .prod.env .env
 
       - name: Build Blossom Extension
         run: npm run build

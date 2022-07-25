@@ -49,6 +49,9 @@ jobs:
 
       - name: Lint
         run: npm run lint:check --prefix library
+      
+      - name: Copy configuration
+        run: cp .prod.env .env
 
       - name: Build
         run: npm run build --prefix library
