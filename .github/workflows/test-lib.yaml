@@ -68,7 +68,7 @@ jobs:
 
       - name: Install extension dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
 
       - name: Cache Swarm extension
         id: cache-swarm-ext

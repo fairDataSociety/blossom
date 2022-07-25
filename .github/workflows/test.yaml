@@ -49,7 +49,7 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
 
       - name: Lint
         run: npm run lint:check
