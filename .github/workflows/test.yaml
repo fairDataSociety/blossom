@@ -47,7 +47,7 @@ jobs:
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
+        if: steps.cache-npm-ext.outputs.cache-hit != 'true'
 
       - name: Lint
         run: npm run lint:check
@@ -63,7 +63,7 @@ jobs:
 
       - name: Compile Swarm Extension
         run: npm run swarm-ext
-        if: ${{ steps.cache-swarm-ext.outputs.cache-hit != 'true' }}
+        if: steps.cache-swarm-ext.outputs.cache-hit != 'true'
 
       - name: Copy configuration
         run: cp .prod.env .env
