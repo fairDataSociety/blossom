@@ -8,8 +8,10 @@ const SWARM_EXTENSION_PATH = path.join(EXTENSION_ROOT, 'swarm-extension/dist')
 
 export default async () => {
   const browser: Browser = await puppeteer.launch({
+    executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container in github CI environment
     headless: false,
     args: [
+      `--no-sandbox`, //Required for this to work in github CI environment
       `--disable-extensions-except=${EXTENSION_DIST},${SWARM_EXTENSION_PATH}`,
       `--load-extension=${EXTENSION_DIST},${SWARM_EXTENSION_PATH}`,
     ],
