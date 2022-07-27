@@ -44,8 +44,6 @@ jobs:
             ${{ runner.os }}-ext-
 
       - name: Install dependencies
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         run: npm ci
         if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
 
