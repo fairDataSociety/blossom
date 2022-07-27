@@ -83,7 +83,7 @@ jobs:
         run: npm install -g @fairdatasociety/fdp-play
 
       - name: Run fdp-play
-        run: fdp-play start -d
+        run: fdp-play start -d --fresh --blockchain-image fairdatasociety/fdp-contracts-blockchain:1.1.1
 
       - name: Test Code
         uses: mujo-code/puppeteer-headful@v2
