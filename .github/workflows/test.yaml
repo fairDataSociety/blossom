@@ -82,4 +82,4 @@ jobs:
         env:
           CI: 'true'
         with:
-          args: npm test
+          args: npm run test:create-batch
