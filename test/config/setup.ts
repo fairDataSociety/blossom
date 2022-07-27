@@ -19,7 +19,7 @@ export default async () => {
       ],
     }),
     process.env.CREATE_POSTAGE_BATCH === 'true'
-      ? createPostageBatch('http://localhost:1635')
+      ? createPostageBatch(process.env.BEE_DEBUG_API_URL || 'http://localhost:1635')
       : Promise.resolve(),
   ])
   global.__BROWSER__ = browser
