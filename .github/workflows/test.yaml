@@ -85,9 +85,12 @@ jobs:
       - name: Run fdp-play
         run: fdp-play start -d --fresh --blockchain-image fairdatasociety/fdp-contracts-blockchain:1.1.1
 
+      - name: Create Postage Batch
+        run: curl -s -XPOST http://localhost:1635/stamps/10000000/18
+
       - name: Test Code
         uses: mujo-code/puppeteer-headful@v2
         env:
           CI: 'true'
         with:
-          args: npm run test:create-batch
+          args: npm test

@@ -10,7 +10,6 @@
     "lint:check": "eslint \"src/**/*.ts\" \"test/**/*.ts\" && prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "swarm-ext": "./scripts/compile-swarm-extension.sh",
     "test": "jest --runInBand",
-    "test:create-batch": "CREATE_POSTAGE_BATCH=true jest --runInBand",
     "test:demo": "npm run test -- --demo=true",
     "test:watch": "jest --watch --runInBand"
   },
