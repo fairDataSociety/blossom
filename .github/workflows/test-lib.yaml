@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -29,19 +29,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
       - name: Cache library node modules
         id: cache-npm-lib
         uses: actions/cache@v3
         with:
-          path: library/node_modules
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-lib-${{ hashFiles('**/library/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-lib-
 
       - name: Install library dependencies
         run: npm ci --prefix library
-        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-lib.outputs.cache-hit != 'true' }}
 
       - name: Lint
         run: npm run lint:check --prefix library
+
+      - name: Copy configuration
+        run: cp .prod.env .env
 
       - name: Build
         run: npm run build --prefix library
@@ -58,13 +68,27 @@ jobs:
 
       - name: Install extension dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-ext.outputs.cache-hit != 'true' }}
+
+      - name: Cache Swarm extension
+        id: cache-swarm-ext
+        uses: actions/cache@v3
+        with:
+          path: swarm-extension
+          key: ${{ runner.os }}-swarm-ext-${{ hashFiles('**/swarm-extension/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-swarm-ext-
 
       - name: Compile Swarm Extension
         run: npm run swarm-ext
+        if: ${{ steps.cache-swarm-ext.outputs.cache-hit != 'true' }}
 
       - name: Build Blossom Extension
         run: npm run build
 
-      - name: Test
-        run: npm test --prefix library
+      - name: Test Code
+        uses: mujo-code/puppeteer-headful@v2
+        env:
+          CI: 'true'
+        with:
+          args: npm test --prefix library
