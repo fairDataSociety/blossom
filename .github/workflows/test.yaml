@@ -88,9 +88,9 @@ jobs:
       - name: Create Postage Batch
         run: curl -s -XPOST http://localhost:1635/stamps/10000000/18
 
-      - name: Test Code
-        uses: mujo-code/puppeteer-headful@v2
+      - name: Run tests
+        uses: vojtechsimetka/puppeteer-headful@master
         env:
           CI: 'true'
         with:
-          args: npm test
+          args: npm run test
