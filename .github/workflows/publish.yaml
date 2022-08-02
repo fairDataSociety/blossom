@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -32,13 +32,25 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-ext-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-ext-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-ext-${{ matrix.node }}-
 
       - name: Install dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: steps.cache-npm-ext.outputs.cache-hit != 'true'
+
+      - name: Copy configuration
+        run: cp .prod.env .env
 
       - name: Build
         run: npm run build
 
       # TODO Publish the extension
+
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Always runs
+        run: echo "Prevents the workflow from failing if release is not created."
