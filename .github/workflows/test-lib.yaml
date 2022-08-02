@@ -11,16 +11,22 @@ on:
       - 'library/**'
 
 jobs:
-  build:
+  test-lib:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [16.x]
 
+    env:
+      BEE_API_URL: 'http://172.18.0.1:1633'
+      BEE_DEBUG_API_URL: 'http://172.18.0.1:1635'
+      BEE_PEER_API_URL: 'http://172.18.0.1:11633'
+      BEE_PEER_DEBUG_API_URL: 'http://172.18.0.1:11635'
+
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -34,14 +40,20 @@ jobs:
         uses: actions/cache@v3
         with:
           path: library/node_modules
-          key: ${{ runner.os }}-lib-${{ hashFiles('**/library/package-lock.json') }}
+          key: ${{ runner.os }}-lib-${{ matrix.node }}-${{ hashFiles('**/library/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-lib-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-lib-${{ matrix.node }}-
 
       - name: Install library dependencies
         run: npm ci --prefix library
-        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-lib.outputs.cache-hit != 'true' }}
 
       - name: Lint
         run: npm run lint:check --prefix library
+
+      - name: Copy configuration
+        run: cp .test.env .env
 
       - name: Build
         run: npm run build --prefix library
@@ -49,22 +61,40 @@ jobs:
       - name: Serve test pages
         run: npm run serve --prefix library
 
-      - name: Cache extension node modules
+      - name: Cache node modules
         id: cache-npm-ext
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-ext-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-ext-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-ext-${{ matrix.node }}-
 
-      - name: Install extension dependencies
+      - name: Install dependencies
         run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
+        if: steps.cache-npm-ext.outputs.cache-hit != 'true'
+
+      - name: Cache Swarm extension
+        id: cache-swarm-ext
+        uses: actions/cache@v3
+        with:
+          path: swarm-extension
+          key: ${{ runner.os }}-swarm-ext-${{ matrix.node }}-${{ hashFiles('**/swarm-extension/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-swarm-ext-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-node-${{ matrix.node }}-
 
       - name: Compile Swarm Extension
         run: npm run swarm-ext
+        if: steps.cache-swarm-ext.outputs.cache-hit != 'true'
 
       - name: Build Blossom Extension
         run: npm run build
 
-      - name: Test
-        run: npm test --prefix library
+      - name: Run tests
+        uses: vojtechsimetka/puppeteer-headful@master
+        env:
+          CI: 'true'
+        with:
+          args: npm test --prefix library
