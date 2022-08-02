@@ -9,7 +9,7 @@ Before running the extension, it should be configured so it can be properly buil
 All configuration is stored inside the `.env` file, in the root directory. That file should be created first. There is the template `.default.env` file which can be used for start. The configuration properties are:
 
 - **ENVIRONMENT** - It can be set to `production` or `development` and determines how the project will be built.
-- **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode. In production mode, this property is ignored.
+- **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode.
 
 ## Installation
 
@@ -24,6 +24,7 @@ All compiled files will be generated in the `dist` directory.
 To load the extension in Chrome browser:
 
 - Open a new tab, type `chrome://extensions` in address bar and go to that page
+- Enable development mode in the top right corner
 - Click on the `Load unpacked` button and select the `dist` folder
 - The extension should appear in the list of installed extensions
 
@@ -49,23 +50,27 @@ This script will generate the `swarm-extension` directory inside the root direct
 
 > **_NOTE_:** If you are running your version of the Swarm extension, the `.env` file should be updated with its extension ID.
 
-### FDP contracts
+### FDP Play
 
-Also, an instance of the `fdp-contracts` image should be running locally:
+The Blossom extension requires a blockchain RPC provider along with a Swarm gateway. For development purposes it is recommended to use [fdp-play](https://github.com/fairDataSociety/fdp-play).
 
-```bash
-docker run -p 9545:9545 fairdatasociety/swarm-test-blockchain:1.2.0
-```
-
-> **_NOTE_:** For more information regarding the swarm-test-blockchain image check [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts).
-
-### Bee node
-
-Running a Bee node locally on port `1633` along with debug API on port `1635` is also requred. To run such an image, execute:
+To install the environment:
 
 ```bash
-docker run -p 1633-1635:1633-1635 ethersphere/bee dev --debug-api-enable --verbosity=4 --cors-allowed-origins="*"
+$ npm install -g @fairdatasociety/fdp-play
 ```
+
+Then to run it:
+
+```bash
+fdp-play start
+```
+
+This environment will run a local bee node in development mode, on default ports `1633` and `1635` for debug API. Also an instance of the [fdp-contracts](https://github.com/fairDataSociety/fdp-contracts) image will be started.
+
+> **_NOTE_:** For more options check the [fdp-play repository](https://github.com/fairDataSociety/fdp-play).
+
+#### Bee postage batch
 
 There must be at least one postage stamp created. To create a postage stamp in the Bee node, run:
 
@@ -107,7 +112,7 @@ There are three different environments in which the code is executed:
 
 - **Content scripts** \
   Located inside the `src/content` directory. This code is injected into web pages and can access various page's resources such as DOM, window object, etc.
-- **Service worker** \
-  All the other code is bundled into one script and executed as a service worker script. That code sets listeners that respond to various events.
 - **UI pages** \
   All UI pages are located inside the `src/ui` directory. For each directory there, a separete HTML and JavaScript file is generated, except for the `common` directory. Those HTML/JS files are used as UI components inside the extension.
+- **Service worker** \
+  All the other code is bundled into one script and executed as a service worker script. That code sets listeners that respond to various events.
