@@ -67,15 +67,8 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
     beeApiUrl: string
     beeDebugApiUrl: string
   }> {
-    let beeApiUrl = 'http://localhost:1633',
-      beeDebugApiUrl = 'http://localhost:1635'
-
-    if (process.env.CI_TESTS === 'true') {
-      return {
-        beeApiUrl: 'http://172.18.0.1:1633',
-        beeDebugApiUrl: 'http://172.18.0.1:1635',
-      }
-    }
+    const beeApiUrl = 'http://172.18.0.1:1633',
+      beeDebugApiUrl = 'http://172.18.0.1:1635'
 
     try {
       const swarmExtension = new SwarmExtension(swarm.extensionId)
