@@ -75,6 +75,7 @@ describe('Successful registration tests', () => {
   beforeAll(async () => {
     await setSwarmExtensionId()
     page = await openExtensionOptionsPage(blossomId, 'auth.html')
+    await page.setDefaultNavigationTimeout(60000)
   })
 
   afterAll(async () => {
