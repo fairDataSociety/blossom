@@ -18,6 +18,7 @@ export default async () => {
   const browser: Browser = await puppeteer.launch({
     executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container in github CI environment
     headless: false,
+    timeout: 60000,
     args: [
       `--no-sandbox`,
       `--disable-extensions-except=${EXTENSION_DIST},${SWARM_EXTENSION_PATH}`,
