@@ -67,7 +67,7 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
     beeApiUrl: string
     beeDebugApiUrl: string
   }> {
-    const beeApiUrl = 'http://172.18.0.1:1633',
+    let beeApiUrl = 'http://172.18.0.1:1633',
       beeDebugApiUrl = 'http://172.18.0.1:1635'
 
     try {
