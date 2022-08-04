@@ -86,4 +86,4 @@ jobs:
         env:
           CI: 'true'
         with:
-          args: npm run test
+          args: npm run test:ci
