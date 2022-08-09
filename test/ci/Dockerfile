@@ -29,5 +29,5 @@ COPY README.md /
 
 WORKDIR /app
 
-COPY test/entrypoint.sh /entrypoint.sh
+COPY test/ci/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
