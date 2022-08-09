@@ -86,4 +86,4 @@ jobs:
         env:
           CI: 'true'
         with:
-          args: npm run test:ci
+          args: --net="host" npm run test:ci
