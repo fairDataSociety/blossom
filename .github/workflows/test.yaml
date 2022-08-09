@@ -82,8 +82,4 @@ jobs:
         run: curl -s -XPOST http://localhost:1635/stamps/10000000/18
 
       - name: Run tests
-        uses: vojtechsimetka/puppeteer-headful@master
-        env:
-          CI: 'true'
-        with:
-          args: --net="host" npm run test:ci
+        run: ./test/ci/run-tests-ci.sh
