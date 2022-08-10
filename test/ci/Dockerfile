@@ -23,11 +23,8 @@ RUN  apt-get update \
 
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CI true
 
 COPY README.md /
-
-WORKDIR /app
 
 COPY test/ci/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
