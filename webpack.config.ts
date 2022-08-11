@@ -15,6 +15,10 @@ const uiDir = path.resolve(srcDir, 'ui')
 
 const isDev = process.env.ENVIRONMENT === 'development'
 
+if (process.env.CI === 'true') {
+  console.log('CI mode detected')
+}
+
 const pages = fs.readdirSync(uiDir).filter((page) => page !== 'common')
 
 const pageEntries = pages.reduce((pagesMap, page) => {
