@@ -70,7 +70,7 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
     let beeApiUrl = 'http://localhost:1633',
       beeDebugApiUrl = 'http://localhost:1635'
 
-    if (process.env.CI_TESTS === 'true') {
+    if (process.env.CI === 'true') {
       return {
         beeApiUrl: 'http://172.18.0.1:1633',
         beeDebugApiUrl: 'http://172.18.0.1:1635',
