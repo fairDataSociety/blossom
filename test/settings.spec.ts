@@ -1,4 +1,5 @@
 import { ElementHandle, Page } from 'puppeteer'
+import { logErrors } from './utils/console'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './utils/extension.util'
 import { click, getElementByTestId, getElementChildren, getTextFromInput, typeToInput } from './utils/page'
 
@@ -26,6 +27,7 @@ describe('Settings page tests', () => {
 
   afterAll(async () => {
     await page.close()
+    await logErrors()
   })
 
   test('Should add a new network', async () => {

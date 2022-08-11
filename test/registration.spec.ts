@@ -1,4 +1,5 @@
 import { ElementHandle, Page } from 'puppeteer'
+import { logErrors } from './utils/console'
 import { sendFunds } from './utils/ethers'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './utils/extension.util'
 import {
@@ -79,6 +80,7 @@ describe('Successful registration tests', () => {
 
   afterAll(async () => {
     await page.close()
+    await logErrors()
   })
 
   test('The Username/Password form should accept new account', async () => {
@@ -138,6 +140,7 @@ describe('Unsuccessful registration tests', () => {
 
   afterAll(async () => {
     await page.close()
+    await logErrors()
   })
 
   test("Shouldn't proceed with existing username", async () => {
@@ -161,6 +164,7 @@ describe('Registration with an existing account', () => {
 
   afterAll(async () => {
     await page.close()
+    await logErrors()
   })
 
   test('Should successfully register with previously created account', async () => {
@@ -190,6 +194,7 @@ describe('Login tests', () => {
 
   afterAll(async () => {
     await page.close()
+    await logErrors()
   })
 
   test("Shouldn't login with wrong password", async () => {

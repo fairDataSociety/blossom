@@ -1,1 +1,2 @@
+import './interceptors'
 import './listeners'
