@@ -13,8 +13,9 @@
     "test:ci": "CI=true jest --runInBand --silent=false --verbose",
     "test:demo": "npm run test -- --demo=true",
     "test:watch": "jest --watch --runInBand",
-    "test-webpages-serve": "http-server test/webpages/console-placeholder"
+    "test-webpages-serve": "http-server test/webpages/console-placeholder &"
   },
+  "posttest": "kill $(lsof -t -i:8080)",
   "author": "",
   "license": "ISC",
   "devDependencies": {
