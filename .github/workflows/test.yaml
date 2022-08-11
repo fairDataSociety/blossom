@@ -84,6 +84,9 @@ jobs:
       - name: Serve test pages
         run: npm run test-webpages-serve
 
+      - name: Wait for postage batch
+        run: sleep 30
+
       - name: Run tests
         uses: vojtechsimetka/puppeteer-headful@master
         env:
