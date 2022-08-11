@@ -9,11 +9,11 @@ export async function logErrors(): Promise<void> {
 
   const cookies = await page.cookies()
 
+  console.log('Application console.error() entries:')
+
   if (cookies.length === 0) {
     return
   }
-
-  console.log('Application console.error() entries:')
 
   cookies.forEach(({ value }) => console.log(value))
 
