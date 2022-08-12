@@ -1,35 +1,11 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
-import { networks } from '../constants/networks'
-import { Network } from '../model/storage/network.model'
-import { Swarm } from '../model/storage/swarm.model'
-import { SwarmExtension } from '../swarm-api/swarm-extension'
-import { AsyncConfigService } from './async-config.service'
-import { Storage } from './storage/storage.service'
+import { networks } from '../../constants/networks'
+import { Network } from '../../model/storage/network.model'
+import { Swarm } from '../../model/storage/swarm.model'
+import { SwarmExtension } from '../../swarm-api/swarm-extension'
+import { AsyncConfigService } from '../async-config.service'
 
-export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
-  private storage: Storage = new Storage()
-  private network: Network
-  private swarm: Swarm
-
-  constructor() {
-    super()
-    super.initialize(async () => {
-      const [network, swarm] = await Promise.all([this.storage.getNetwork(), this.storage.getSwarm()])
-      this.network = network
-      this.swarm = swarm
-
-      this.storage.onNetworkChange((network: Network) =>
-        super.updateConfigAsync(this.createFdpStorage((this.network = network), this.swarm)),
-      )
-
-      this.storage.onSwarmChange((swarm: Swarm) =>
-        super.updateConfigAsync(this.createFdpStorage(this.network, (this.swarm = swarm))),
-      )
-
-      return this.createFdpStorage(network, swarm)
-    })
-  }
-
+export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
   public getService(): Promise<FdpStorage> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -38,7 +14,7 @@ export class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
     })
   }
 
-  private async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
+  protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
     const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
     const { ensRegistry, subdomainRegistrar, publicResolver, rpc, label } = network
     let options: any
