@@ -1,21 +1,30 @@
 import AES from 'crypto-js/aes'
 import encUtf8 from 'crypto-js/enc-utf8'
 import { isSession } from '../messaging/message.asserts'
-import { PrivateKey } from '../model/general.types'
+import { Account, PrivateKey } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
 import { KeyData, Session } from '../model/storage/session.model'
+import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
 import { Storage } from './storage/storage.service'
 
 export class SessionService {
   private storage: Storage = new Storage()
 
-  public async open(username: string, network: Network, privateKey: PrivateKey): Promise<void> {
+  public async open(
+    username: string,
+    account: Account,
+    network: Network,
+    privateKey: PrivateKey,
+  ): Promise<void> {
     const key = await this.encryptKey(privateKey)
+
+    removeWarningBadge()
 
     return this.storage.setSession({
       username,
       network,
+      account,
       key,
     })
   }
@@ -27,6 +36,8 @@ export class SessionService {
   }
 
   public close(): Promise<void> {
+    setWarningBadge()
+
     return this.storage.deleteSession()
   }
 
@@ -36,11 +47,14 @@ export class SessionService {
 
   private async processSession(session: Session): Promise<Session> {
     if (!session) {
+      setWarningBadge()
+
       return null
     }
 
     if (!isSession(session)) {
       this.storage.deleteSession()
+      setWarningBadge()
 
       return null
     }
@@ -49,9 +63,12 @@ export class SessionService {
 
     if (!session.key.privateKey) {
       this.storage.deleteSession()
+      setWarningBadge()
 
       return null
     }
+
+    removeWarningBadge()
 
     return session
   }

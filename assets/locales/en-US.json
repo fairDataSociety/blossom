@@ -8,6 +8,7 @@
   "INVALID_MEMONIC": "The recovery phrase that you entered is not valid.",
   "MNEMONIC_REQUIRED": "Please enter your recovery phrase.",
   "LOGIN": "Login",
+  "LOGOUT": "Logout",
   "LOGIN_TITLE": "Fairdata Login",
   "USERNAME": "Username",
   "PASSWORD": "Password",

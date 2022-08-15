@@ -12,6 +12,7 @@ import {
   RegisterData,
   RegisterResponse,
   UsernameCheckData,
+  UserResponse,
 } from '../../model/internal-messages.model'
 import { SessionlessFdpStorageProvider } from '../../services/fdp-storage/sessionless-fdp-storage.provider'
 import { SessionService } from '../../services/session.service'
@@ -30,7 +31,9 @@ export async function login({ username, password, network }: LoginData): Promise
 
   await fdp.account.login(username, password)
 
-  await session.open(username, network, fdp.account.wallet.privateKey)
+  const { address, privateKey } = fdp.account.wallet
+
+  await session.open(username, address, network, privateKey)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
@@ -57,7 +60,7 @@ export async function register(data: RegisterData): Promise<void> {
 
     await fdp.account.register(username, password)
 
-    session.open(username, network, wallet.privateKey)
+    session.open(username, wallet.address, network, wallet.privateKey)
 
     console.log(`auth.listener: Successfully registered user ${username}`)
   } catch (error) {
@@ -96,6 +99,26 @@ export function openAuthPage(): Promise<void> {
   return Promise.resolve()
 }
 
+export async function getCurrentUser(): Promise<UserResponse> {
+  const sessionData = await session.load()
+
+  if (!sessionData) {
+    return null
+  }
+
+  const { username, account, network } = sessionData
+
+  return {
+    username,
+    account,
+    network,
+  }
+}
+
+export function logout(): Promise<void> {
+  return session.close()
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGIN,
@@ -120,6 +143,14 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.OPEN_AUTH_PAGE,
     handler: openAuthPage,
+  },
+  {
+    action: BackgroundAction.GET_CURRENT_USER,
+    handler: getCurrentUser,
+  },
+  {
+    action: BackgroundAction.LOGOUT,
+    handler: logout,
   },
 ])
 
