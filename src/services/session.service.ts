@@ -74,7 +74,7 @@ export class SessionService {
   }
 
   private async encryptKey(privateKey: PrivateKey): Promise<KeyData> {
-    const sessionKey = generateRandomString(48)
+    const sessionKey = generateRandomString(128)
     const url = this.generateRandomUrl()
 
     const encryptedPrivateKey = AES.encrypt(privateKey, sessionKey).toString()
