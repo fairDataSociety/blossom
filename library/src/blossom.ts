@@ -1,7 +1,8 @@
+import type { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { ApiActions } from './constants/api-actions.enum'
-import { Networks } from './constants/networks'
 import { BlossomMessages } from './messages/blossom-messages'
 import { createBlossomMessages } from './messages/blossom-messages.factory'
+import createFdpStorageProxy from './proxy/fdp-storage.proxy.factory'
 
 /**
  * Interface of the Blossom browser extension
@@ -9,17 +10,22 @@ import { createBlossomMessages } from './messages/blossom-messages.factory'
  */
 export class Blossom {
   private messages: BlossomMessages
+  /**
+   * Proxy object for the FdpStorage type. Simulates access to FdpStorage functions by
+   * forwarding requests to the Blossom extension.
+   *
+   * For more information about available functions check:
+   * https://github.com/fairDataSociety/fdp-storage#usage
+   */
+  public readonly fdpStorage: FdpStorage
 
   /**
    *
-   * @param network One of the available networks to connect to
    * @param extensionId The Blossom extension ID
    */
-  constructor(
-    private network: Networks = Networks.localhost,
-    extensionId = 'lbenhfaonefggjjgnajjepfjdcggkmbm',
-  ) {
+  constructor(extensionId = 'lbenhfaonefggjjgnajjepfjdcggkmbm') {
     this.messages = createBlossomMessages(extensionId)
+    this.fdpStorage = createFdpStorageProxy(this.messages)
   }
 
   /**

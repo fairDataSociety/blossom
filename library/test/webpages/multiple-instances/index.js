@@ -1,7 +1,7 @@
 async function testFn() {
-  const blossom1 = new window.blossom.Blossom(window.blossom.Networks.localhost, getBlossomId())
-  const blossom2 = new window.blossom.Blossom(window.blossom.Networks.localhost, getBlossomId())
-  const blossom3 = new window.blossom.Blossom(window.blossom.Networks.localhost, getBlossomId())
+  const blossom1 = new window.blossom.Blossom(getBlossomId())
+  const blossom2 = new window.blossom.Blossom(getBlossomId())
+  const blossom3 = new window.blossom.Blossom(getBlossomId())
 
   const createResponseHandler = function (expectedResponse, elementId) {
     return function (response) {

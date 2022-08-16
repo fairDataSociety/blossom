@@ -1,4 +1,4 @@
-var blossom = new window.blossom.Blossom(window.blossom.localNetwork, getBlossomId())
+var blossom = new window.blossom.Blossom(getBlossomId())
 
 async function echo() {
   const response = await blossom.echo('Echo message')

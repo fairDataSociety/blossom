@@ -15,6 +15,7 @@ enum BackgroundAction {
   SETTINGS_DELETE_NETWORK = 'settings-delete-network',
   SETTINGS_GET_SWARM = 'settings-get-swarm',
   SETTINGS_SET_SWARM = 'settings-set-swarm',
+  FDP_STORAGE = 'fdp-storage',
   ECHO = 'echo',
 }
 

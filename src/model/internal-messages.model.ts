@@ -44,3 +44,8 @@ export interface NetworkEditData {
   label: string
   network: Network
 }
+
+export interface FdpStorageRequest {
+  accessor: string
+  parameters: unknown[]
+}
