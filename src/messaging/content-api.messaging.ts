@@ -7,6 +7,7 @@ import {
   RegisterData,
   RegisterResponse,
   UsernameCheckData,
+  UserResponse,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
 import { Swarm } from '../model/storage/swarm.model'
@@ -21,6 +22,10 @@ export function register(data: RegisterData): Promise<RegisterResponse> {
   return sendMessage<RegisterData, RegisterResponse>(BackgroundAction.REGISTER, data)
 }
 
+export function logout(): Promise<void> {
+  return sendMessage<void, void>(BackgroundAction.LOGOUT)
+}
+
 export function isUsernameAvailable(data: UsernameCheckData): Promise<boolean> {
   return sendMessage<UsernameCheckData, boolean>(BackgroundAction.CHECK_USERNAME, data)
 }
@@ -31,6 +36,10 @@ export function generateWallet(): Promise<RegisterResponse> {
 
 export function openAuthPage(): Promise<void> {
   return sendMessage<void, void>(BackgroundAction.OPEN_AUTH_PAGE)
+}
+
+export function getCurrentUser(): Promise<UserResponse> {
+  return sendMessage<void, UserResponse>(BackgroundAction.GET_CURRENT_USER)
 }
 
 export function getLocales(): Promise<LocaleData> {

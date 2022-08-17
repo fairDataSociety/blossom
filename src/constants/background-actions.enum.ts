@@ -1,10 +1,12 @@
 enum BackgroundAction {
   LOGIN = 'login',
   REGISTER = 'register',
+  LOGOUT = 'logout',
   CHECK_USERNAME = 'check-username',
   GET_LOCALES = 'get-locales',
   GENERATE_WALLET = 'generate-wallet',
   OPEN_AUTH_PAGE = 'open-auth-page',
+  GET_CURRENT_USER = 'get-current-user',
   GET_BALANCE = 'get-balance',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',

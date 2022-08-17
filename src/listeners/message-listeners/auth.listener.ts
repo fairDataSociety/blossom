@@ -12,14 +12,17 @@ import {
   RegisterData,
   RegisterResponse,
   UsernameCheckData,
+  UserResponse,
 } from '../../model/internal-messages.model'
-import { FdpStorageProvider } from '../../services/fdp-storage.provider'
+import { SessionlessFdpStorageProvider } from '../../services/fdp-storage/sessionless-fdp-storage.provider'
+import { SessionService } from '../../services/session.service'
 import { Storage } from '../../services/storage/storage.service'
 import { openTab } from '../../utils/tabs'
 import { createMessageHandler } from './message-handler'
 
-const fdpStorageProvider = new FdpStorageProvider()
+const fdpStorageProvider = new SessionlessFdpStorageProvider()
 const storage = new Storage()
+const session = new SessionService()
 
 export async function login({ username, password, network }: LoginData): Promise<void> {
   await storage.setNetwork(network)
@@ -27,6 +30,10 @@ export async function login({ username, password, network }: LoginData): Promise
   const fdp = await fdpStorageProvider.getService()
 
   await fdp.account.login(username, password)
+
+  const { address, privateKey } = fdp.account.wallet
+
+  await session.open(username, address, network, privateKey)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
@@ -53,9 +60,9 @@ export async function register(data: RegisterData): Promise<void> {
 
     await fdp.account.register(username, password)
 
-    console.log(`auth.listener: Successfully registered user ${username}`)
+    session.open(username, wallet.address, network, wallet.privateKey)
 
-    return Promise.resolve()
+    console.log(`auth.listener: Successfully registered user ${username}`)
   } catch (error) {
     console.error(`auth.listener: Error while trying to register new user ${username}`, error)
     throw error
@@ -92,6 +99,26 @@ export function openAuthPage(): Promise<void> {
   return Promise.resolve()
 }
 
+export async function getCurrentUser(): Promise<UserResponse> {
+  const sessionData = await session.load()
+
+  if (!sessionData) {
+    return null
+  }
+
+  const { username, account, network } = sessionData
+
+  return {
+    username,
+    account,
+    network,
+  }
+}
+
+export function logout(): Promise<void> {
+  return session.close()
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGIN,
@@ -116,6 +143,14 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.OPEN_AUTH_PAGE,
     handler: openAuthPage,
+  },
+  {
+    action: BackgroundAction.GET_CURRENT_USER,
+    handler: getCurrentUser,
+  },
+  {
+    action: BackgroundAction.LOGOUT,
+    handler: logout,
   },
 ])
 

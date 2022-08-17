@@ -1,7 +1,8 @@
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
+import { Session } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
-import { networkFactory, networkListFactory, swarmFactory } from './storage-factories'
+import { sessionFactory, networkFactory, networkListFactory, swarmFactory } from './storage-factories'
 import migrate from './storage-migration'
 
 /**
@@ -102,6 +103,7 @@ export class Storage {
   static readonly networkKey = 'network'
   static readonly networkListKey = 'network-list'
   static readonly swarmKey = 'swarm'
+  static readonly sessionKey = 'session'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -160,12 +162,28 @@ export class Storage {
     return updateObject<Swarm>(Storage.swarmKey, swarm)
   }
 
+  public setSession(session: Session): Promise<void> {
+    return updateObject<Session>(Storage.sessionKey, session)
+  }
+
+  public getSession(): Promise<Session> {
+    return getObject<Session>(Storage.sessionKey, sessionFactory)
+  }
+
+  public deleteSession(): Promise<void> {
+    return deleteEntry(Storage.sessionKey)
+  }
+
   public onNetworkChange(listener: (network: Network) => void) {
     this.setListener(Storage.networkKey, listener)
   }
 
   public onSwarmChange(listener: (swarm: Swarm) => void) {
     this.setListener(Storage.swarmKey, listener)
+  }
+
+  public onSessionChange(listener: (session: Session) => void) {
+    this.setListener(Storage.sessionKey, listener)
   }
 
   public removeListener(listener: (entry: unknown) => void) {

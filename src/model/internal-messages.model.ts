@@ -34,6 +34,12 @@ export interface RegisterResponse {
   privateKey: PrivateKey
 }
 
+export interface UserResponse {
+  username: string
+  account: Account
+  network: Network
+}
+
 export interface NetworkEditData {
   label: string
   network: Network
