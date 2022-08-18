@@ -16,6 +16,9 @@ enum BackgroundAction {
   SETTINGS_GET_SWARM = 'settings-get-swarm',
   SETTINGS_SET_SWARM = 'settings-set-swarm',
   FDP_STORAGE = 'fdp-storage',
+  DIALOG = 'dialog',
+  DIALOG_REQUEST = 'dialog-request',
+  DIALOG_RESPONSE = 'dialog-response',
   ECHO = 'echo',
 }
 

@@ -101,9 +101,11 @@ export class SessionService {
       return
     }
 
-    const [{ value: sessionKey }] = await chrome.cookies.getAll({
+    const [cookie] = await chrome.cookies.getAll({
       url,
     })
+
+    const { value: sessionKey } = cookie || {}
 
     if (!sessionKey) {
       this.storage.deleteSession()

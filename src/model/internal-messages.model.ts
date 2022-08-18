@@ -49,3 +49,8 @@ export interface FdpStorageRequest {
   accessor: string
   parameters: unknown[]
 }
+
+export interface DialogQuestion {
+  question: string
+  placeholders: Record<string, string>
+}

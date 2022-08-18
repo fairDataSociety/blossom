@@ -2,8 +2,16 @@ import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { Session } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
-import { sessionFactory, networkFactory, networkListFactory, swarmFactory } from './storage-factories'
+import {
+  sessionFactory,
+  networkFactory,
+  networkListFactory,
+  swarmFactory,
+  dappsFactory,
+} from './storage-factories'
 import migrate from './storage-migration'
+import { DappId } from '../../model/general.types'
+import { Dapp, Dapps } from '../../model/storage/dapps.model'
 
 /**
  * Sets any value to the extension storage
@@ -104,6 +112,7 @@ export class Storage {
   static readonly networkListKey = 'network-list'
   static readonly swarmKey = 'swarm'
   static readonly sessionKey = 'session'
+  static readonly dappsKey = 'dapps'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -172,6 +181,27 @@ export class Storage {
 
   public deleteSession(): Promise<void> {
     return deleteEntry(Storage.sessionKey)
+  }
+
+  public async getDapp(dappId: DappId): Promise<Dapp> {
+    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+
+    return dapps[dappId]
+  }
+
+  public async updateDapp(dappId: DappId, dapp: Dapp): Promise<void> {
+    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+
+    dapps[dappId] = {
+      ...(dapps[dappId] || {}),
+      ...dapp,
+    }
+
+    return updateObject<Dapps>(Storage.dappsKey, dapps)
+  }
+
+  public deleteDapps(): Promise<void> {
+    return deleteEntry(Storage.dappsKey)
   }
 
   public onNetworkChange(listener: (network: Network) => void) {
