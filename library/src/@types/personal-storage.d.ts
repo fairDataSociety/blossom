@@ -1,5 +1,5 @@
 import type { PersonalStorage } from '@fairdatasociety/fdp-storage'
-import { Pod } from '@fairdatasociety/fdp-storage/dist/pod/types'
+import type { Pod } from '@fairdatasociety/fdp-storage/dist/pod/types'
 
 declare module '@fairdatasociety/fdp-storage' {
   class PersonalStorage {

@@ -1,12 +1,12 @@
 import BackgroundAction from '../../constants/background-actions.enum'
+import { isFdpStorageRequest } from '../../messaging/message.asserts'
 import { FdpStorageRequest } from '../../model/internal-messages.model'
 import { DappPermissions } from '../../model/storage/dapps.model'
 import { Dialog } from '../../services/dialog.service'
+import { callFdpStorageMethod } from '../../services/fdp-storage/fdp-storage-access'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { Storage } from '../../services/storage/storage.service'
 import { createMessageHandler } from './message-handler'
-
-const allowedMethods = ['personalStorage.create']
 
 const fdpStorageProvider = new SessionFdpStorageProvider()
 const dialogs = new Dialog()
@@ -42,19 +42,11 @@ async function handleFdpStorageRequest(
 
     const [property, method] = accessor.split('.')
 
-    // TODO add method specific logic and checks
-
-    return fdp[property][method](...parameters)
+    return callFdpStorageMethod(fdp, property, method, parameters, dappUrl, dapp)
   } catch (error) {
     console.warn(`Blossom: fdp-storage error `, error)
     throw error
   }
-}
-
-function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
-  const { accessor, parameters } = (data || {}) as FdpStorageRequest
-
-  return typeof accessor === 'string' && Array.isArray(parameters) && allowedMethods.includes(accessor)
 }
 
 const messageHandler = createMessageHandler([

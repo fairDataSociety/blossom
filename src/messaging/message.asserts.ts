@@ -1,5 +1,6 @@
 import { Account } from '../model/general.types'
 import {
+  FdpStorageRequest,
   LoginData,
   NetworkEditData,
   RegisterData,
@@ -78,4 +79,10 @@ export function isSession(data: unknown): data is Session {
   const { username, network, key } = (data || {}) as Session
 
   return typeof username === 'string' && isNetwork(network) && isKeyData(key)
+}
+
+export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
+  const { accessor, parameters } = (data || {}) as FdpStorageRequest
+
+  return typeof accessor === 'string' && Array.isArray(parameters)
 }
