@@ -17,11 +17,7 @@ export interface RegisterDataMnemonic extends RegisterDataBase {
   mnemonic: Mnemonic
 }
 
-export interface RegisterDataPrivateKey extends RegisterDataBase {
-  privateKey: PrivateKey
-}
-
-export type RegisterData = RegisterDataMnemonic | RegisterDataPrivateKey
+export type RegisterData = RegisterDataMnemonic
 
 export interface UsernameCheckData {
   username: string

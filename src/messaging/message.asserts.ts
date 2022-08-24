@@ -6,11 +6,10 @@ import {
   RegisterData,
   RegisterDataBase,
   RegisterDataMnemonic,
-  RegisterDataPrivateKey,
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
-import { KeyData, Session } from '../model/storage/session.model'
+import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
 
 export function isLoginData(data: unknown): data is LoginData {
@@ -20,19 +19,13 @@ export function isLoginData(data: unknown): data is LoginData {
 }
 
 export function isRegisterData(data: unknown): data is RegisterData {
-  return Boolean(isRegisterDataMnemonic(data) || isRegisterDataPrivateKey(data))
+  return isRegisterDataMnemonic(data)
 }
 
 export function isRegisterDataMnemonic(data: unknown): data is RegisterDataMnemonic {
   const registerData = (data || {}) as RegisterDataMnemonic
 
   return Boolean(isRegisterDataBase(data) && registerData.mnemonic)
-}
-
-export function isRegisterDataPrivateKey(data: unknown): data is RegisterDataPrivateKey {
-  const registerData = (data || {}) as RegisterDataPrivateKey
-
-  return Boolean(isRegisterDataBase(data) && registerData.privateKey)
 }
 
 export function isRegisterDataBase(data: unknown): data is RegisterDataBase {
@@ -69,16 +62,16 @@ export function isSwarm(data: unknown): data is Swarm {
   return typeof extensionId === 'string'
 }
 
-export function isKeyData(data: unknown): data is KeyData {
-  const { privateKey, url } = (data || {}) as KeyData
+export function isStorageKeyData(data: unknown): data is KeyData<string> {
+  const { seed, url } = (data || {}) as KeyData<string>
 
-  return typeof privateKey === 'string' && typeof url === 'string'
+  return typeof seed === 'string' && typeof url === 'string'
 }
 
-export function isSession(data: unknown): data is Session {
-  const { username, network, key } = (data || {}) as Session
+export function isStorageSession(data: unknown): data is StorageSession {
+  const { username, network, key } = (data || {}) as StorageSession
 
-  return typeof username === 'string' && isNetwork(network) && isKeyData(key)
+  return typeof username === 'string' && isNetwork(network) && isStorageKeyData(key)
 }
 
 export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {

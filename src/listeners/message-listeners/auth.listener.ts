@@ -4,7 +4,6 @@ import {
   isLoginData,
   isRegisterData,
   isRegisterDataMnemonic,
-  isRegisterDataPrivateKey,
   isUsernameCheckData,
 } from '../../messaging/message.asserts'
 import {
@@ -31,9 +30,7 @@ export async function login({ username, password, network }: LoginData): Promise
 
   await fdp.account.login(username, password)
 
-  const { address, privateKey } = fdp.account.wallet
-
-  await session.open(username, address, network, privateKey)
+  await session.open(username, fdp.account.wallet.address, network, fdp.account.seed)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
@@ -42,25 +39,19 @@ export async function register(data: RegisterData): Promise<void> {
   const { username, password, network } = data
 
   try {
-    let wallet: Wallet
-
     await storage.setNetwork(network)
 
-    if (isRegisterDataPrivateKey(data)) {
-      wallet = new Wallet(data.privateKey)
-    } else if (isRegisterDataMnemonic(data)) {
-      wallet = Wallet.fromMnemonic(data.mnemonic)
+    const fdp = await fdpStorageProvider.getService()
+
+    if (isRegisterDataMnemonic(data)) {
+      fdp.account.setAccountFromMnemonic(data.mnemonic)
     } else {
       throw new Error('Private key or mnemonic must be set in order to register account')
     }
 
-    const fdp = await fdpStorageProvider.getService()
-
-    fdp.account.setActiveAccount(wallet)
-
     await fdp.account.register(username, password)
 
-    session.open(username, wallet.address, network, wallet.privateKey)
+    session.open(username, fdp.account.wallet.address, network, fdp.account.seed)
 
     console.log(`auth.listener: Successfully registered user ${username}`)
   } catch (error) {

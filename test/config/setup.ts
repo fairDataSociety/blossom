@@ -1,6 +1,6 @@
 import puppeteer, { Browser } from 'puppeteer'
 import path from 'path'
-import { getExtensionId } from '../utils/extension.util'
+import { getExtensionId } from '../test-utils/extension.util'
 
 const EXTENSION_ROOT = path.join(__dirname, '..', '..')
 const EXTENSION_DIST = path.join(EXTENSION_ROOT, 'dist')

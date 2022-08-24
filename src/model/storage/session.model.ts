@@ -1,14 +1,17 @@
-import { Account, PrivateKey } from '../general.types'
+import { Account } from '../general.types'
 import { Network } from './network.model'
 
-export interface KeyData {
-  privateKey: PrivateKey
+export interface KeyData<SeedType> {
+  seed: SeedType
   url: string
 }
 
-export interface Session {
+export interface Session<SeedType> {
   username: string
   network: Network
   account: Account
-  key: KeyData
+  key: KeyData<SeedType>
 }
+
+export type MemorySession = Session<Uint8Array>
+export type StorageSession = Session<string>

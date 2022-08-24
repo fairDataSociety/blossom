@@ -1,6 +1,6 @@
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { Session } from '../../model/storage/session.model'
+import { StorageSession } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
 import {
   sessionFactory,
@@ -171,12 +171,12 @@ export class Storage {
     return updateObject<Swarm>(Storage.swarmKey, swarm)
   }
 
-  public setSession(session: Session): Promise<void> {
-    return updateObject<Session>(Storage.sessionKey, session)
+  public setSession(session: StorageSession): Promise<void> {
+    return updateObject<StorageSession>(Storage.sessionKey, session)
   }
 
-  public getSession(): Promise<Session> {
-    return getObject<Session>(Storage.sessionKey, sessionFactory)
+  public getSession(): Promise<StorageSession> {
+    return getObject<StorageSession>(Storage.sessionKey, sessionFactory)
   }
 
   public deleteSession(): Promise<void> {
@@ -212,7 +212,7 @@ export class Storage {
     this.setListener(Storage.swarmKey, listener)
   }
 
-  public onSessionChange(listener: (session: Session) => void) {
+  public onSessionChange(listener: (session: StorageSession) => void) {
     this.setListener(Storage.sessionKey, listener)
   }
 

@@ -1,6 +1,6 @@
 import { ElementHandle, Page } from 'puppeteer'
-import { sendFunds } from './utils/ethers'
-import { openExtensionOptionsPage, setSwarmExtensionId } from './utils/extension.util'
+import { sendFunds } from './test-utils/ethers'
+import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
 import {
   click,
   dataTestId,
@@ -9,7 +9,7 @@ import {
   isElementDisabled,
   waitForElementText,
   waitForElementTextByTestId,
-} from './utils/page'
+} from './test-utils/page'
 
 function extractTextFromSpan(wordElement: ElementHandle<Element>): Promise<string> {
   return wordElement.$eval('span', (e) => e.innerHTML)
