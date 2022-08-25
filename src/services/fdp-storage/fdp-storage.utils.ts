@@ -1,12 +1,12 @@
+import { assertBeeUrl } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 
 export function dappUrlToId(url: string, beeUrl: string): DappId {
-  let bzzUrl = beeUrl + (beeUrl.endsWith('/') ? '' : '/') + 'bzz/'
+  assertBeeUrl(beeUrl)
 
-  if (!bzzUrl.startsWith('http')) {
-    bzzUrl = `http://${bzzUrl}`
-  }
+  const bzzUrl = beeUrl + (beeUrl.endsWith('/') ? '' : '/') + 'bzz/'
 
+  // extracts dApp ENS from a bzz link (e.g http://127.0.0.1:1633/bzz/ENS/...)
   const result = new RegExp(`${bzzUrl}([^/]+).*`).exec(url)
 
   if (!result || !result[1]) {
