@@ -79,3 +79,15 @@ export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
 
   return typeof accessor === 'string' && Array.isArray(parameters)
 }
+
+export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
+  const { accessor, parameters } = (data || {}) as FdpStorageRequest
+
+  return typeof accessor === 'string' && Array.isArray(parameters)
+}
+
+export function assertBeeUrl(url: string): asserts url {
+  if (!url || !(url.startsWith('http://') || url.startsWith('https://'))) {
+    throw new Error('Blossom: Invalid Bee URL')
+  }
+}

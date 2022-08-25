@@ -18,11 +18,7 @@ export interface ActionHandler<Data> {
 export function createMessageHandler(
   handlers: ActionHandler<unknown>[],
 ): (action: BackgroundAction, data: unknown, sender: chrome.runtime.MessageSender) => Promise<unknown> {
-  return (
-    action: BackgroundAction,
-    data: unknown,
-    sender: chrome.runtime.MessageSender,
-  ): Promise<unknown> => {
+  return (action, data, sender): Promise<unknown> => {
     const handlerObject = handlers.find((handler) => handler.action === action)
 
     if (!handlerObject) {
