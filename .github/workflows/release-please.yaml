@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
-        id: release
+        id: release-ext
         with:
+          token: ${{ secrets.REPO_GHA_PAT }}
           release-type: node
           package-name: 'blossom-ext'
-          pull-request-title-pattern: 'chore${scope}: release blossom ${version}'
+          pull-request-title-pattern: 'chore${scope}: release blossom-ext ${version}'
           monorepo-tags: true

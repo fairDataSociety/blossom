@@ -5,7 +5,7 @@ on:
   release:
     types: [published]
     tags-ignore:
-      - blossom-js-lib*
+      - blossom-lib*
   workflow_dispatch:
 
 jobs:

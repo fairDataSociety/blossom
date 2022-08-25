@@ -1,5 +1,6 @@
 import { Account } from '../model/general.types'
 import {
+  FdpStorageRequest,
   LoginData,
   NetworkEditData,
   RegisterData,
@@ -9,6 +10,7 @@ import {
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
+import { KeyData, Session } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
 
 export function isLoginData(data: unknown): data is LoginData {
@@ -65,4 +67,28 @@ export function isSwarm(data: unknown): data is Swarm {
   const { extensionId } = (data || {}) as Swarm
 
   return typeof extensionId === 'string'
+}
+
+export function isKeyData(data: unknown): data is KeyData {
+  const { privateKey, url } = (data || {}) as KeyData
+
+  return typeof privateKey === 'string' && typeof url === 'string'
+}
+
+export function isSession(data: unknown): data is Session {
+  const { username, network, key } = (data || {}) as Session
+
+  return typeof username === 'string' && isNetwork(network) && isKeyData(key)
+}
+
+export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
+  const { accessor, parameters } = (data || {}) as FdpStorageRequest
+
+  return typeof accessor === 'string' && Array.isArray(parameters)
+}
+
+export function assertBeeUrl(url: string): asserts url {
+  if (!url || !(url.startsWith('http://') || url.startsWith('https://'))) {
+    throw new Error('Blossom: Invalid Bee URL')
+  }
 }

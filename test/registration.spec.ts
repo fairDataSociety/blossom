@@ -63,6 +63,12 @@ async function fillUsernamePasswordForm(page: Page, username: string, password: 
   await (await getElementByTestId(page, 'submit')).click()
 }
 
+async function assertUserLogin(username: string): Promise<void> {
+  const settingsPage = await openExtensionOptionsPage(blossomId, 'settings.html')
+
+  expect(await extractTextFromSpan(await getElementByTestId(settingsPage, 'user-info'))).toEqual(username)
+}
+
 const blossomId: string = global.__BLOSSOM_ID__
 const username = 'test_user'
 const password = 'pass12345'
@@ -126,6 +132,8 @@ describe('Successful registration tests', () => {
     await sendFunds(privateKey, account, '0.1')
 
     expect(await waitForElementTextByTestId(page, 'complete')).toBeTruthy()
+
+    await assertUserLogin(username)
   })
 })
 
@@ -178,6 +186,8 @@ describe('Registration with an existing account', () => {
     await click(page, 'submit')
 
     expect(await waitForElementTextByTestId(page, 'complete')).toBeTruthy()
+
+    await assertUserLogin(username)
   })
 })
 
@@ -189,7 +199,9 @@ describe('Login tests', () => {
   })
 
   afterAll(async () => {
-    await page.close()
+    if (!page.isClosed()) {
+      await page.close()
+    }
   })
 
   test("Shouldn't login with wrong password", async () => {
@@ -204,6 +216,16 @@ describe('Login tests', () => {
     await page.reload()
     await fillUsernamePasswordForm(page, username, password)
 
-    // TODO check if successful when the feature gets completed
+    await assertUserLogin(username)
+
+    expect(page.isClosed()).toBeTruthy()
+  })
+
+  test('Should successfully logout', async () => {
+    const settingsPage = await openExtensionOptionsPage(blossomId, 'settings.html')
+
+    await click(settingsPage, 'logout-btn')
+
+    expect(await getElementByTestId(settingsPage, 'settings-registration-login-button')).toBeTruthy()
   })
 })

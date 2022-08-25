@@ -29,8 +29,7 @@ class PromiseHandles {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public resolve(data: any) {
+  public resolve(data: unknown) {
     this.clearTimeout()
     this.resolveHandle(data)
   }

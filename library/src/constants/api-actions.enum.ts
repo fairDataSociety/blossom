@@ -1,5 +1,4 @@
 export enum ApiActions {
-  LOGIN = 'login',
-  REGISTER = 'register',
+  FDP_STORAGE = 'fdp-storage',
   ECHO = 'echo',
 }

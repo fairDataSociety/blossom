@@ -37,6 +37,8 @@ const Login = () => {
         password,
         network: networks.find((network) => network.label === networkLabel),
       })
+
+      chrome.tabs.getCurrent((tab) => chrome.tabs.remove(tab.id))
     } catch (error) {
       console.error(error)
 
