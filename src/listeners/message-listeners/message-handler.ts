@@ -7,7 +7,7 @@ import BackgroundAction from '../../constants/background-actions.enum'
 export interface ActionHandler<Data> {
   action: BackgroundAction
   assert?: (data: unknown) => data is Data
-  handler: (data: Data) => Promise<unknown>
+  handler: (data: Data, sender?: chrome.runtime.MessageSender) => Promise<unknown>
 }
 
 /**
@@ -17,8 +17,8 @@ export interface ActionHandler<Data> {
  */
 export function createMessageHandler(
   handlers: ActionHandler<unknown>[],
-): (action: BackgroundAction, data: unknown) => Promise<unknown> {
-  return (action: BackgroundAction, data: unknown): Promise<unknown> => {
+): (action: BackgroundAction, data: unknown, sender: chrome.runtime.MessageSender) => Promise<unknown> {
+  return (action, data, sender): Promise<unknown> => {
     const handlerObject = handlers.find((handler) => handler.action === action)
 
     if (!handlerObject) {
@@ -31,6 +31,6 @@ export function createMessageHandler(
       return Promise.reject(`Blossom: Invalid message data for action ${action}`)
     }
 
-    return handler(data)
+    return handler(data, sender)
   }
 }

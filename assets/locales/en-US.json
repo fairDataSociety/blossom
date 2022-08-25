@@ -34,6 +34,7 @@
   "USERNAME_NOT_AVAILABLE": "Username is not available",
   "CANNOT_CHECK_USERNAME": "Cannot check username. Network currently unavailable",
   "CONFIRM": "Confirm",
+  "CANCEL": "Cancel",
   "SETTINGS": "Settings",
   "NETWORK": "Network",
   "NETWORK_SETTINGS_DESCRIPTION": "Configure your network settings here, like RPC server...",
@@ -52,5 +53,6 @@
   "SWARM": "Swarm",
   "SWARM_DESCRIPTION": "Configure your Swarm extension",
   "SWARM_EXTENSION_ID": "Swarm Extension ID",
-  "SWARM_EXTENSION_ERROR": "Couldn't connect to the Swarm extension. Check if you set the correct extension ID."
+  "SWARM_EXTENSION_ERROR": "Couldn't connect to the Swarm extension. Check if you set the correct extension ID.",
+  "DIALOG_CREATE_POD": "Do you want to allow the {name} dApp to create and use a new pod?"
 }

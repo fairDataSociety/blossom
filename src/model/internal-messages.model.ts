@@ -44,3 +44,21 @@ export interface NetworkEditData {
   label: string
   network: Network
 }
+
+/**
+ * fdp-storage request
+ * It describes which method a dApp wants to invoke and with which parameters
+ * @param accessor is a complete path of a method that belongs to the fdp-storage object.
+ * For example, to invoke the fdpStorageInstance.personalStorage.create method,
+ * the accessor property will have the value 'personalStorage.create'
+ * @param parameters is an array of all parameters that the method expects
+ */
+export interface FdpStorageRequest {
+  accessor: string
+  parameters: unknown[]
+}
+
+export interface DialogQuestion {
+  question: string
+  placeholders: Record<string, string>
+}

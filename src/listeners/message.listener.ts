@@ -7,8 +7,6 @@ chrome.runtime.onMessage.addListener(
     sender: chrome.runtime.MessageSender,
     sendResponse: (response?: MessageResponse<unknown>) => void,
   ) => {
-    messageHandler(message, sender, sendResponse)
-
-    return true
+    return messageHandler(message, sender, sendResponse)
   },
 )
