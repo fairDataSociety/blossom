@@ -1,8 +1,9 @@
 import AES from 'crypto-js/aes'
 import encHex from 'crypto-js/enc-hex'
 import { utils } from 'ethers'
+import { Bytes } from '../model/general.types'
 
-function wordsToUint8Array(words: number[]) {
+function wordsToUint8Array(words: number[]): Uint8Array {
   const length = words.length
   const unit8Array = new Uint8Array(length << 2)
   let offset = 0
@@ -19,7 +20,12 @@ function wordsToUint8Array(words: number[]) {
   return unit8Array
 }
 
-function removePaddingBytesFromSeed(seed: Uint8Array): Uint8Array {
+/**
+ * Removes bytes that are added by AES algorithm.
+ * @param seed Array of bytes returned by AES after decryption of a seed
+ * @returns real 64 bytes of a seed
+ */
+function removePaddingBytesFromSeed(seed: Bytes<80>): Bytes<64> {
   const length = seed.length
   const unit8Array = new Uint8Array(length - 16)
 
@@ -30,10 +36,10 @@ function removePaddingBytesFromSeed(seed: Uint8Array): Uint8Array {
   return unit8Array
 }
 
-export function aesEncryptBytes(bytes: Uint8Array, key: string): string {
+export function aesEncryptBytes(bytes: Bytes<64>, key: string): string {
   return AES.encrypt(encHex.parse(utils.hexlify(bytes)), key).toString()
 }
 
-export function decryptSeed(seed: string, key: string): Uint8Array {
+export function decryptSeed(seed: string, key: string): Bytes<64> {
   return removePaddingBytesFromSeed(wordsToUint8Array(AES.decrypt(seed, key).words))
 }
