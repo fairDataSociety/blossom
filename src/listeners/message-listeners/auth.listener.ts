@@ -1,13 +1,15 @@
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
 import {
-  isLoginData,
+  isEnsLoginData,
+  isLocalLoginData,
   isRegisterData,
   isRegisterDataMnemonic,
   isUsernameCheckData,
 } from '../../messaging/message.asserts'
 import {
-  LoginData,
+  EnsLoginData,
+  LocalLoginData,
   RegisterData,
   RegisterResponse,
   UsernameCheckData,
@@ -23,7 +25,7 @@ const fdpStorageProvider = new SessionlessFdpStorageProvider()
 const storage = new Storage()
 const session = new SessionService()
 
-export async function login({ username, password, network }: LoginData): Promise<void> {
+export async function login({ username, password, network }: EnsLoginData): Promise<void> {
   await storage.setNetwork(network)
 
   const fdp = await fdpStorageProvider.getService()
@@ -33,6 +35,18 @@ export async function login({ username, password, network }: LoginData): Promise
   await session.open(username, fdp.account.wallet.address, network, fdp.account.seed)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
+}
+
+export async function localLogin({ username, mnemonic, network }: LocalLoginData): Promise<void> {
+  await storage.setNetwork(network)
+
+  const fdp = await fdpStorageProvider.getService()
+
+  fdp.account.setAccountFromMnemonic(mnemonic)
+
+  await session.open(username, fdp.account.wallet.address, network, fdp.account.seed, true)
+
+  console.log(`auth.listener: Successfully logged in user locally`)
 }
 
 export async function register(data: RegisterData): Promise<void> {
@@ -97,12 +111,13 @@ export async function getCurrentUser(): Promise<UserResponse> {
     return null
   }
 
-  const { username, account, network } = sessionData
+  const { username, account, network, local } = sessionData
 
   return {
     username,
     account,
     network,
+    local,
   }
 }
 
@@ -113,8 +128,13 @@ export function logout(): Promise<void> {
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGIN,
-    assert: isLoginData,
+    assert: isEnsLoginData,
     handler: login,
+  },
+  {
+    action: BackgroundAction.LOCAL_LOGIN,
+    assert: isLocalLoginData,
+    handler: localLogin,
   },
   {
     action: BackgroundAction.REGISTER,

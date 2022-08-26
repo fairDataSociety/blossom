@@ -54,5 +54,9 @@
   "SWARM_DESCRIPTION": "Configure your Swarm extension",
   "SWARM_EXTENSION_ID": "Swarm Extension ID",
   "SWARM_EXTENSION_ERROR": "Couldn't connect to the Swarm extension. Check if you set the correct extension ID.",
-  "DIALOG_CREATE_POD": "Do you want to allow the {name} dApp to create and use a new pod?"
+  "DIALOG_CREATE_POD": "Do you want to allow the {name} dApp to create and use a new pod?",
+  "LOCAL_LOGIN_LABEL": "Local login only",
+  "LOCAL_LOGIN_DESCRIPTION": "Login without ENS. Your credentials will be stored locally.",
+  "OPTIONAL": "Optional",
+  "ANONYMOUS": "Anonymous"
 }

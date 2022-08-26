@@ -1,8 +1,8 @@
 import { isStorageSession } from '../messaging/message.asserts'
-import { Account } from '../model/general.types'
+import { Account, Bytes } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
 import { MemorySession, KeyData, StorageSession } from '../model/storage/session.model'
-import { aesEncryptBytes, decryptSeed } from '../utils/encryption'
+import { aesEncryptBytes, decryptSeed, seedToBytes, seedToString } from '../utils/encryption'
 import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
 import { Storage } from './storage/storage.service'
@@ -10,8 +10,14 @@ import { Storage } from './storage/storage.service'
 export class SessionService {
   private storage: Storage = new Storage()
 
-  public async open(username: string, account: Account, network: Network, seed: Uint8Array): Promise<void> {
-    const key = await this.encryptSeed(seed)
+  public async open(
+    username: string,
+    account: Account,
+    network: Network,
+    seed: Uint8Array,
+    local?: boolean,
+  ): Promise<void> {
+    const key = local ? this.generateLocalKey(seed) : await this.encryptSeed(seed)
 
     removeWarningBadge()
 
@@ -20,6 +26,7 @@ export class SessionService {
       network,
       account,
       key,
+      local,
     })
   }
 
@@ -57,7 +64,7 @@ export class SessionService {
 
     const memorySession: MemorySession = session as unknown as MemorySession
 
-    memorySession.key.seed = await this.decryptSeed(session)
+    memorySession.key.seed = session.local ? seedToBytes(session.key.seed) : await this.decryptSeed(session)
 
     if (!session.key.seed) {
       this.storage.deleteSession()
@@ -116,5 +123,12 @@ export class SessionService {
 
   private generateRandomUrl(): string {
     return `https://www.${generateRandomString(50)}.com`
+  }
+
+  private generateLocalKey(seed: Bytes<64>): KeyData<string> {
+    return {
+      seed: seedToString(seed),
+      url: this.generateRandomUrl(),
+    }
   }
 }

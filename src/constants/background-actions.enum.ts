@@ -1,5 +1,6 @@
 enum BackgroundAction {
   LOGIN = 'login',
+  LOCAL_LOGIN = 'local-login',
   REGISTER = 'register',
   LOGOUT = 'logout',
   CHECK_USERNAME = 'check-username',

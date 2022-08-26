@@ -43,3 +43,19 @@ export function aesEncryptBytes(bytes: Bytes<64>, key: string): string {
 export function decryptSeed(seed: string, key: string): Bytes<64> {
   return removePaddingBytesFromSeed(wordsToUint8Array(AES.decrypt(seed, key).words))
 }
+
+export function seedToString(seed: Bytes<64>): string {
+  return JSON.stringify(seed)
+}
+
+export function seedToBytes(seed: string): Bytes<64> {
+  const seedObject = JSON.parse(seed)
+
+  const bytes = new Uint8Array(64)
+
+  for (let i = 0; i < 64; i++) {
+    bytes[i] = Number(seedObject[i])
+  }
+
+  return bytes
+}

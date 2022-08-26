@@ -1,9 +1,15 @@
 import { Network } from './storage/network.model'
 import { Account, Mnemonic, PrivateKey } from './general.types'
 
-export interface LoginData {
+export interface EnsLoginData {
   username: string
   password: string
+  network: Network
+}
+
+export interface LocalLoginData {
+  username?: string
+  mnemonic: Mnemonic
   network: Network
 }
 
@@ -34,6 +40,7 @@ export interface UserResponse {
   username: string
   account: Account
   network: Network
+  local: boolean
 }
 
 export interface NetworkEditData {

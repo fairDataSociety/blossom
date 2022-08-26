@@ -2,7 +2,8 @@ import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
 import { Account } from '../model/general.types'
 import {
-  LoginData,
+  EnsLoginData,
+  LocalLoginData,
   NetworkEditData,
   RegisterData,
   RegisterResponse,
@@ -14,8 +15,12 @@ import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
 
-export function login(data: LoginData): Promise<void> {
-  return sendMessage<LoginData, void>(BackgroundAction.LOGIN, data)
+export function login(data: EnsLoginData): Promise<void> {
+  return sendMessage<EnsLoginData, void>(BackgroundAction.LOGIN, data)
+}
+
+export function localLogin(data: LocalLoginData): Promise<void> {
+  return sendMessage<LocalLoginData, void>(BackgroundAction.LOCAL_LOGIN, data)
 }
 
 export function register(data: RegisterData): Promise<RegisterResponse> {
