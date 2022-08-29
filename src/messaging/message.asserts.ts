@@ -21,9 +21,9 @@ export function isLoginData(data: unknown): data is LoginData {
 }
 
 export function isLocalLoginData(data: unknown): data is LocalLoginData {
-  const { name, password } = (data || {}) as LocalLoginData
+  const { name, password, network } = (data || {}) as LocalLoginData
 
-  return Boolean(typeof name === 'string' && typeof password === 'string')
+  return Boolean(typeof name === 'string' && typeof password === 'string' && isNetwork(network))
 }
 
 export function isRegisterData(data: unknown): data is RegisterData {
@@ -83,10 +83,10 @@ export function isStorageKeyData(data: unknown): data is KeyData<string> {
 }
 
 export function isStorageSession(data: unknown): data is StorageSession {
-  const { username, account, network, key } = (data || {}) as StorageSession
+  const { ensUserName, localUserName, network, key } = (data || {}) as StorageSession
 
   return (
-    (typeof username === 'string' || typeof account === 'string') &&
+    (typeof ensUserName === 'string' || typeof localUserName === 'string') &&
     isNetwork(network) &&
     isStorageKeyData(key)
   )

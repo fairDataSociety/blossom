@@ -7,12 +7,18 @@ export interface KeyData<SeedType> {
 }
 
 export interface Session<SeedType> {
-  username?: string
-  account?: string
+  ensUserName?: string
+  localUserName?: string
   network: Network
   address: Address
   key: KeyData<SeedType>
 }
 
+/**
+ * Different versions of session for storage and memory
+ * The difference is in the type of seed
+ * In the storage the seed is saved as a hex string
+ * while in memory it's converted to bytes
+ */
 export type MemorySession = Session<Bytes<64>>
 export type StorageSession = Session<string>

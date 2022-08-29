@@ -227,6 +227,17 @@ export class Storage {
     return updateObject<Accounts>(Storage.accountsKey, accounts)
   }
 
+  public async updateAccount(name: string, update: Partial<StorageAccount>): Promise<void> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    accounts[name.toLowerCase()] = {
+      ...accounts[name],
+      ...update,
+    }
+
+    return updateObject<Accounts>(Storage.accountsKey, accounts)
+  }
+
   public deleteAccounts(): Promise<void> {
     return deleteEntry(Storage.accountsKey)
   }

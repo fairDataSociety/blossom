@@ -1,95 +1,122 @@
-import AES from 'crypto-js/aes'
-import encHex from 'crypto-js/enc-hex'
-import WordArray from 'crypto-js/lib-typedarrays'
-import sha3 from 'crypto-js/sha3'
-import pbkdf2 from 'crypto-js/pbkdf2'
-import { utils } from 'ethers'
-import { Bytes } from '../model/general.types'
+import CryptoJS from 'crypto-js'
+import { Bytes, HexString } from '../model/general.types'
 
-export function wordsToUint8Array(words: number[]): Uint8Array {
-  const length = words.length
-  const unit8Array = new Uint8Array(length << 2)
-  let offset = 0
-  let word
+export const IV_LENGTH = 16
 
-  for (let i = 0; i < length; i++) {
-    word = words[i]
-    unit8Array[offset++] = word >> 24
-    unit8Array[offset++] = (word >> 16) & 0xff
-    unit8Array[offset++] = (word >> 8) & 0xff
-    unit8Array[offset++] = word & 0xff
+/**
+ * Converts array of number or Uint8Array to HexString without prefix.
+ *
+ * @param bytes   The input array
+ * @param len     The length of the non prefixed HexString
+ */
+export function bytesToHex<Length extends number = number>(
+  bytes: Uint8Array,
+  len?: Length,
+): HexString<Length> {
+  const hexByte = (n: number) => n.toString(16).padStart(2, '0')
+  const hex = Array.from(bytes, hexByte).join('') as HexString<Length>
+
+  if (len && hex.length !== len) {
+    throw new TypeError(`Resulting HexString does not have expected length ${len}: ${hex}`)
   }
 
-  return unit8Array
-}
-
-export function wordsToWordArray(words: number[]): WordArray {
-  return WordArray.create(words)
+  return hex
 }
 
 /**
- * Removes bytes that are added by AES algorithm.
- * @param seed Array of bytes returned by AES after decryption of a seed
- * @returns real 64 bytes of a seed
+ * Converts a hex string to Uint8Array
+ *
+ * @param hex string input without 0x prefix!
  */
-function removePaddingBytesFromSeed(seed: Bytes<80>): Bytes<64> {
-  const length = seed.length
-  const unit8Array = new Uint8Array(length - 16)
-
-  for (let i = 1; i < length - 15; i++) {
-    unit8Array[i - 1] = seed[i]
+export function hexToBytes<Length extends number, LengthHex extends number = number>(
+  hex: HexString<LengthHex>,
+): Bytes<Length> {
+  const bytes = new Uint8Array(hex.length / 2) as Bytes<Length>
+  for (let i = 0; i < bytes.length; i++) {
+    const hexByte = hex.substr(i * 2, 2)
+    bytes[i] = parseInt(hexByte, 16)
   }
 
-  return unit8Array
+  return bytes as Bytes<Length>
 }
 
-export function aesEncyptSeedWithBytesKey(bytes: Bytes<64>, key: WordArray): string {
-  return AES.encrypt(bytesToWordArray(bytes), key.toString()).toString()
+/**
+ * Converts CryptoJS WordArray to hex string
+ */
+export function wordArrayToHex<LengthHex extends number = number>(
+  words: CryptoJS.lib.WordArray,
+): HexString<LengthHex> {
+  return CryptoJS.enc.Hex.stringify(words)
 }
 
-export function aesEncryptSeedWithStringKey(bytes: Bytes<64>, key: string): string {
-  return AES.encrypt(bytesToWordArray(bytes), key).toString()
+/**
+ * Converts hex string to CryptoJS WordArray
+ */
+export function hexToWordArray<LengthHex extends number = number>(
+  hex: HexString<LengthHex>,
+): CryptoJS.lib.WordArray {
+  return CryptoJS.enc.Hex.parse(hex)
 }
 
-export function decryptSeedWithBytesKey(seed: string, key: WordArray): Bytes<64> {
-  return removePaddingBytesFromSeed(wordsToUint8Array(AES.decrypt(seed, key.toString()).words))
+/**
+ * Converts bytes to CryptoJS WordArray
+ */
+export function bytesToWordArray(data: Uint8Array): CryptoJS.lib.WordArray {
+  return CryptoJS.enc.Hex.parse(bytesToHex(data))
 }
 
-export function decryptSeed(seed: string, key: string): Bytes<64> {
-  return removePaddingBytesFromSeed(wordsToUint8Array(AES.decrypt(seed, key).words))
+/**
+ * Converts CryptoJS WordArray to bytes
+ */
+export function wordArrayToBytes(words: CryptoJS.lib.WordArray): Uint8Array {
+  return hexToBytes(CryptoJS.enc.Hex.stringify(words))
 }
 
-export function seedToString(seed: Bytes<64>): string {
-  return JSON.stringify(seed)
-}
+/**
+ * Encrypt WordArray with password
+ *
+ * @param password string for text encryption
+ * @param data WordArray to be encrypted
+ * @param customIv initial vector for AES. In case of absence, a random vector will be created
+ */
+export function encrypt(
+  password: string,
+  data: CryptoJS.lib.WordArray | string,
+  customIv?: CryptoJS.lib.WordArray,
+): CryptoJS.lib.WordArray {
+  const iv = customIv || CryptoJS.lib.WordArray.random(IV_LENGTH)
+  const key = CryptoJS.SHA256(password)
 
-export function seedToBytes(seed: string): Bytes<64> {
-  const seedObject = JSON.parse(seed)
-
-  const bytes = new Uint8Array(64)
-
-  for (let i = 0; i < 64; i++) {
-    bytes[i] = Number(seedObject[i])
-  }
-
-  return bytes
-}
-
-export function generateSalt(): WordArray {
-  return WordArray.random(128 / 8)
-}
-
-export function passwordToKey(password: string, salt: WordArray): WordArray {
-  return pbkdf2(password, salt, {
-    keySize: 512 / 32,
-    iterations: 1000,
+  const cipherParams = CryptoJS.AES.encrypt(data, key, {
+    iv,
+    mode: CryptoJS.mode.CFB,
+    padding: CryptoJS.pad.NoPadding,
   })
+
+  return iv.concat(cipherParams.ciphertext)
 }
 
-export function bytesToWordArray(bytes: Uint8Array): WordArray {
-  return encHex.parse(utils.hexlify(bytes))
-}
+/**
+ * Decrypts WordsArray with password
+ *
+ * @param password string to decrypt bytes
+ * @param data WordsArray to be decrypted
+ */
+export function decrypt(password: string, data: CryptoJS.lib.WordArray): CryptoJS.lib.WordArray {
+  const wordSize = 4
+  const key = CryptoJS.SHA256(password)
+  const iv = CryptoJS.lib.WordArray.create(data.words.slice(0, IV_LENGTH), IV_LENGTH)
+  const textBytes = CryptoJS.lib.WordArray.create(
+    data.words.slice(IV_LENGTH / wordSize),
+    data.sigBytes - IV_LENGTH,
+  )
+  const cipherParams = CryptoJS.lib.CipherParams.create({
+    ciphertext: textBytes,
+  })
 
-export function hashSeed(seed: Uint8Array): WordArray {
-  return sha3(bytesToWordArray(seed))
+  return CryptoJS.AES.decrypt(cipherParams, key, {
+    iv,
+    mode: CryptoJS.mode.CFB,
+    padding: CryptoJS.pad.NoPadding,
+  })
 }

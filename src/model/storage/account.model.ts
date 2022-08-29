@@ -5,11 +5,15 @@ export interface Account<SeedType> {
   name: string
   address: Address
   seed: SeedType
-  salt: number[]
-  hash: number[]
   network: Network
 }
 
+/**
+ * Different versions of account for storage and memory
+ * The difference is in the type of seed
+ * In the storage the seed is saved as a hex string
+ * while in memory it's converted to bytes
+ */
 export type MemoryAccount = Account<Bytes<64>>
 export type StorageAccount = Account<string>
 

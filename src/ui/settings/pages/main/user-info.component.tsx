@@ -20,7 +20,7 @@ export interface UserInfoProps {
   onLogout: () => void
 }
 
-const UserInfo = ({ user: { username, account, network }, onLogout }: UserInfoProps) => {
+const UserInfo = ({ user: { ensUserName, localUserName, network }, onLogout }: UserInfoProps) => {
   const theme = useTheme()
 
   return (
@@ -32,8 +32,12 @@ const UserInfo = ({ user: { username, account, network }, onLogout }: UserInfoPr
               <AccountCircle />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={username || account} secondary={network?.label} data-testid="user-info" />
-          {account && (
+          <ListItemText
+            primary={ensUserName || localUserName}
+            secondary={network?.label}
+            data-testid="user-info"
+          />
+          {localUserName && (
             <Tooltip title={intl.get('LOCAL_LOGIN_LABEL')}>
               <Home sx={{ color: theme.palette.border.main }} />
             </Tooltip>

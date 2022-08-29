@@ -42,10 +42,26 @@ export async function login({ username, password, network }: LoginData): Promise
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
 
-export async function localLogin({ name, password }: LocalLoginData): Promise<void> {
-  const { address, seed, network } = await account.load(name, password)
+export async function localLogin({ name, password, network }: LocalLoginData): Promise<void> {
+  const { address, seed } = await account.load(name, password)
+
+  const fdp = await fdpStorageProvider.getService()
+
+  try {
+    fdp.account.setAccountFromSeed(seed)
+
+    if (address !== fdp.account.wallet.address) {
+      throw new Error('Incorrect password')
+    }
+  } catch (error) {
+    fdpStorageProvider = new SessionlessFdpStorageProvider()
+
+    throw error
+  }
 
   await session.open(null, name, address, network, seed)
+
+  await storage.updateAccount(name, { network })
 
   console.log(`auth.listener: Successfully logged in with local account ${name}`)
 }
@@ -140,11 +156,11 @@ export async function getCurrentUser(): Promise<UserResponse> {
     return null
   }
 
-  const { username, account, address, network } = sessionData
+  const { ensUserName, localUserName, address, network } = sessionData
 
   return {
-    username,
-    account,
+    ensUserName,
+    localUserName,
     address,
     network,
   }

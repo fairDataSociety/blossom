@@ -9,10 +9,12 @@ import NoAccounts from './no-accounts'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
 import FieldSpinner from '../../../common/components/field-spinner/field-spinner.component'
 import { localLogin } from '../../../../messaging/content-api.messaging'
+import { useNetworks } from '../../../common/hooks/networks.hooks'
 
 interface FormFields {
   name: string
   password: string
+  networkLabel: string
 }
 
 const LocalLogin = () => {
@@ -24,13 +26,18 @@ const LocalLogin = () => {
   const [error, setError] = useState<string>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const { accounts } = useAccounts()
+  const { networks, selectedNetwork } = useNetworks()
 
-  const onSubmit = async ({ name, password }: FormFields) => {
+  const onSubmit = async ({ name, password, networkLabel }: FormFields) => {
     setError(null)
     setLoading(true)
 
     try {
-      await localLogin({ name, password })
+      await localLogin({
+        name,
+        password,
+        network: networks.find((network) => network.label === networkLabel),
+      })
 
       chrome.tabs.getCurrent((tab) => chrome.tabs.remove(tab.id))
     } catch (error) {
@@ -48,7 +55,17 @@ const LocalLogin = () => {
     }
   }
 
-  if (!accounts) {
+  const getDefaultNetwork = () => {
+    const accountNetwork = accounts[0].network
+
+    if (accountNetwork && networks.some(({ label }) => label === accountNetwork.label)) {
+      return accountNetwork.label
+    }
+
+    return selectedNetwork.label
+  }
+
+  if (!accounts || !networks) {
     return null
   }
 
@@ -84,7 +101,20 @@ const LocalLogin = () => {
           helperText={errors.password && intl.get('PASSWORD_REQUIRED_ERROR')}
           data-testid="password"
         />
-
+        <div>
+          <Select
+            defaultValue={getDefaultNetwork()}
+            variant="outlined"
+            fullWidth
+            {...register('networkLabel', { required: true })}
+          >
+            {networks.map(({ label }) => (
+              <MenuItem key={label} value={label}>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Button
           color="primary"

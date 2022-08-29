@@ -2,12 +2,12 @@ import { Bytes } from '../model/general.types'
 import { MemoryAccount } from '../model/storage/account.model'
 import { Network } from '../model/storage/network.model'
 import {
-  aesEncyptSeedWithBytesKey,
-  decryptSeedWithBytesKey,
-  generateSalt,
-  hashSeed,
-  passwordToKey,
-  wordsToWordArray,
+  bytesToWordArray,
+  decrypt,
+  encrypt,
+  hexToWordArray,
+  wordArrayToBytes,
+  wordArrayToHex,
 } from '../utils/encryption'
 import { Storage } from './storage/storage.service'
 
@@ -31,8 +31,7 @@ export class AccountService {
       name,
       address,
       network,
-      hash: hashSeed(seed).words,
-      ...this.encryptSeed(seed, password),
+      seed: this.encryptSeed(seed, password),
     })
   }
 
@@ -45,25 +44,16 @@ export class AccountService {
 
     const memoryAccount: MemoryAccount = account as unknown as MemoryAccount
 
-    memoryAccount.seed = this.decryptSeed(account.seed, password, account.salt)
-
-    if (hashSeed(memoryAccount.seed).toString() !== wordsToWordArray(memoryAccount.hash).toString()) {
-      throw new Error('Incorrect password')
-    }
+    memoryAccount.seed = this.decryptSeed(account.seed, password)
 
     return memoryAccount
   }
 
-  private encryptSeed(seed: Bytes<64>, password: string): { seed: string; salt: number[] } {
-    const salt = generateSalt()
-
-    return {
-      seed: aesEncyptSeedWithBytesKey(seed, passwordToKey(password, salt)),
-      salt: salt.words,
-    }
+  private encryptSeed(seed: Bytes<64>, password: string): string {
+    return wordArrayToHex(encrypt(password, bytesToWordArray(seed)))
   }
 
-  private decryptSeed(seed: string, password: string, salt: number[]): Bytes<64> {
-    return decryptSeedWithBytesKey(seed, passwordToKey(password, wordsToWordArray(salt)))
+  private decryptSeed(seed: string, password: string): Bytes<64> {
+    return wordArrayToBytes(decrypt(password, hexToWordArray(seed)))
   }
 }

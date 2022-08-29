@@ -2,7 +2,14 @@ import { isStorageSession } from '../messaging/message.asserts'
 import { Address } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
 import { MemorySession, KeyData, StorageSession } from '../model/storage/session.model'
-import { aesEncryptSeedWithStringKey, decryptSeed } from '../utils/encryption'
+import {
+  bytesToWordArray,
+  decrypt,
+  encrypt,
+  hexToWordArray,
+  wordArrayToBytes,
+  wordArrayToHex,
+} from '../utils/encryption'
 import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
 import { Storage } from './storage/storage.service'
@@ -11,8 +18,8 @@ export class SessionService {
   private storage: Storage = new Storage()
 
   public async open(
-    username: string,
-    account: string,
+    ensUserName: string,
+    localUserName: string,
     address: Address,
     network: Network,
     seed: Uint8Array,
@@ -22,8 +29,8 @@ export class SessionService {
     removeWarningBadge()
 
     return this.storage.setSession({
-      username,
-      account,
+      ensUserName,
+      localUserName,
       network,
       address,
       key,
@@ -82,7 +89,7 @@ export class SessionService {
     const sessionKey = generateRandomString(128)
     const url = this.generateRandomUrl()
 
-    const encryptedSeed = aesEncryptSeedWithStringKey(seed, sessionKey)
+    const encryptedSeed = wordArrayToHex(encrypt(sessionKey, bytesToWordArray(seed)))
 
     await chrome.cookies.set({
       url,
@@ -118,7 +125,7 @@ export class SessionService {
       return
     }
 
-    return decryptSeed(encryptedSeed, sessionKey)
+    return wordArrayToBytes(decrypt(sessionKey, hexToWordArray(encryptedSeed)))
   }
 
   private generateRandomUrl(): string {

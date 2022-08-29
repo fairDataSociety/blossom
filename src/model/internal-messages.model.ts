@@ -10,6 +10,7 @@ export interface LoginData {
 export interface LocalLoginData {
   name: string
   password: string
+  network: Network
 }
 
 export interface RegisterDataBase {
@@ -43,8 +44,8 @@ export interface RegisterResponse {
 }
 
 export interface UserResponse {
-  username?: string
-  account?: string
+  ensUserName?: string
+  localUserName?: string
   address: Address
   network: Network
 }
