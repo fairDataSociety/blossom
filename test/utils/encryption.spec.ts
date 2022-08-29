@@ -1,4 +1,4 @@
-import { aesEncryptBytes, decryptSeed } from '../../src/utils/encryption'
+import { aesEncryptSeedWithStringKey, decryptSeed } from '../../src/utils/encryption'
 
 function randomIntegerString(): string {
   return Math.random().toString().slice(2)
@@ -14,7 +14,7 @@ describe('utils/encryption.ts module tests', () => {
 
     const key = randomIntegerString()
 
-    const encryptedString = aesEncryptBytes(bytes, key)
+    const encryptedString = aesEncryptSeedWithStringKey(bytes, key)
 
     const decryptedBytes = decryptSeed(encryptedString, key)
 

@@ -5,6 +5,9 @@ const lightTheme = createTheme({
     border: {
       main: '#ddd',
     },
+    tertiary: {
+      main: '#391',
+    },
   },
 })
 

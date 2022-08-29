@@ -1,52 +1,81 @@
 import { Wallet } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
 import {
-  isEnsLoginData,
+  isImportAccountData,
   isLocalLoginData,
+  isLoginData,
   isRegisterData,
   isRegisterDataMnemonic,
   isUsernameCheckData,
 } from '../../messaging/message.asserts'
 import {
-  EnsLoginData,
+  AccountResponse,
+  ImportAccountData,
   LocalLoginData,
+  LoginData,
   RegisterData,
   RegisterResponse,
   UsernameCheckData,
   UserResponse,
 } from '../../model/internal-messages.model'
+import { AccountService } from '../../services/account.service'
 import { SessionlessFdpStorageProvider } from '../../services/fdp-storage/sessionless-fdp-storage.provider'
 import { SessionService } from '../../services/session.service'
 import { Storage } from '../../services/storage/storage.service'
 import { openTab } from '../../utils/tabs'
 import { createMessageHandler } from './message-handler'
 
-const fdpStorageProvider = new SessionlessFdpStorageProvider()
+let fdpStorageProvider = new SessionlessFdpStorageProvider()
 const storage = new Storage()
 const session = new SessionService()
+const account = new AccountService()
 
-export async function login({ username, password, network }: EnsLoginData): Promise<void> {
+export async function login({ username, password, network }: LoginData): Promise<void> {
   await storage.setNetwork(network)
 
   const fdp = await fdpStorageProvider.getService()
 
   await fdp.account.login(username, password)
 
-  await session.open(username, fdp.account.wallet.address, network, fdp.account.seed)
+  await session.open(username, null, fdp.account.wallet.address, network, fdp.account.seed)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
 
-export async function localLogin({ username, mnemonic, network }: LocalLoginData): Promise<void> {
+export async function localLogin({ name, password }: LocalLoginData): Promise<void> {
+  const { address, seed, network } = await account.load(name, password)
+
+  await session.open(null, name, address, network, seed)
+
+  console.log(`auth.listener: Successfully logged in with local account ${name}`)
+}
+
+export async function importAccount({ name, password, mnemonic, network }: ImportAccountData): Promise<void> {
   await storage.setNetwork(network)
 
   const fdp = await fdpStorageProvider.getService()
 
-  fdp.account.setAccountFromMnemonic(mnemonic)
+  try {
+    Wallet.fromMnemonic(mnemonic)
+  } catch (error) {
+    throw new Error('Invalid mnemonic')
+  }
 
-  await session.open(username, fdp.account.wallet.address, network, fdp.account.seed, true)
+  try {
+    fdp.account.setAccountFromMnemonic(mnemonic)
 
-  console.log(`auth.listener: Successfully logged in user locally`)
+    const { wallet, seed } = fdp.account
+
+    await account.create(name, wallet.address, password, seed, network)
+
+    await session.open(null, name, wallet.address, network, seed)
+
+    console.log(`auth.listener: Successfully imported account ${name}`)
+  } catch (error) {
+    fdpStorageProvider = new SessionlessFdpStorageProvider()
+
+    throw error
+  }
 }
 
 export async function register(data: RegisterData): Promise<void> {
@@ -65,7 +94,7 @@ export async function register(data: RegisterData): Promise<void> {
 
     await fdp.account.register(username, password)
 
-    session.open(username, fdp.account.wallet.address, network, fdp.account.seed)
+    session.open(username, null, fdp.account.wallet.address, network, fdp.account.seed)
 
     console.log(`auth.listener: Successfully registered user ${username}`)
   } catch (error) {
@@ -85,10 +114,10 @@ export async function isUsernameAvailable({ username, network }: UsernameCheckDa
 export async function generateWallet(): Promise<RegisterResponse> {
   try {
     const wallet = Wallet.createRandom()
-    const account = await wallet.getAddress()
+    const address = await wallet.getAddress()
 
     return {
-      account,
+      address,
       privateKey: wallet.privateKey,
       mnemonic: wallet.mnemonic.phrase,
     }
@@ -111,14 +140,24 @@ export async function getCurrentUser(): Promise<UserResponse> {
     return null
   }
 
-  const { username, account, network, local } = sessionData
+  const { username, account, address, network } = sessionData
 
   return {
     username,
     account,
+    address,
     network,
-    local,
   }
+}
+
+export async function getLocalAccounts(): Promise<AccountResponse[]> {
+  const accounts = await storage.getAllAccounts()
+
+  return accounts.map(({ name, address, network }) => ({
+    name,
+    address,
+    network,
+  }))
 }
 
 export function logout(): Promise<void> {
@@ -128,13 +167,18 @@ export function logout(): Promise<void> {
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGIN,
-    assert: isEnsLoginData,
+    assert: isLoginData,
     handler: login,
   },
   {
     action: BackgroundAction.LOCAL_LOGIN,
     assert: isLocalLoginData,
     handler: localLogin,
+  },
+  {
+    action: BackgroundAction.IMPORT_ACCOUNT,
+    assert: isImportAccountData,
+    handler: importAccount,
   },
   {
     action: BackgroundAction.REGISTER,
@@ -158,6 +202,10 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_CURRENT_USER,
     handler: getCurrentUser,
+  },
+  {
+    action: BackgroundAction.GET_LOCAL_ACCOUNTS,
+    handler: getLocalAccounts,
   },
   {
     action: BackgroundAction.LOGOUT,

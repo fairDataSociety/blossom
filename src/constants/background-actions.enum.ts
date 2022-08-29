@@ -1,6 +1,7 @@
 enum BackgroundAction {
   LOGIN = 'login',
   LOCAL_LOGIN = 'local-login',
+  IMPORT_ACCOUNT = 'import-account',
   REGISTER = 'register',
   LOGOUT = 'logout',
   CHECK_USERNAME = 'check-username',
@@ -8,6 +9,7 @@ enum BackgroundAction {
   GENERATE_WALLET = 'generate-wallet',
   OPEN_AUTH_PAGE = 'open-auth-page',
   GET_CURRENT_USER = 'get-current-user',
+  GET_LOCAL_ACCOUNTS = 'get-local-accounts',
   GET_BALANCE = 'get-balance',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',

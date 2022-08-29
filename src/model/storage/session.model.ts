@@ -1,4 +1,4 @@
-import { Account, Bytes } from '../general.types'
+import { Address, Bytes } from '../general.types'
 import { Network } from './network.model'
 
 export interface KeyData<SeedType> {
@@ -7,11 +7,11 @@ export interface KeyData<SeedType> {
 }
 
 export interface Session<SeedType> {
-  username: string
+  username?: string
+  account?: string
   network: Network
-  account: Account
+  address: Address
   key: KeyData<SeedType>
-  local?: boolean
 }
 
 export type MemorySession = Session<Bytes<64>>

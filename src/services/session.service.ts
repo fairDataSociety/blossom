@@ -1,8 +1,8 @@
 import { isStorageSession } from '../messaging/message.asserts'
-import { Account, Bytes } from '../model/general.types'
+import { Address } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
 import { MemorySession, KeyData, StorageSession } from '../model/storage/session.model'
-import { aesEncryptBytes, decryptSeed, seedToBytes, seedToString } from '../utils/encryption'
+import { aesEncryptSeedWithStringKey, decryptSeed } from '../utils/encryption'
 import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
 import { Storage } from './storage/storage.service'
@@ -12,21 +12,21 @@ export class SessionService {
 
   public async open(
     username: string,
-    account: Account,
+    account: string,
+    address: Address,
     network: Network,
     seed: Uint8Array,
-    local?: boolean,
   ): Promise<void> {
-    const key = local ? this.generateLocalKey(seed) : await this.encryptSeed(seed)
+    const key = await this.encryptSeed(seed)
 
     removeWarningBadge()
 
     return this.storage.setSession({
       username,
-      network,
       account,
+      network,
+      address,
       key,
-      local,
     })
   }
 
@@ -64,7 +64,7 @@ export class SessionService {
 
     const memorySession: MemorySession = session as unknown as MemorySession
 
-    memorySession.key.seed = session.local ? seedToBytes(session.key.seed) : await this.decryptSeed(session)
+    memorySession.key.seed = await this.decryptSeed(session)
 
     if (!session.key.seed) {
       this.storage.deleteSession()
@@ -82,7 +82,7 @@ export class SessionService {
     const sessionKey = generateRandomString(128)
     const url = this.generateRandomUrl()
 
-    const encryptedSeed = aesEncryptBytes(seed, sessionKey)
+    const encryptedSeed = aesEncryptSeedWithStringKey(seed, sessionKey)
 
     await chrome.cookies.set({
       url,
@@ -123,12 +123,5 @@ export class SessionService {
 
   private generateRandomUrl(): string {
     return `https://www.${generateRandomString(50)}.com`
-  }
-
-  private generateLocalKey(seed: Bytes<64>): KeyData<string> {
-    return {
-      seed: seedToString(seed),
-      url: this.generateRandomUrl(),
-    }
   }
 }

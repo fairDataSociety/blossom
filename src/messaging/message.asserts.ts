@@ -1,8 +1,9 @@
-import { Account } from '../model/general.types'
+import { Address } from '../model/general.types'
 import {
-  EnsLoginData,
   FdpStorageRequest,
+  ImportAccountData,
   LocalLoginData,
+  LoginData,
   NetworkEditData,
   RegisterData,
   RegisterDataBase,
@@ -13,20 +14,26 @@ import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
 
-export function isEnsLoginData(data: unknown): data is EnsLoginData {
-  const { username, password, network } = (data || {}) as EnsLoginData
+export function isLoginData(data: unknown): data is LoginData {
+  const { username, password, network } = (data || {}) as LoginData
 
-  return Boolean(username && password && isNetwork(network))
+  return Boolean(typeof username === 'string' && typeof password === 'string' && isNetwork(network))
 }
 
 export function isLocalLoginData(data: unknown): data is LocalLoginData {
-  const { mnemonic, network } = (data || {}) as LocalLoginData
+  const { name, password } = (data || {}) as LocalLoginData
 
-  return Boolean(mnemonic && isNetwork(network))
+  return Boolean(typeof name === 'string' && typeof password === 'string')
 }
 
 export function isRegisterData(data: unknown): data is RegisterData {
   return isRegisterDataMnemonic(data)
+}
+
+export function isImportAccountData(data: unknown): data is ImportAccountData {
+  const { name, password, mnemonic, network } = (data || {}) as ImportAccountData
+
+  return Boolean(name && password && mnemonic && isNetwork(network))
 }
 
 export function isRegisterDataMnemonic(data: unknown): data is RegisterDataMnemonic {
@@ -41,7 +48,7 @@ export function isRegisterDataBase(data: unknown): data is RegisterDataBase {
   return Boolean(username && password && isNetwork(network))
 }
 
-export function isAccount(data: unknown): data is Account {
+export function isAddress(data: unknown): data is Address {
   return typeof data === 'string' && data.startsWith('0x') && data.length === 42
 }
 
@@ -76,9 +83,13 @@ export function isStorageKeyData(data: unknown): data is KeyData<string> {
 }
 
 export function isStorageSession(data: unknown): data is StorageSession {
-  const { username, network, key } = (data || {}) as StorageSession
+  const { username, account, network, key } = (data || {}) as StorageSession
 
-  return typeof username === 'string' && isNetwork(network) && isStorageKeyData(key)
+  return (
+    (typeof username === 'string' || typeof account === 'string') &&
+    isNetwork(network) &&
+    isStorageKeyData(key)
+  )
 }
 
 export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {

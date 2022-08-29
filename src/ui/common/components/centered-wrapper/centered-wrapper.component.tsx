@@ -10,13 +10,10 @@ const WrapperDiv = styled('div')({
   display: 'flex',
 })
 
-const InnerDiv = styled('div')(({ theme }) => ({
+const InnerDiv = styled('div')(() => ({
   displey: 'flex',
   margin: 'auto',
   minWidth: '500px',
-  [theme.breakpoints.down('sm')]: {
-    minWidth: '100%',
-  },
 }))
 
 const CenteredWrapper = ({ children }: CenteredWrapperProps) => {

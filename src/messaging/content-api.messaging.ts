@@ -1,9 +1,11 @@
 import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
-import { Account } from '../model/general.types'
+import { Address } from '../model/general.types'
 import {
-  EnsLoginData,
+  AccountResponse,
+  ImportAccountData,
   LocalLoginData,
+  LoginData,
   NetworkEditData,
   RegisterData,
   RegisterResponse,
@@ -15,12 +17,16 @@ import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
 
-export function login(data: EnsLoginData): Promise<void> {
-  return sendMessage<EnsLoginData, void>(BackgroundAction.LOGIN, data)
+export function login(data: LoginData): Promise<void> {
+  return sendMessage<LoginData, void>(BackgroundAction.LOGIN, data)
 }
 
 export function localLogin(data: LocalLoginData): Promise<void> {
   return sendMessage<LocalLoginData, void>(BackgroundAction.LOCAL_LOGIN, data)
+}
+
+export function importAccount(data: ImportAccountData): Promise<void> {
+  return sendMessage<ImportAccountData, void>(BackgroundAction.IMPORT_ACCOUNT, data)
 }
 
 export function register(data: RegisterData): Promise<RegisterResponse> {
@@ -47,12 +53,16 @@ export function getCurrentUser(): Promise<UserResponse> {
   return sendMessage<void, UserResponse>(BackgroundAction.GET_CURRENT_USER)
 }
 
+export function getLocalAccounts(): Promise<AccountResponse[]> {
+  return sendMessage<void, AccountResponse[]>(BackgroundAction.GET_LOCAL_ACCOUNTS)
+}
+
 export function getLocales(): Promise<LocaleData> {
   return sendMessage<void, LocaleData>(BackgroundAction.GET_LOCALES)
 }
 
-export async function getAccountBalance(account: Account): Promise<BigNumber> {
-  const { hex } = await sendMessage<Account, { hex: string }>(BackgroundAction.GET_BALANCE, account)
+export async function getAccountBalance(address: Address): Promise<BigNumber> {
+  const { hex } = await sendMessage<Address, { hex: string }>(BackgroundAction.GET_BALANCE, address)
 
   return BigNumber.from(hex)
 }

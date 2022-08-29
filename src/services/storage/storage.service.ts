@@ -8,10 +8,12 @@ import {
   networkListFactory,
   swarmFactory,
   dappsFactory,
+  accountsFactory,
 } from './storage-factories'
 import migrate from './storage-migration'
 import { DappId } from '../../model/general.types'
 import { Dapp, Dapps } from '../../model/storage/dapps.model'
+import { StorageAccount, Accounts } from '../../model/storage/account.model'
 
 /**
  * Sets any value to the extension storage
@@ -113,6 +115,7 @@ export class Storage {
   static readonly swarmKey = 'swarm'
   static readonly sessionKey = 'session'
   static readonly dappsKey = 'dapps'
+  static readonly accountsKey = 'accounts'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -202,6 +205,30 @@ export class Storage {
 
   public deleteDapps(): Promise<void> {
     return deleteEntry(Storage.dappsKey)
+  }
+
+  public async getAccount(name: string): Promise<StorageAccount> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    return accounts[name.toLowerCase()]
+  }
+
+  public async getAllAccounts(): Promise<StorageAccount[]> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    return Object.keys(accounts).map((name) => accounts[name])
+  }
+
+  public async setAccount(account: StorageAccount): Promise<void> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    accounts[account.name.toLowerCase()] = account
+
+    return updateObject<Accounts>(Storage.accountsKey, accounts)
+  }
+
+  public deleteAccounts(): Promise<void> {
+    return deleteEntry(Storage.accountsKey)
   }
 
   public onNetworkChange(listener: (network: Network) => void) {

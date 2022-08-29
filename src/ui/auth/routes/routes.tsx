@@ -1,5 +1,6 @@
 import React from 'react'
 import { Navigate, Route, Routes as ReactRoutes } from 'react-router-dom'
+import Import from '../pages/import/import'
 import Login from '../pages/login/login'
 import Register from '../pages/register/register'
 import Welcome from '../pages/welcome/welcome'
@@ -12,6 +13,7 @@ const Routes = () => {
         <Route path={RouteCodes.welcome} element={<Welcome />} />
         <Route path={RouteCodes.login} element={<Login />} />
         <Route path={RouteCodes.register} element={<Register />} />
+        <Route path={RouteCodes.import} element={<Import />} />
         <Route path="/" element={<Navigate replace to={RouteCodes.welcome} />} />
       </ReactRoutes>
     </>

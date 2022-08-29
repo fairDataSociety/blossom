@@ -1,9 +1,12 @@
 import AES from 'crypto-js/aes'
 import encHex from 'crypto-js/enc-hex'
+import WordArray from 'crypto-js/lib-typedarrays'
+import sha3 from 'crypto-js/sha3'
+import pbkdf2 from 'crypto-js/pbkdf2'
 import { utils } from 'ethers'
 import { Bytes } from '../model/general.types'
 
-function wordsToUint8Array(words: number[]): Uint8Array {
+export function wordsToUint8Array(words: number[]): Uint8Array {
   const length = words.length
   const unit8Array = new Uint8Array(length << 2)
   let offset = 0
@@ -18,6 +21,10 @@ function wordsToUint8Array(words: number[]): Uint8Array {
   }
 
   return unit8Array
+}
+
+export function wordsToWordArray(words: number[]): WordArray {
+  return WordArray.create(words)
 }
 
 /**
@@ -36,8 +43,16 @@ function removePaddingBytesFromSeed(seed: Bytes<80>): Bytes<64> {
   return unit8Array
 }
 
-export function aesEncryptBytes(bytes: Bytes<64>, key: string): string {
-  return AES.encrypt(encHex.parse(utils.hexlify(bytes)), key).toString()
+export function aesEncyptSeedWithBytesKey(bytes: Bytes<64>, key: WordArray): string {
+  return AES.encrypt(bytesToWordArray(bytes), key.toString()).toString()
+}
+
+export function aesEncryptSeedWithStringKey(bytes: Bytes<64>, key: string): string {
+  return AES.encrypt(bytesToWordArray(bytes), key).toString()
+}
+
+export function decryptSeedWithBytesKey(seed: string, key: WordArray): Bytes<64> {
+  return removePaddingBytesFromSeed(wordsToUint8Array(AES.decrypt(seed, key.toString()).words))
 }
 
 export function decryptSeed(seed: string, key: string): Bytes<64> {
@@ -58,4 +73,23 @@ export function seedToBytes(seed: string): Bytes<64> {
   }
 
   return bytes
+}
+
+export function generateSalt(): WordArray {
+  return WordArray.random(128 / 8)
+}
+
+export function passwordToKey(password: string, salt: WordArray): WordArray {
+  return pbkdf2(password, salt, {
+    keySize: 512 / 32,
+    iterations: 1000,
+  })
+}
+
+export function bytesToWordArray(bytes: Uint8Array): WordArray {
+  return encHex.parse(utils.hexlify(bytes))
+}
+
+export function hashSeed(seed: Uint8Array): WordArray {
+  return sha3(bytesToWordArray(seed))
 }
