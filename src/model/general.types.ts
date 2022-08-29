@@ -2,7 +2,7 @@ import { FlavoredType } from './flavored.type'
 
 export type Mnemonic = FlavoredType<string, 'Mnemonic'>
 /**
- * Ethereum address
+ * Ethereum address with 0x prefix
  */
 export type Address = FlavoredType<string, 'Address'>
 export type PrivateKey = FlavoredType<string, 'PrivateKey'>
