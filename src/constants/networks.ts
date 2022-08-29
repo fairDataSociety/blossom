@@ -6,4 +6,9 @@ export const networks: Network[] = [
     rpc: 'http://localhost:9545',
     custom: false,
   },
+  {
+    label: 'Görli',
+    rpc: 'https://xdai.dev.fairdatasociety.org',
+    custom: false,
+  },
 ]
