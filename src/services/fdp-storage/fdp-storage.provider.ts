@@ -30,7 +30,7 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
       ensDomain: 'fds',
     }
 
-    // TODO A workaround until the fdp-storage is updated to re-export ENS environments
+    // If contract addresses are not specified, the addresses from fdp-play will be used
     if (!ensRegistry || !fdsRegistrar || !publicResolver) {
       const localhostNetwork = networks[0]
 
@@ -41,7 +41,9 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
       }
     }
 
-    return new FdpStorage(beeApiUrl, beeDebugApiUrl, options as unknown)
+    // TODO cannot cast to BatchId because it's not exported
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new FdpStorage(beeApiUrl, process.env.POSTAGE_BATCH_ID as any, options as unknown)
   }
 
   private async getBeeAddresses(swarm: Swarm): Promise<{
