@@ -17,6 +17,7 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
   protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
     const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
     const { ensRegistry, subdomainRegistrar, publicResolver, rpc, label } = network
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let options: any
 
     // TODO A workaround until the fdp-storage is updated to re-export ENS environments
@@ -44,6 +45,13 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
   }> {
     let beeApiUrl = 'http://localhost:1633',
       beeDebugApiUrl = 'http://localhost:1635'
+
+    if (process.env.CI_TESTS === 'true') {
+      return {
+        beeApiUrl: 'http://172.18.0.1:1633',
+        beeDebugApiUrl: 'http://172.18.0.1:1635',
+      }
+    }
 
     try {
       const swarmExtension = new SwarmExtension(swarm.extensionId)
