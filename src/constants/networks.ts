@@ -6,7 +6,7 @@ import { Network } from '../model/storage/network.model'
 export const networks: Network[] = [
   {
     label: 'FDP Play',
-    rpc: 'http://localhost:9545',
+    rpc: process.env.CI_TESTS === 'true' ? 'http://172.18.0.1:9545' : 'http://localhost:9545',
     custom: false,
     ensRegistry: '0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec' as unknown as EthAddress,
     fdsRegistrar: '0x630589690929E9cdEFDeF0734717a9eF3Ec7Fcfe' as unknown as EthAddress,

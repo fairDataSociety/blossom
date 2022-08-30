@@ -14,3 +14,9 @@ export function sendFunds(
     value: utils.parseEther(ethAmount),
   })
 }
+
+export async function checkConnection(): Promise<void> {
+  const provider = new providers.JsonRpcProvider(RPC_PROVIDER_URL)
+
+  await provider.getBlockNumber()
+}

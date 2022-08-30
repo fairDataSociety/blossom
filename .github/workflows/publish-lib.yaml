@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  publish-lib:
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -26,44 +26,30 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Cache node library modules
+      - name: Cache library node modules
         id: cache-npm-lib
         uses: actions/cache@v3
         with:
           path: library/node_modules
-          key: ${{ runner.os }}-lib-${{ hashFiles('**/library/package-lock.json') }}
+          key: ${{ runner.os }}-lib-${{ matrix.node }}-${{ hashFiles('**/library/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-lib-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-lib-${{ matrix.node }}-
 
       - name: Install library dependencies
         run: npm ci --prefix library
-        if: ${{ steps.cache-npm-lib.outputs.cache-hit == 'true' }}
+        if: ${{ steps.cache-npm-lib.outputs.cache-hit != 'true' }}
 
       - name: Build
         run: npm run build --prefix library
-
-      - name: Serve test pages
-        run: npm run serve --prefix library
-
-      - name: Cache extension node modules
-        id: cache-npm-ext
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install extension dependencies
-        run: npm ci
-        if: ${{ steps.cache-npm-ext.outputs.cache-hit == 'true' }}
-
-      - name: Compile Swarm Extension
-        run: npm run swarm-ext
-
-      - name: Build Blossom Extension
-        run: npm run build
-
-      - name: Test
-        run: npm test --prefix library
 
       - name: Publish
         run: cd library && npm publish --access public && cd ..
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+  placeholder-lib:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Always runs
+        run: echo "Prevents the workflow from failing if release is not created."
