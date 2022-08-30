@@ -1,9 +1,15 @@
-import AES from 'crypto-js/aes'
-import encUtf8 from 'crypto-js/enc-utf8'
-import { isSession } from '../messaging/message.asserts'
-import { Account, PrivateKey } from '../model/general.types'
+import { isStorageSession } from '../messaging/message.asserts'
+import { Address } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
-import { KeyData, Session } from '../model/storage/session.model'
+import { MemorySession, KeyData, StorageSession } from '../model/storage/session.model'
+import {
+  bytesToWordArray,
+  decrypt,
+  encrypt,
+  hexToWordArray,
+  wordArrayToBytes,
+  wordArrayToHex,
+} from '../utils/encryption'
 import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
 import { Storage } from './storage/storage.service'
@@ -12,24 +18,26 @@ export class SessionService {
   private storage: Storage = new Storage()
 
   public async open(
-    username: string,
-    account: Account,
+    ensUserName: string,
+    localUserName: string,
+    address: Address,
     network: Network,
-    privateKey: PrivateKey,
+    seed: Uint8Array,
   ): Promise<void> {
-    const key = await this.encryptKey(privateKey)
+    const key = await this.encryptSeed(seed)
 
     removeWarningBadge()
 
     return this.storage.setSession({
-      username,
+      ensUserName,
+      localUserName,
       network,
-      account,
+      address,
       key,
     })
   }
 
-  public async load(): Promise<Session> {
+  public async load(): Promise<MemorySession> {
     const session = await this.storage.getSession()
 
     return this.processSession(session)
@@ -41,27 +49,31 @@ export class SessionService {
     return this.storage.deleteSession()
   }
 
-  public onChange(listener: (session: Session) => void) {
-    this.storage.onSessionChange(async (session: Session) => listener(await this.processSession(session)))
+  public onChange(listener: (session: MemorySession) => void) {
+    this.storage.onSessionChange(async (session: StorageSession) =>
+      listener(await this.processSession(session)),
+    )
   }
 
-  private async processSession(session: Session): Promise<Session> {
+  private async processSession(session: StorageSession): Promise<MemorySession> {
     if (!session) {
       setWarningBadge()
 
       return null
     }
 
-    if (!isSession(session)) {
+    if (!isStorageSession(session)) {
       this.storage.deleteSession()
       setWarningBadge()
 
       return null
     }
 
-    session.key.privateKey = await this.decryptKey(session)
+    const memorySession: MemorySession = session as unknown as MemorySession
 
-    if (!session.key.privateKey) {
+    memorySession.key.seed = await this.decryptSeed(session)
+
+    if (!session.key.seed) {
       this.storage.deleteSession()
       setWarningBadge()
 
@@ -70,14 +82,14 @@ export class SessionService {
 
     removeWarningBadge()
 
-    return session
+    return memorySession
   }
 
-  private async encryptKey(privateKey: PrivateKey): Promise<KeyData> {
+  private async encryptSeed(seed: Uint8Array): Promise<KeyData<string>> {
     const sessionKey = generateRandomString(128)
     const url = this.generateRandomUrl()
 
-    const encryptedPrivateKey = AES.encrypt(privateKey, sessionKey).toString()
+    const encryptedSeed = wordArrayToHex(encrypt(sessionKey, bytesToWordArray(seed)))
 
     await chrome.cookies.set({
       url,
@@ -87,17 +99,17 @@ export class SessionService {
     })
 
     return {
-      privateKey: encryptedPrivateKey,
+      seed: encryptedSeed,
       url,
     }
   }
 
-  private async decryptKey(session: Session): Promise<PrivateKey> {
+  private async decryptSeed(session: StorageSession): Promise<Uint8Array> {
     const {
-      key: { privateKey: encryptedKey, url },
+      key: { seed: encryptedSeed, url },
     } = session || { key: {} }
 
-    if (!encryptedKey || !url) {
+    if (!encryptedSeed || !url || typeof encryptedSeed !== 'string') {
       return
     }
 
@@ -113,7 +125,7 @@ export class SessionService {
       return
     }
 
-    return AES.decrypt(encryptedKey, sessionKey).toString(encUtf8)
+    return wordArrayToBytes(decrypt(sessionKey, hexToWordArray(encryptedSeed)))
   }
 
   private generateRandomUrl(): string {

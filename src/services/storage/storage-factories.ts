@@ -1,8 +1,9 @@
 import { networks } from '../../constants/networks'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { Session } from '../../model/storage/session.model'
+import { StorageSession } from '../../model/storage/session.model'
 import { Dapps } from '../../model/storage/dapps.model'
+import { Accounts } from '../../model/storage/account.model'
 
 export function networkFactory(): Network {
   return { ...networks[0] }
@@ -18,10 +19,14 @@ export function swarmFactory(): Swarm {
   }
 }
 
-export function sessionFactory(): Session {
+export function sessionFactory(): StorageSession {
   return null
 }
 
 export function dappsFactory(): Dapps {
+  return {}
+}
+
+export function accountsFactory(): Accounts {
   return {}
 }

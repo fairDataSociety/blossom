@@ -1,6 +1,5 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
-import { Wallet } from 'ethers'
-import { Session } from '../../model/storage/session.model'
+import { MemorySession } from '../../model/storage/session.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { SessionService } from '../session.service'
 import { Storage } from '../storage/storage.service'
@@ -9,7 +8,7 @@ import { FdpStorageProvider } from './fdp-storage.provider'
 export class SessionFdpStorageProvider extends FdpStorageProvider {
   private storage: Storage = new Storage()
   private sessionService: SessionService = new SessionService()
-  private session: Session
+  private session: MemorySession
   private swarm: Swarm
 
   constructor() {
@@ -19,7 +18,7 @@ export class SessionFdpStorageProvider extends FdpStorageProvider {
       this.session = session
       this.swarm = swarm
 
-      this.sessionService.onChange((session: Session) => {
+      this.sessionService.onChange((session: MemorySession) => {
         super.updateConfigAsync(this.createFdpStorageInternal((this.session = session), this.swarm))
       })
 
@@ -31,7 +30,7 @@ export class SessionFdpStorageProvider extends FdpStorageProvider {
     })
   }
 
-  private async createFdpStorageInternal(session: Session, swarm: Swarm): Promise<FdpStorage> {
+  private async createFdpStorageInternal(session: MemorySession, swarm: Swarm): Promise<FdpStorage> {
     const { network, key } = session || {}
 
     if (!network || !key) {
@@ -40,7 +39,7 @@ export class SessionFdpStorageProvider extends FdpStorageProvider {
 
     const fdp = await this.createFdpStorage(network, swarm)
 
-    fdp.account.setActiveAccount(new Wallet(key.privateKey))
+    fdp.account.setAccountFromSeed(key.seed)
 
     return fdp
   }

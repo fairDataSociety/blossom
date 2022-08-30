@@ -1,6 +1,12 @@
 import { ElementHandle, Page } from 'puppeteer'
-import { openExtensionOptionsPage, setSwarmExtensionId } from './utils/extension.util'
-import { click, getElementByTestId, getElementChildren, getTextFromInput, typeToInput } from './utils/page'
+import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
+import {
+  click,
+  getElementByTestId,
+  getElementChildren,
+  getTextFromInput,
+  typeToInput,
+} from './test-utils/page'
 
 const blossomId: string = global.__BLOSSOM_ID__
 const ensRegistryAddress = '0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab'

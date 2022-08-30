@@ -1,7 +1,17 @@
 import React from 'react'
 import intl from 'react-intl-universal'
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
+import {
+  Avatar,
+  Button,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Tooltip,
+  useTheme,
+} from '@mui/material'
 import AccountCircle from '@mui/icons-material/AccountCircle'
+import Home from '@mui/icons-material/Home'
 import { FlexColumnDiv } from '../../../common/components/utils/utils'
 import { UserResponse } from '../../../../model/internal-messages.model'
 
@@ -10,7 +20,9 @@ export interface UserInfoProps {
   onLogout: () => void
 }
 
-const UserInfo = ({ user: { username, network }, onLogout }: UserInfoProps) => {
+const UserInfo = ({ user: { ensUserName, localUserName, network }, onLogout }: UserInfoProps) => {
+  const theme = useTheme()
+
   return (
     <FlexColumnDiv sx={{ borderTop: '1px solid #ddd', padding: '5px 0', marginBottom: '10px' }}>
       <List sx={{ width: '100%' }}>
@@ -20,7 +32,16 @@ const UserInfo = ({ user: { username, network }, onLogout }: UserInfoProps) => {
               <AccountCircle />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={username} secondary={network?.label} data-testid="user-info" />
+          <ListItemText
+            primary={ensUserName || localUserName}
+            secondary={network?.label}
+            data-testid="user-info"
+          />
+          {localUserName && (
+            <Tooltip title={intl.get('LOCAL_LOGIN_LABEL')}>
+              <Home sx={{ color: theme.palette.border.main }} />
+            </Tooltip>
+          )}
         </ListItem>
       </List>
       <Button variant="contained" onClick={onLogout} size="small" data-testid="logout-btn">

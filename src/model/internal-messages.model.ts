@@ -1,8 +1,14 @@
 import { Network } from './storage/network.model'
-import { Account, Mnemonic, PrivateKey } from './general.types'
+import { Address, Mnemonic, PrivateKey } from './general.types'
 
 export interface LoginData {
   username: string
+  password: string
+  network: Network
+}
+
+export interface LocalLoginData {
+  name: string
   password: string
   network: Network
 }
@@ -17,11 +23,14 @@ export interface RegisterDataMnemonic extends RegisterDataBase {
   mnemonic: Mnemonic
 }
 
-export interface RegisterDataPrivateKey extends RegisterDataBase {
-  privateKey: PrivateKey
-}
+export type RegisterData = RegisterDataMnemonic
 
-export type RegisterData = RegisterDataMnemonic | RegisterDataPrivateKey
+export interface ImportAccountData {
+  name: string
+  password: string
+  mnemonic: Mnemonic
+  network: Network
+}
 
 export interface UsernameCheckData {
   username: string
@@ -29,14 +38,21 @@ export interface UsernameCheckData {
 }
 
 export interface RegisterResponse {
-  account: Account
+  address: Address
   mnemonic: Mnemonic
   privateKey: PrivateKey
 }
 
 export interface UserResponse {
-  username: string
-  account: Account
+  ensUserName?: string
+  localUserName?: string
+  address: Address
+  network: Network
+}
+
+export interface AccountResponse {
+  name: string
+  address: Address
   network: Network
 }
 

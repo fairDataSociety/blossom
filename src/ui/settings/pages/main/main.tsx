@@ -32,7 +32,7 @@ const Main = () => {
   return (
     <>
       <Typography variant="h5" align="center">
-        {intl.get('SETTINGS')}
+        Blossom
       </Typography>
       <Stack spacing={3} sx={{ paddingTop: '20px' }}>
         {user ? (

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { styled } from '@mui/system'
 import { Typography } from '@mui/material'
-import { Account } from '../../../../model/general.types'
+import { Address } from '../../../../model/general.types'
 import ClipboardButton from '../../../common/components/clipboard-button/clipboard-button.component'
 import { getAccountBalance } from '../../../../messaging/content-api.messaging'
 
 export interface WaitingPaymentProps {
-  account: Account
+  address: Address
   onPaymentDetected: () => void
   onError: () => void
 }
@@ -17,12 +17,12 @@ const ContainerDiv = styled('div')({
   margin: '20px auto 0 auto',
 })
 
-const WaitingPayment = ({ account, onPaymentDetected, onError }: WaitingPaymentProps) => {
+const WaitingPayment = ({ address, onPaymentDetected, onError }: WaitingPaymentProps) => {
   const timer = useRef<NodeJS.Timeout>()
 
   const checkPayment = async () => {
     try {
-      const balance = await getAccountBalance(account)
+      const balance = await getAccountBalance(address)
 
       if (balance.gt(0)) {
         closeTimer()
@@ -51,8 +51,8 @@ const WaitingPayment = ({ account, onPaymentDetected, onError }: WaitingPaymentP
   return (
     <ContainerDiv>
       <Typography variant="h5" sx={{ margin: 'auto' }}>
-        <span data-testid="account">{account}</span>
-        <ClipboardButton text={account} />
+        <span data-testid="account">{address}</span>
+        <ClipboardButton text={address} />
       </Typography>
     </ContainerDiv>
   )

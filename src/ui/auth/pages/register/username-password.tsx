@@ -62,7 +62,7 @@ const UsernamePassword = ({ onSubmit }: UsernamePasswordProps) => {
       onSubmit({
         username,
         password,
-        privateKey: '',
+        mnemonic: '',
         network: networks.find((network) => network.label === networkLabel),
       })
     } catch (error) {

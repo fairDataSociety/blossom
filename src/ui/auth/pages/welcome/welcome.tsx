@@ -3,8 +3,7 @@ import { styled } from '@mui/system'
 import intl from 'react-intl-universal'
 import { useNavigate } from 'react-router-dom'
 import Title from '../../../common/components/title/title.component'
-import { Button, Typography } from '@mui/material'
-import { MarginLeftAuto } from '../../../common/components/utils/utils'
+import { Button, Typography, useTheme } from '@mui/material'
 import RouteCodes from '../../routes/route-codes'
 
 const Wrapper = styled('div')(() => ({
@@ -15,6 +14,7 @@ const Wrapper = styled('div')(() => ({
 const Footer = styled('div')(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
+  justifyContent: 'center',
   margin: '50px 50px 0 50px',
   [theme.breakpoints.down('md')]: {
     margin: '50px 0 0 0',
@@ -26,10 +26,13 @@ const buttonStyle = {
   width: '200px',
   fontSize: '16px',
   fontWeight: 'bold',
+  marginRight: '30px',
+  marginBottom: '20px',
 }
 
 const Welcome = () => {
   const navigate = useNavigate()
+  const theme = useTheme()
 
   return (
     <Wrapper>
@@ -40,7 +43,6 @@ const Welcome = () => {
       <Footer>
         <Button
           variant="contained"
-          color="primary"
           size="large"
           sx={buttonStyle}
           onClick={() => navigate(RouteCodes.register)}
@@ -48,18 +50,29 @@ const Welcome = () => {
         >
           {intl.get('REGISTER')}
         </Button>
-        <MarginLeftAuto>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            sx={buttonStyle}
-            onClick={() => navigate(RouteCodes.login)}
-            data-testid="login"
-          >
-            {intl.get('LOGIN')}
-          </Button>
-        </MarginLeftAuto>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          sx={{
+            ...buttonStyle,
+            backgroundColor: theme.palette.tertiary.main,
+          }}
+          onClick={() => navigate(RouteCodes.import)}
+          data-testid="import"
+        >
+          {intl.get('IMPORT')}
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="large"
+          sx={buttonStyle}
+          onClick={() => navigate(RouteCodes.login)}
+          data-testid="login"
+        >
+          {intl.get('LOGIN')}
+        </Button>
       </Footer>
     </Wrapper>
   )

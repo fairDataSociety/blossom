@@ -24,7 +24,7 @@ interface FormFields {
   label: string
   rpc: string
   ensRegistry: string
-  subdomainRegistrar: string
+  fdsRegistrar: string
   publicResolver: string
 }
 
@@ -38,7 +38,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
       label: String(network.label),
       rpc: network.rpc,
       ensRegistry: network.ensRegistry as unknown as string,
-      subdomainRegistrar: network.subdomainRegistrar as unknown as string,
+      fdsRegistrar: network.fdsRegistrar as unknown as string,
       publicResolver: network.publicResolver as unknown as string,
     },
   })
@@ -53,7 +53,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
       await onChange({
         ...fields,
         ensRegistry: fields.ensRegistry || undefined,
-        subdomainRegistrar: fields.subdomainRegistrar || undefined,
+        fdsRegistrar: fields.fdsRegistrar || undefined,
         publicResolver: fields.publicResolver || undefined,
         custom: true,
       } as unknown as Network)
@@ -127,9 +127,9 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
             label={intl.get('SUBDOMAIN_REGISTRAR_ADDRESS')}
             variant="standard"
             fullWidth
-            {...register('subdomainRegistrar', { required: true, pattern: EthAddressRegex })}
-            error={Boolean(errors.subdomainRegistrar)}
-            helperText={errors.subdomainRegistrar && intl.get('ADDRESS_NOT_VALID')}
+            {...register('fdsRegistrar', { required: true, pattern: EthAddressRegex })}
+            error={Boolean(errors.fdsRegistrar)}
+            helperText={errors.fdsRegistrar && intl.get('ADDRESS_NOT_VALID')}
             data-testid="subdomain-registrar-input"
             disabled={disabled}
             sx={{ marginBottom: FIELD_MARGIN }}

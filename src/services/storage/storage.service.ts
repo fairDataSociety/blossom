@@ -1,6 +1,6 @@
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { Session } from '../../model/storage/session.model'
+import { StorageSession } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
 import {
   sessionFactory,
@@ -8,10 +8,12 @@ import {
   networkListFactory,
   swarmFactory,
   dappsFactory,
+  accountsFactory,
 } from './storage-factories'
 import migrate from './storage-migration'
 import { DappId } from '../../model/general.types'
 import { Dapp, Dapps } from '../../model/storage/dapps.model'
+import { StorageAccount, Accounts } from '../../model/storage/account.model'
 
 /**
  * Sets any value to the extension storage
@@ -113,6 +115,7 @@ export class Storage {
   static readonly swarmKey = 'swarm'
   static readonly sessionKey = 'session'
   static readonly dappsKey = 'dapps'
+  static readonly accountsKey = 'accounts'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -171,12 +174,12 @@ export class Storage {
     return updateObject<Swarm>(Storage.swarmKey, swarm)
   }
 
-  public setSession(session: Session): Promise<void> {
-    return updateObject<Session>(Storage.sessionKey, session)
+  public setSession(session: StorageSession): Promise<void> {
+    return updateObject<StorageSession>(Storage.sessionKey, session)
   }
 
-  public getSession(): Promise<Session> {
-    return getObject<Session>(Storage.sessionKey, sessionFactory)
+  public getSession(): Promise<StorageSession> {
+    return getObject<StorageSession>(Storage.sessionKey, sessionFactory)
   }
 
   public deleteSession(): Promise<void> {
@@ -204,6 +207,41 @@ export class Storage {
     return deleteEntry(Storage.dappsKey)
   }
 
+  public async getAccount(name: string): Promise<StorageAccount> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    return accounts[name.toLowerCase()]
+  }
+
+  public async getAllAccounts(): Promise<StorageAccount[]> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    return Object.keys(accounts).map((name) => accounts[name])
+  }
+
+  public async setAccount(account: StorageAccount): Promise<void> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    accounts[account.name.toLowerCase()] = account
+
+    return updateObject<Accounts>(Storage.accountsKey, accounts)
+  }
+
+  public async updateAccount(name: string, update: Partial<StorageAccount>): Promise<void> {
+    const accounts = await getObject<Accounts>(Storage.accountsKey, accountsFactory)
+
+    accounts[name.toLowerCase()] = {
+      ...accounts[name],
+      ...update,
+    }
+
+    return updateObject<Accounts>(Storage.accountsKey, accounts)
+  }
+
+  public deleteAccounts(): Promise<void> {
+    return deleteEntry(Storage.accountsKey)
+  }
+
   public onNetworkChange(listener: (network: Network) => void) {
     this.setListener(Storage.networkKey, listener)
   }
@@ -212,7 +250,7 @@ export class Storage {
     this.setListener(Storage.swarmKey, listener)
   }
 
-  public onSessionChange(listener: (session: Session) => void) {
+  public onSessionChange(listener: (session: StorageSession) => void) {
     this.setListener(Storage.sessionKey, listener)
   }
 

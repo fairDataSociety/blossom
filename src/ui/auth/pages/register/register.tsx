@@ -7,15 +7,11 @@ import DoneAll from '@mui/icons-material/DoneAll'
 import UsernamePassword from './username-password'
 import MnemonicConfirmation from './mnemonic-confirmation'
 import ErrorMessage from '../../../common/components/error-message/error-message.component'
-import {
-  RegisterData,
-  RegisterDataMnemonic,
-  RegisterDataPrivateKey,
-} from '../../../../model/internal-messages.model'
+import { RegisterData, RegisterDataMnemonic } from '../../../../model/internal-messages.model'
 import { networks } from '../../../../constants/networks'
 import { generateWallet, register } from '../../../../messaging/content-api.messaging'
 import WaitingPayment from './waiting-payment'
-import { Account, Mnemonic } from '../../../../model/general.types'
+import { Address, Mnemonic } from '../../../../model/general.types'
 import MnemonicComponent from './mnemonic'
 import { FlexColumnDiv } from '../../../common/components/utils/utils'
 import Wrapper from '../components/wrapper'
@@ -41,16 +37,15 @@ const LoaderWrapperDiv = styled('div')({
   display: 'flex',
 })
 
-interface RegistrationState extends RegisterDataMnemonic, RegisterDataPrivateKey {
-  account: Account
+interface RegistrationState extends RegisterDataMnemonic {
+  address: Address
   mnemonic: Mnemonic
 }
 
 const emptyState: RegistrationState = {
   username: '',
   password: '',
-  privateKey: '',
-  account: '',
+  address: '',
   mnemonic: '',
   network: networks[0],
 }
@@ -117,14 +112,13 @@ const Register = () => {
 
   const registerUser = async () => {
     try {
-      const { username, password, privateKey, mnemonic, network } = data
+      const { username, password, mnemonic, network } = data
 
       setError(null)
 
       await register({
         username,
         password,
-        privateKey,
         mnemonic,
         network,
       })
@@ -205,7 +199,7 @@ const Register = () => {
       )}
       {step === Steps.EnterMnemonic && <EnterMnemonic onSubmit={onMnemonicEntered} />}
       {step === Steps.WaitingPayment && (
-        <WaitingPayment account={data.account} onPaymentDetected={onPaymentConfirmed} onError={onError} />
+        <WaitingPayment address={data.address} onPaymentDetected={onPaymentConfirmed} onError={onError} />
       )}
       {step === Steps.Complete && (
         <FlexColumnDiv>

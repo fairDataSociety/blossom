@@ -1,5 +1,5 @@
 import { BigNumber, providers } from 'ethers'
-import { Account } from '../model/general.types'
+import { Address } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
 import { AsyncConfigService } from './async-config.service'
 import { Storage } from './storage/storage.service'
@@ -18,8 +18,8 @@ export class Blockchain extends AsyncConfigService<providers.JsonRpcProvider> {
     })
   }
 
-  public async getAccountBalance(account: Account): Promise<BigNumber> {
-    return (await this.getProvider()).getBalance(account)
+  public async getAccountBalance(address: Address): Promise<BigNumber> {
+    return (await this.getProvider()).getBalance(address)
   }
 
   private getProvider(): Promise<providers.JsonRpcProvider> {
