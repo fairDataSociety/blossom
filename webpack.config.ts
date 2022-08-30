@@ -86,6 +86,10 @@ module.exports = {
           from: path.resolve(rootDir, 'assets', 'locales'),
           to: path.resolve(buildDir, 'locales'),
         },
+        {
+          from: path.resolve(rootDir, 'assets', 'icons'),
+          to: path.resolve(buildDir, 'icons'),
+        },
       ],
     }),
   ],

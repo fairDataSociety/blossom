@@ -1,6 +1,9 @@
 {
   "name": "Blossom",
   "description": "Blossom Fairdata Protocol Browser Extension",
+  "icons": {
+    "128": "icons/blossom128.png"
+  },
   "version": "1.0",
   "manifest_version": 3,
   "background": {
