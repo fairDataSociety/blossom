@@ -16,22 +16,28 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
 
   protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
     const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
-    const { ensRegistry, subdomainRegistrar, publicResolver, rpc, label } = network
-    let options: any
+    const { ensRegistry, fdsRegistrar, publicResolver, rpc } = network
+    const options = {
+      ensOptions: {
+        rpcUrl: rpc,
+        contractAddresses: {
+          ensRegistry,
+          fdsRegistrar,
+          publicResolver,
+        },
+        performChecks: true,
+      },
+      ensDomain: 'fds',
+    }
 
     // TODO A workaround until the fdp-storage is updated to re-export ENS environments
-    if (label !== networks[0].label) {
-      options = {
-        ensOptions: {
-          rpcUrl: rpc,
-          contractAddresses: {
-            ensRegistry,
-            subdomainRegistrar,
-            publicResolver,
-          },
-          performChecks: true,
-        },
-        ensDomain: 'fds',
+    if (!ensRegistry || !fdsRegistrar || !publicResolver) {
+      const localhostNetwork = networks[0]
+
+      options.ensOptions.contractAddresses = {
+        ensRegistry: localhostNetwork.ensRegistry,
+        fdsRegistrar: localhostNetwork.fdsRegistrar,
+        publicResolver: localhostNetwork.publicResolver,
       }
     }
 

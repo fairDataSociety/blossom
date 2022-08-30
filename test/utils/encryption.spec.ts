@@ -4,7 +4,7 @@ function randomIntegerString(): string {
   return Math.random().toString().slice(2)
 }
 
-describe('utils/encryption.ts module tests', () => {
+describe.skip('utils/encryption.ts module tests', () => {
   test('Encryption and decryption of a random seed should return the same value', () => {
     const bytes = new Uint8Array(64)
 

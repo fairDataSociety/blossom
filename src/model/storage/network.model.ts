@@ -4,7 +4,7 @@ export interface Network {
   label: string
   rpc: string
   ensRegistry?: EthAddress
-  subdomainRegistrar?: EthAddress
+  fdsRegistrar?: EthAddress
   publicResolver?: EthAddress
   custom: boolean
 }
