@@ -3,6 +3,7 @@ import { ApiActions } from './constants/api-actions.enum'
 import { BlossomMessages } from './messages/blossom-messages'
 import { createBlossomMessages } from './messages/blossom-messages.factory'
 import createFdpStorageProxy from './proxy/fdp-storage.proxy.factory'
+import { getDappId } from './utils/dapp.util'
 
 /**
  * Interface of the Blossom browser extension
@@ -18,6 +19,11 @@ export class Blossom {
    * https://github.com/fairDataSociety/fdp-storage#usage
    */
   public readonly fdpStorage: FdpStorage
+
+  /**
+   * dApp ENS name. If dApp is loaded from an invalid URL, the value will be null.
+   */
+  public readonly dappId: string | null = getDappId()
 
   /**
    *
