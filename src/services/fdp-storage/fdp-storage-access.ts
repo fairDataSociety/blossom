@@ -36,7 +36,7 @@ function fileHandler(file: File, method: string, parameters: unknown[]) {
 const proxy: Record<string, FdpStorageProxy> = {
   personalStorage: {
     handler: personalStorageHandler,
-    allowedMethods: ['create'],
+    allowedMethods: ['create', 'isPodCreated'],
     requiresPod: false,
   },
   directory: {

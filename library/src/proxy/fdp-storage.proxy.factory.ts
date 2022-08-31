@@ -1,7 +1,8 @@
-import type { FdpStorage, AccountData, Directory, PersonalStorage } from '@fairdatasociety/fdp-storage'
+import type { AccountData, Directory } from '@fairdatasociety/fdp-storage'
 import { ApiActions } from '../constants/api-actions.enum'
 import { BlossomMessages } from '../messages/blossom-messages'
 import { FdpStorageRequest } from '../model/fdp-storage-request.model'
+import { FdpStorage, PersonalStorage } from '../model/fdp-storage.model'
 
 function createProxy<T extends object>(path: string, messages: BlossomMessages): T {
   return new Proxy<T>(
