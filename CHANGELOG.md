@@ -3,6 +3,14 @@
 ## 0.1.0 (2022-08-31)
 
 
+First Version of the Blossom!
+
+The extension is capable of handling [FDS Account](https://github.com/fairDataSociety/FIPs/blob/master/text/0013-iaas.md) with its corresponding Personal Storage. 
+Users can register portable FDS accounts on Görli testnet or on [FDP Play](https://github.com/fairDataSociety/fdp-play/) that allows to login into the FDS account from any other device easily.
+
+Additionally, it provides an API for dApps to interact with the active FDS account of the user.
+Employing this feature in dApps, users do not have to share their FDS credentials and dApps don't have to implement Bee client connection configuration and FDS account handling within their application logic.
+
 ### Features
 
 * add option to check if pod exists from library ([#72](https://github.com/fairDataSociety/blossom/issues/72)) ([aa917db](https://github.com/fairDataSociety/blossom/commit/aa917db701cbf6f4d7771d7cc7adbf014790a479))
