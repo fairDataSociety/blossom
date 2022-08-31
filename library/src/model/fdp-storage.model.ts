@@ -3,7 +3,7 @@ import type {
   PersonalStorage as OriginalPersonalStorage,
 } from '@fairdatasociety/fdp-storage'
 
-export type PersonalStorage = Omit<OriginalPersonalStorage, 'create'> & {
+export type PersonalStorage = OriginalPersonalStorage & {
   /**
    * Checks whether dapp's pod is already created
    */
