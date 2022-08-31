@@ -2,6 +2,10 @@
 
 Browser Extension based on Fair Data Protocol.
 
+The Blossom acts as a web3 framework for dApps and a [Fair Data Society account](https://github.com/fairDataSociety/FIPs/blob/master/text/0013-iaas.md) manager for end-users.
+
+If you are a developer, read more about how to interact with the Blossom extension in its [javascript library documentation in the "library" folder](library/README.md)
+
 ## Configuration
 
 Before running the extension, it should be configured so it can be properly built and executed.
