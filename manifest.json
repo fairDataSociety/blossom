@@ -12,7 +12,8 @@
   },
   "action": {
     "default_popup": "settings.html",
-    "default_title": "Click to configure the extension"
+    "default_title": "Click to configure the extension",
+    "default_icon": "icons/blossom128.png"
   },
   "content_scripts": [
     {
