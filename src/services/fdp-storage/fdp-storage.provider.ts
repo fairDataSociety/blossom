@@ -5,6 +5,7 @@ import { Swarm } from '../../model/storage/swarm.model'
 import { SwarmExtension } from '../../swarm-api/swarm-extension'
 import { getBatchId } from '../../utils/bee'
 import { AsyncConfigService } from '../async-config.service'
+import { createPersonalStorageProxy } from './extended-personal-storage'
 
 export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
   public getService(): Promise<FdpStorage> {
@@ -45,7 +46,13 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
 
     // TODO cannot cast to BatchId because it's not exported
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new FdpStorage(beeApiUrl, batchId as any, options as unknown)
+    const fdpStorage = new FdpStorage(beeApiUrl, batchId as any, options as unknown)
+
+    // Replaces the personalStorage property with a proxy object that extends its functionalities
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(fdpStorage as unknown as any).personalStorage = createPersonalStorageProxy(fdpStorage.personalStorage)
+
+    return fdpStorage
   }
 
   private async getBeeAddresses(swarm: Swarm): Promise<{
