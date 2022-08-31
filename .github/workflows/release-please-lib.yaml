@@ -18,8 +18,8 @@ jobs:
           release-type: node
           path: library
           package-name: 'blossom-lib'
-          changelog-path: 'library/CHANGELOG.md'
-          version-file: 'library/package.json'
+          changelog-path: 'CHANGELOG.md'
+          version-file: 'package.json'
           pull-request-title-pattern: 'chore${scope}: release blossom-lib ${version}'
           monorepo-tags: true
           bump-minor-pre-major: true
