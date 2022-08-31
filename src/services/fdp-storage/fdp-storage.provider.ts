@@ -1,9 +1,9 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
-import { POSTAGE_BATCH_ID } from '../../constants/constants'
 import { networks } from '../../constants/networks'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { SwarmExtension } from '../../swarm-api/swarm-extension'
+import { getBatchId } from '../../utils/bee'
 import { AsyncConfigService } from '../async-config.service'
 
 export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
@@ -16,7 +16,8 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
   }
 
   protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
-    const beeApiUrl = await this.getBeeAddresses(swarm)
+    const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
+    const batchId = await getBatchId(beeDebugApiUrl)
     const { ensRegistry, fdsRegistrar, publicResolver, rpc } = network
     const options = {
       ensOptions: {
@@ -44,14 +45,21 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
 
     // TODO cannot cast to BatchId because it's not exported
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new FdpStorage(beeApiUrl, this.getPostageBatchId() as any, options as unknown)
+    return new FdpStorage(beeApiUrl, batchId as any, options as unknown)
   }
 
-  private async getBeeAddresses(swarm: Swarm): Promise<string> {
-    let beeApiUrl = 'http://localhost:1633'
+  private async getBeeAddresses(swarm: Swarm): Promise<{
+    beeApiUrl: string
+    beeDebugApiUrl: string
+  }> {
+    let beeApiUrl = 'http://localhost:1633',
+      beeDebugApiUrl = 'http://localhost:1635'
 
     if (process.env.CI_TESTS === 'true') {
-      return 'http://172.18.0.1:1633'
+      return {
+        beeApiUrl: 'http://172.18.0.1:1633',
+        beeDebugApiUrl: 'http://172.18.0.1:1635',
+      }
     }
 
     try {
@@ -59,19 +67,12 @@ export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> 
       const beeAddresses = await swarmExtension.beeAddress()
 
       beeApiUrl = beeAddresses.beeApiUrl
+      beeDebugApiUrl = beeAddresses.beeDebugApiUrl
     } catch (error) {
       console.error("Blossom: Couldn't connect to the Swarm extension.")
       throw error
     }
 
-    return beeApiUrl
-  }
-
-  private getPostageBatchId(): string {
-    if (process.env.environment === 'production') {
-      return POSTAGE_BATCH_ID
-    }
-
-    return process.env.POSTAGE_BATCH_ID
+    return { beeApiUrl, beeDebugApiUrl }
   }
 }

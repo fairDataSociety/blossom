@@ -10,7 +10,6 @@ All configuration is stored inside the `.env` file, in the root directory. That 
 
 - **ENVIRONMENT** - It can be set to `production` or `development` and determines how the project will be built.
 - **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode.
-- **POSTAGE_BATCH_ID** - Bee postage batch ID. It's ignored in `production` mode.
 
 ## Installation
 
