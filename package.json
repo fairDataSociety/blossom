@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Blossom Fairdata Protocol browser extension",
   "main": "index.js",
+  "homepage": "https://github.com/fairDataSociety/blossom",
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
@@ -50,7 +51,7 @@
   "dependencies": {
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
-    "@fairdatasociety/fdp-storage": "^0.4.0",
+    "@fairdatasociety/fdp-storage": "^0.5.1",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.5.0",
     "@mui/system": "^5.5.0",
