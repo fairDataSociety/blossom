@@ -19,3 +19,4 @@ jobs:
           package-name: 'blossom-ext'
           pull-request-title-pattern: 'chore${scope}: release blossom-ext ${version}'
           monorepo-tags: true
+          bump-minor-pre-major: true
