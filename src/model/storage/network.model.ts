@@ -1,10 +1,10 @@
-import { EthAddress } from '@ethersphere/bee-js/dist/types/utils/eth'
+import { Address } from '../general.types'
 
 export interface Network {
   label: string
   rpc: string
-  ensRegistry?: EthAddress
-  fdsRegistrar?: EthAddress
-  publicResolver?: EthAddress
+  ensRegistry?: Address
+  fdsRegistrar?: Address
+  publicResolver?: Address
   custom: boolean
 }

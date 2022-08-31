@@ -1,5 +1,6 @@
 import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/events'
 import { ApiResponse } from '../model/api-response.model'
+import { getOnDocumentReadyPromise } from '../utils/window.util'
 import { BlossomMessages } from './blossom-messages'
 
 const MESSAGE_TIMEOUT = 30000
@@ -44,18 +45,20 @@ export class DappBlossomMessages implements BlossomMessages {
   static webRequestId = 1
   private pendingRequests: Map<number, PromiseHandles> = new Map()
   private listener: ((event: CustomEventInit<ApiResponse>) => void) | undefined
+  private onReady: Promise<void> = getOnDocumentReadyPromise()
 
   constructor() {
     this.setListener()
   }
 
   public sendMessage<Response>(action: string, parameters?: unknown): Promise<Response> {
-    return new Promise<Response>((resolve, reject) => {
+    return new Promise<Response>(async (resolve, reject) => {
       if (!this.listener) {
         reject(new Error('Connection closed'))
 
         return
       }
+
       const requestId = DappBlossomMessages.webRequestId++
 
       this.pendingRequests.set(
@@ -68,6 +71,8 @@ export class DappBlossomMessages implements BlossomMessages {
           })
         }),
       )
+
+      await this.onReady
 
       const event = new CustomEvent(BLOSSOM_API_EVENT, {
         detail: {

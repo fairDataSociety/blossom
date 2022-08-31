@@ -22,3 +22,4 @@ jobs:
           version-file: 'library/package.json'
           pull-request-title-pattern: 'chore${scope}: release blossom-lib ${version}'
           monorepo-tags: true
+          bump-minor-pre-major: true
