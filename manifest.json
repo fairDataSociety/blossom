@@ -1,6 +1,10 @@
 {
   "name": "Blossom",
   "description": "Blossom Fairdata Protocol Browser Extension",
+  "icons": {
+    "48": "icons/blossom48.png",
+    "128": "icons/blossom128.png"
+  },
   "version": "1.0",
   "manifest_version": 3,
   "background": {
@@ -8,7 +12,8 @@
   },
   "action": {
     "default_popup": "settings.html",
-    "default_title": "Click to configure the extension"
+    "default_title": "Click to configure the extension",
+    "default_icon": "icons/blossom128.png"
   },
   "content_scripts": [
     {
