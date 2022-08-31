@@ -53,6 +53,7 @@
   "dependencies": {
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
+    "@ethersphere/bee-js": "^5.0.0",
     "@fairdatasociety/fdp-storage": "^0.5.1",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.5.0",
