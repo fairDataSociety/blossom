@@ -2,3 +2,4 @@ node_modules
 dist
 .env
 swarm-extension
+extension.zip
