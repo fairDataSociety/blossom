@@ -22,15 +22,15 @@ function personalStorageHandler(
 ) {
   parameters.shift()
 
-  return personalStorage[method](dappIdToPodName(dappId), parameters)
+  return personalStorage[method](dappIdToPodName(dappId), ...parameters)
 }
 
 function directoryHandler(directory: Directory, method: string, parameters: unknown[]) {
-  return directory[method](parameters)
+  return directory[method](...parameters)
 }
 
 function fileHandler(file: File, method: string, parameters: unknown[]) {
-  return file[method](parameters)
+  return file[method](...parameters)
 }
 
 const proxy: Record<string, FdpStorageProxy> = {
