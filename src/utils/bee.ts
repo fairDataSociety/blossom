@@ -3,7 +3,7 @@ import { BeeDebug } from '@ethersphere/bee-js'
 /**
  * Gets postage batch ID from already created batches
  *
- * @param beeDebug BeeDebug instance for interaction
+ * @param beeDebugUrl URL of Bee debug API
  */
 export async function getBatchId(beeDebugUrl: string): Promise<string> {
   const beeDebug = new BeeDebug(beeDebugUrl)
@@ -14,11 +14,11 @@ export async function getBatchId(beeDebugUrl: string): Promise<string> {
     throw new Error('Postage batch not exists')
   }
 
-  const batchId = batches.pop()?.batchID
+  const { batchID, usable } = batches.pop()
 
-  if (!batchId) {
+  if (!batchID || !usable) {
     throw new Error('Incorrect batch id found')
   }
 
-  return batchId
+  return batchID
 }
