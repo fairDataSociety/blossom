@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Blossom Fairdata Protocol browser extension",
   "main": "index.js",
+  "homepage": "https://github.com/fairDataSociety/blossom",
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",

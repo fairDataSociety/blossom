@@ -1,10 +1,10 @@
-import { aesEncryptSeedWithStringKey, decryptSeed } from '../../src/utils/encryption'
+import { encrypt, decrypt, bytesToWordArray, wordArrayToBytes } from '../../src/utils/encryption'
 
 function randomIntegerString(): string {
   return Math.random().toString().slice(2)
 }
 
-describe.skip('utils/encryption.ts module tests', () => {
+describe('utils/encryption.ts module tests', () => {
   test('Encryption and decryption of a random seed should return the same value', () => {
     const bytes = new Uint8Array(64)
 
@@ -14,9 +14,9 @@ describe.skip('utils/encryption.ts module tests', () => {
 
     const key = randomIntegerString()
 
-    const encryptedString = aesEncryptSeedWithStringKey(bytes, key)
+    const encryptedString = encrypt(key, bytesToWordArray(bytes))
 
-    const decryptedBytes = decryptSeed(encryptedString, key)
+    const decryptedBytes = wordArrayToBytes(decrypt(key, encryptedString))
 
     expect(decryptedBytes).toEqual(bytes)
   })
