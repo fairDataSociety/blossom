@@ -29,7 +29,7 @@ export class Blossom {
    *
    * @param extensionId The Blossom extension ID
    */
-  constructor(extensionId = 'lbenhfaonefggjjgnajjepfjdcggkmbm') {
+  constructor(extensionId = 'caedjloenbhibmaeffockkiallpngmmd') {
     this.messages = createBlossomMessages(extensionId)
     this.fdpStorage = createFdpStorageProxy(this.messages)
   }
