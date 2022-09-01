@@ -2,6 +2,14 @@
 
 ## 0.1.0 (2022-09-01)
 
+This is the first version of JS library of Blossom!
+
+The library knows all required DOM events to communicate with Blossom that supports already
+- defining dApp ID # this is the identification of the dApp in Blossom; this ID is the key for the Context within which dApps can perform Blossom actions.
+- use fdp-storage functionalities # the FDP Storage Object is a [Proxy Object underneath](https://github.com/fairDataSociety/blossom/issues/19) that only 
+	communicates with Blossom to retreive FDP Storage responses.
+- can ping the extension # to check whether the user has Blossom extension in the browser.
+- close connection # if there is no need for the Blossom functionalities for the dApp anymore.
 
 ### Features
 
