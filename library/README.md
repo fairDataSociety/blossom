@@ -85,8 +85,8 @@ console.log(content.text()) // 'File content'
 
 ### Terminating connection
 
-Once when the instance of the Blossom class is not needed anymore, connection with the extension should be
-terminated to avoid memory leaking.
+Once when the instance of the Blossom class is not needed anymore, connection with the extension can be
+terminated.
 
 ```typescript
 blossom.closeConnection()

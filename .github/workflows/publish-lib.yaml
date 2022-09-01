@@ -47,9 +47,3 @@ jobs:
         run: cd library && npm publish --access public && cd ..
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-  placeholder-lib:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Always runs
-        run: echo "Prevents the workflow from failing if release is not created."
