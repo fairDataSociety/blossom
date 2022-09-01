@@ -80,6 +80,9 @@ const content = await blossom.fdpStorage.file.downloadData(blossom.dappId, '/exa
 console.log(content.text()) // 'File content'
 ```
 
+> **_NOTE_:** For more available methods, check the
+> [fdp-storage repo](https://github.com/fairDataSociety/fdp-storage#usage)
+
 ### Terminating connection
 
 Once when the instance of the Blossom class is not needed anymore, connection with the extension should be
