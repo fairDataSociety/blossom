@@ -4,17 +4,10 @@ import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { SwarmExtension } from '../../swarm-api/swarm-extension'
 import { getBatchId } from '../../utils/bee'
-import { AsyncConfigService } from '../async-config.service'
 import { createPersonalStorageProxy } from './extended-personal-storage'
 
-export abstract class FdpStorageProvider extends AsyncConfigService<FdpStorage> {
-  public getService(): Promise<FdpStorage> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(super.getConfig())
-      })
-    })
-  }
+export abstract class FdpStorageProvider {
+  public abstract getService(): Promise<FdpStorage>
 
   protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
     const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
