@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.1.0...blossom-ext-v0.1.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* **build:** bee-js ky ([#82](https://github.com/fairDataSociety/blossom/issues/82)) ([620fdd1](https://github.com/fairDataSociety/blossom/commit/620fdd1882ebeef282c94e61f2c9a811c7338573))
+* fix race condition ([#79](https://github.com/fairDataSociety/blossom/issues/79)) ([#80](https://github.com/fairDataSociety/blossom/issues/80)) ([2f13a7f](https://github.com/fairDataSociety/blossom/commit/2f13a7fb42aa0353a3af339d61b9b67d96a1fb09))
+
 ## 0.1.0 (2022-08-31)
 
 
