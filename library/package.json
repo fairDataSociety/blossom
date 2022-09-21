@@ -1,6 +1,6 @@
 {
   "name": "@fairdatasociety/blossom",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "JavaScript library for interaction with the Blossom browser extension",
   "main": "build/index.js",
   "scripts": {

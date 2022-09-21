@@ -1,29 +1,13 @@
 import { Storage } from '../storage/storage.service'
-import { Network } from '../../model/storage/network.model'
-import { Swarm } from '../../model/storage/swarm.model'
 import { FdpStorageProvider } from './fdp-storage.provider'
+import { FdpStorage } from '@fairdatasociety/fdp-storage'
 
 export class SessionlessFdpStorageProvider extends FdpStorageProvider {
   private storage: Storage = new Storage()
-  private network: Network
-  private swarm: Swarm
 
-  constructor() {
-    super()
-    super.initialize(async () => {
-      const [network, swarm] = await Promise.all([this.storage.getNetwork(), this.storage.getSwarm()])
-      this.network = network
-      this.swarm = swarm
+  public async getService(): Promise<FdpStorage> {
+    const [network, swarm] = await Promise.all([this.storage.getNetwork(), this.storage.getSwarm()])
 
-      this.storage.onNetworkChange((network: Network) =>
-        super.updateConfigAsync(this.createFdpStorage((this.network = network), this.swarm)),
-      )
-
-      this.storage.onSwarmChange((swarm: Swarm) =>
-        super.updateConfigAsync(this.createFdpStorage(this.network, (this.swarm = swarm))),
-      )
-
-      return this.createFdpStorage(this.network, swarm)
-    })
+    return this.createFdpStorage(network, swarm)
   }
 }

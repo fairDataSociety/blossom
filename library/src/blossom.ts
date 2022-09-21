@@ -1,7 +1,7 @@
-import type { FdpStorage } from '@fairdatasociety/fdp-storage'
 import { ApiActions } from './constants/api-actions.enum'
 import { BlossomMessages } from './messages/blossom-messages'
 import { createBlossomMessages } from './messages/blossom-messages.factory'
+import { FdpStorage } from './model/fdp-storage.model'
 import createFdpStorageProxy from './proxy/fdp-storage.proxy.factory'
 import { getDappId } from './utils/dapp.util'
 
@@ -29,7 +29,7 @@ export class Blossom {
    *
    * @param extensionId The Blossom extension ID
    */
-  constructor(extensionId = 'lbenhfaonefggjjgnajjepfjdcggkmbm') {
+  constructor(extensionId = 'caedjloenbhibmaeffockkiallpngmmd') {
     this.messages = createBlossomMessages(extensionId)
     this.fdpStorage = createFdpStorageProxy(this.messages)
   }

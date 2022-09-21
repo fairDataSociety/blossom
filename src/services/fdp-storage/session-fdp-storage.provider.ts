@@ -8,26 +8,11 @@ import { FdpStorageProvider } from './fdp-storage.provider'
 export class SessionFdpStorageProvider extends FdpStorageProvider {
   private storage: Storage = new Storage()
   private sessionService: SessionService = new SessionService()
-  private session: MemorySession
-  private swarm: Swarm
 
-  constructor() {
-    super()
-    super.initialize(async () => {
-      const [session, swarm] = await Promise.all([this.sessionService.load(), this.storage.getSwarm()])
-      this.session = session
-      this.swarm = swarm
+  public async getService(): Promise<FdpStorage> {
+    const [session, swarm] = await Promise.all([this.sessionService.load(), this.storage.getSwarm()])
 
-      this.sessionService.onChange((session: MemorySession) => {
-        super.updateConfigAsync(this.createFdpStorageInternal((this.session = session), this.swarm))
-      })
-
-      this.storage.onSwarmChange((swarm: Swarm) =>
-        super.updateConfigAsync(this.createFdpStorageInternal(this.session, (this.swarm = swarm))),
-      )
-
-      return this.createFdpStorageInternal(session, swarm)
-    })
+    return this.createFdpStorageInternal(session, swarm)
   }
 
   private async createFdpStorageInternal(session: MemorySession, swarm: Swarm): Promise<FdpStorage> {
