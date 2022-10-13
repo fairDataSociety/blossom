@@ -3,3 +3,5 @@ dist
 .env
 swarm-extension
 extension.zip
+test/**/blossom.js
+test/**/*.tar.gz

@@ -1,4 +1,5 @@
 import { ElementHandle, Page } from 'puppeteer'
+import { fillUsernamePasswordForm } from './test-utils/account'
 import { sendFunds } from './test-utils/ethers'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
 import {
@@ -48,19 +49,6 @@ async function getMnemonicConfirmationElements(
 
     return wordElements[wordIndex]
   })
-}
-
-async function fillUsernamePasswordForm(page: Page, username: string, password: string): Promise<void> {
-  const usernameInput = await getElementByTestId(page, 'username')
-
-  await usernameInput.click()
-  await usernameInput.type(username)
-
-  const passwordInput = await getElementByTestId(page, 'password')
-
-  await passwordInput.click()
-  await passwordInput.type(password)
-  await (await getElementByTestId(page, 'submit')).click()
 }
 
 async function assertUserLogin(username: string): Promise<void> {

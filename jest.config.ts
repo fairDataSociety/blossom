@@ -16,4 +16,5 @@ export default {
   testTimeout: 60000,
   testPathIgnorePatterns: ['/node_modules/'],
   moduleDirectories: ['node_modules'],
+  testSequencer: join(__dirname, 'test/config/sequencer.js'),
 }
