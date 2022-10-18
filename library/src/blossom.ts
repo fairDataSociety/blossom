@@ -3,6 +3,7 @@ import { BlossomMessages } from './messages/blossom-messages'
 import { createBlossomMessages } from './messages/blossom-messages.factory'
 import { FdpStorage } from './model/fdp-storage.model'
 import createFdpStorageProxy from './proxy/fdp-storage.proxy.factory'
+import { Signer } from './signer'
 import { getDappId } from './utils/dapp.util'
 
 /**
@@ -21,6 +22,11 @@ export class Blossom {
   public readonly fdpStorage: FdpStorage
 
   /**
+   * Signer object
+   */
+  public readonly signer: Signer
+
+  /**
    * dApp ENS name. If dApp is loaded from an invalid URL, the value will be null.
    */
   public readonly dappId: string | null = getDappId()
@@ -32,6 +38,7 @@ export class Blossom {
   constructor(extensionId = 'caedjloenbhibmaeffockkiallpngmmd') {
     this.messages = createBlossomMessages(extensionId)
     this.fdpStorage = createFdpStorageProxy(this.messages)
+    this.signer = new Signer(this.messages)
   }
 
   /**

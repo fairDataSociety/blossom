@@ -14,6 +14,10 @@ import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
 
+export function isString(data: unknown): data is string {
+  return typeof data === 'string'
+}
+
 export function isLoginData(data: unknown): data is LoginData {
   const { username, password, network } = (data || {}) as LoginData
 

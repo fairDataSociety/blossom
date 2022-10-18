@@ -66,5 +66,6 @@
   "FDS": "FDS",
   "LOCAL": "Local",
   "LOCAL_LOGIN": "Local Account Login",
-  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:"
+  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:",
+  "SIGN_MESSAGE_MESSAGE": "Dapp with ID {dappId} wants to sign the following message: {message}. Do you want to sign the message?"
 }
