@@ -70,7 +70,7 @@ async function assertUserLogin(username: string): Promise<void> {
 }
 
 const blossomId: string = global.__BLOSSOM_ID__
-const username = 'test_user'
+const username = 'testuser'
 const password = 'pass12345'
 let mnemonic: string[]
 
@@ -161,7 +161,7 @@ describe('Unsuccessful registration tests', () => {
 
 describe('Registration with an existing account', () => {
   let page: Page
-  const username = 'test_user_2'
+  const username = 'testuser2'
 
   beforeAll(async () => {
     page = await openExtensionOptionsPage(blossomId, 'auth.html')
