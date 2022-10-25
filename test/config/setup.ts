@@ -1,7 +1,7 @@
 import puppeteer, { Browser } from 'puppeteer'
 import path from 'path'
 import { getExtensionId } from '../test-utils/extension.util'
-import { checkConnection } from '../test-utils/ethers'
+import testPrep from './test-prep'
 
 const EXTENSION_ROOT = path.join(__dirname, '..', '..')
 const EXTENSION_DIST = path.join(EXTENSION_ROOT, 'dist')
@@ -9,9 +9,9 @@ const SWARM_EXTENSION_PATH = path.join(EXTENSION_ROOT, 'swarm-extension/dist')
 
 export default async () => {
   try {
-    await checkConnection()
+    await testPrep()
   } catch (error) {
-    console.error('Cannot connect to RPC server')
+    console.error("Couldn't prepare test environment")
     throw error
   }
 

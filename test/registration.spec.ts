@@ -1,55 +1,21 @@
-import { ElementHandle, Page } from 'puppeteer'
-import { fillUsernamePasswordForm } from './test-utils/account'
+import { Page } from 'puppeteer'
+import { PRIVATE_KEY } from './config/constants'
+import {
+  extractTextFromSpan,
+  fillUsernamePasswordForm,
+  getMnemonic,
+  getMnemonicConfirmationElements,
+} from './test-utils/account'
 import { sendFunds } from './test-utils/ethers'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
 import {
   click,
   dataTestId,
   getElementByTestId,
-  getElementChildren,
   isElementDisabled,
   waitForElementText,
   waitForElementTextByTestId,
 } from './test-utils/page'
-
-function extractTextFromSpan(wordElement: ElementHandle<Element>): Promise<string> {
-  return wordElement.$eval('span', (e) => e.innerHTML)
-}
-
-function extractMnemonic(wordElements: ElementHandle<Element>[]): Promise<string[]> {
-  return Promise.all(wordElements.map((element) => extractTextFromSpan(element)))
-}
-
-async function getMnemonic(page: Page): Promise<string[]> {
-  const mnemonicElement = await getElementByTestId(page, 'mnemonic')
-
-  const wordElements = await getElementChildren(mnemonicElement)
-
-  return extractMnemonic(wordElements)
-}
-
-async function getMnemonicConfirmationElements(
-  page: Page,
-  mnemonic: string[],
-): Promise<ElementHandle<Element>[]> {
-  const wordElements = await getElementChildren(await getElementByTestId(page, 'mnemonic-confirmation'))
-
-  const words = await extractMnemonic(wordElements)
-
-  return mnemonic.map((word, index) => {
-    let occurrence = 0
-
-    for (let i = 0; i <= index; i++) {
-      if (mnemonic[i] === word) {
-        occurrence += 1
-      }
-    }
-
-    const wordIndex = words.findIndex((currentWord) => currentWord === word && --occurrence === 0)
-
-    return wordElements[wordIndex]
-  })
-}
 
 async function assertUserLogin(username: string): Promise<void> {
   const settingsPage = await openExtensionOptionsPage(blossomId, 'settings.html')
@@ -64,7 +30,6 @@ let mnemonic: string[]
 
 describe('Successful registration tests', () => {
   let page: Page
-  const privateKey = '0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d'
 
   beforeAll(async () => {
     await setSwarmExtensionId()
@@ -117,7 +82,7 @@ describe('Successful registration tests', () => {
   test('Should proceed after successful payment', async () => {
     const account = await waitForElementTextByTestId(page, 'account')
 
-    await sendFunds(privateKey, account, '0.1')
+    await sendFunds(PRIVATE_KEY, account, '0.1')
 
     expect(await waitForElementTextByTestId(page, 'complete')).toBeTruthy()
 

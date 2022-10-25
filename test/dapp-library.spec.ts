@@ -1,23 +1,25 @@
 import { Page } from 'puppeteer'
-import { login } from './test-utils/account'
+import { BEE_URL } from './config/constants'
+import { login, logout, register } from './test-utils/account'
 import { click, openPage, wait, waitForElementText } from './test-utils/page'
 
-const HOST = process.env.CI === 'true' ? 'http://172.18.0.1:1633' : 'http://127.0.0.1:1633'
-const FDP_STORAGE_PAGE_URL = `${HOST}/bzz/${process.env.BLOSSOM_FDP_STORAGE_PAGE_REFERENCE}/`
+const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
 
 describe('Dapp interaction with Blossom, using the library', () => {
   let page: Page
-  const username = 'testuser'
+  const username = 'fdpuser'
   const password = 'pass12345'
 
   describe('fdp-storage tests', () => {
     beforeAll(async () => {
+      await register(username, password)
       await login(username, password)
       page = await openPage(FDP_STORAGE_PAGE_URL)
     })
 
     afterAll(async () => {
       await page.close()
+      await logout()
     })
 
     test('Should successfully create a pod', async () => {

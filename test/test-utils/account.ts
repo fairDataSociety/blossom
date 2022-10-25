@@ -1,6 +1,49 @@
-import { Page } from 'puppeteer'
-import { openExtensionOptionsPage } from './extension.util'
-import { click, getElementByTestId } from './page'
+import { ElementHandle, Page } from 'puppeteer'
+import { PRIVATE_KEY } from '../config/constants'
+import { sendFunds } from './ethers'
+import { openExtensionOptionsPage, setSwarmExtensionId } from './extension.util'
+import { click, dataTestId, getElementByTestId, getElementChildren, waitForElementTextByTestId } from './page'
+
+const blossomId = global.__BLOSSOM_ID__
+
+export function extractTextFromSpan(wordElement: ElementHandle<Element>): Promise<string> {
+  return wordElement.$eval('span', (e) => e.innerHTML)
+}
+
+export function extractMnemonic(wordElements: ElementHandle<Element>[]): Promise<string[]> {
+  return Promise.all(wordElements.map((element) => extractTextFromSpan(element)))
+}
+
+export async function getMnemonic(page: Page): Promise<string[]> {
+  const mnemonicElement = await getElementByTestId(page, 'mnemonic')
+
+  const wordElements = await getElementChildren(mnemonicElement)
+
+  return extractMnemonic(wordElements)
+}
+
+export async function getMnemonicConfirmationElements(
+  page: Page,
+  mnemonic: string[],
+): Promise<ElementHandle<Element>[]> {
+  const wordElements = await getElementChildren(await getElementByTestId(page, 'mnemonic-confirmation'))
+
+  const words = await extractMnemonic(wordElements)
+
+  return mnemonic.map((word, index) => {
+    let occurrence = 0
+
+    for (let i = 0; i <= index; i++) {
+      if (mnemonic[i] === word) {
+        occurrence += 1
+      }
+    }
+
+    const wordIndex = words.findIndex((currentWord) => currentWord === word && --occurrence === 0)
+
+    return wordElements[wordIndex]
+  })
+}
 
 export async function fillUsernamePasswordForm(
   page: Page,
@@ -20,11 +63,55 @@ export async function fillUsernamePasswordForm(
 }
 
 export async function login(username: string, password: string): Promise<void> {
-  const page = await openExtensionOptionsPage(global.__BLOSSOM_ID__, 'auth.html')
+  const page = await openExtensionOptionsPage(blossomId, 'auth.html')
 
   await click(page, 'login')
 
   await fillUsernamePasswordForm(page, username, password)
+
+  await page.close()
+}
+
+export async function logout(): Promise<void> {
+  const page = await openExtensionOptionsPage(blossomId, 'settings.html')
+
+  await click(page, 'logout-btn')
+
+  await getElementByTestId(page, 'settings-registration-login-button')
+}
+
+export async function register(username: string, password: string): Promise<void> {
+  await setSwarmExtensionId()
+
+  const page = await openExtensionOptionsPage(blossomId, 'auth.html')
+
+  await click(page, 'register')
+
+  await fillUsernamePasswordForm(page, username, password)
+
+  await click(page, 'register-new')
+
+  await page.waitForSelector(dataTestId('mnemonic'))
+
+  const mnemonic = await getMnemonic(page)
+
+  await click(page, 'submit')
+
+  const rightOrderWordElements = await getMnemonicConfirmationElements(page, mnemonic)
+
+  await rightOrderWordElements.reduce(async (prevPromise, element) => {
+    await prevPromise
+
+    return await element.click()
+  }, Promise.resolve())
+
+  await click(page, 'submit')
+
+  const account = await waitForElementTextByTestId(page, 'account')
+
+  await sendFunds(PRIVATE_KEY, account, '0.1')
+
+  await waitForElementTextByTestId(page, 'complete')
 
   await page.close()
 }
