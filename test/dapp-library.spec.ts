@@ -28,7 +28,7 @@ describe('Dapp interaction with Blossom, using the library', () => {
       let tries = 0,
         done = false
 
-      while (!done && tries < 5) {
+      while (!done && tries < 12) {
         await wait(5000)
 
         const pages = await global.__BROWSER__.pages()
@@ -48,6 +48,8 @@ describe('Dapp interaction with Blossom, using the library', () => {
 
         done = true
       }
+
+      expect(done).toEqual(true)
 
       expect(await waitForElementText(page, '#create-pod[complete="true"]')).toEqual('success')
     })
