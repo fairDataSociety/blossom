@@ -25,17 +25,29 @@ describe('Dapp interaction with Blossom, using the library', () => {
     test('Should successfully create a pod', async () => {
       await click(page, 'create-pod-btn')
 
-      await wait(5000)
+      let tries = 0,
+        done = false
 
-      const pages = await global.__BROWSER__.pages()
+      while (!done && tries < 5) {
+        await wait(5000)
 
-      const pageTitles = await Promise.all(pages.map((page) => page.title()))
+        const pages = await global.__BROWSER__.pages()
 
-      const blossomPageIndex = pageTitles.findIndex((title) => title === 'Blossom')
+        const pageTitles = await Promise.all(pages.map((page) => page.title()))
 
-      const blossomPage = pages[blossomPageIndex]
+        const blossomPageIndex = pageTitles.findIndex((title) => title === 'Blossom')
 
-      await click(blossomPage, 'dialog-confirm-btn')
+        const blossomPage = pages[blossomPageIndex]
+
+        if (!blossomPage) {
+          tries += 1
+          continue
+        }
+
+        await click(blossomPage, 'dialog-confirm-btn')
+
+        done = true
+      }
 
       expect(await waitForElementText(page, '#create-pod[complete="true"]')).toEqual('success')
     })

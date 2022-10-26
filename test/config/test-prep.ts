@@ -60,6 +60,8 @@ async function uploadPages(batchId: string): Promise<void> {
       })
 
       global[dappReferenceVariables[index]] = response.data.reference
+
+      console.log(`${dappReferenceVariables[index]}=${response.data.reference}`)
     }),
   )
 }
@@ -91,7 +93,7 @@ async function setup(): Promise<void> {
 
   await zipPages()
 
-  console.log('Created zip.tar files for each dApp')
+  console.log('Created tar.gz files for each dApp')
 
   await uploadPages(global.__POSTAGE_BATCH_ID__)
 
