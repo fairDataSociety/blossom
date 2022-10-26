@@ -25,7 +25,7 @@ function sleep(seconds: number): Promise<void> {
 }
 
 function compileLibrary(): Promise<void> {
-  return execPromise('npm run build --prefix library')
+  return execPromise('cd library && npm run build')
 }
 
 async function copyLibrary(): Promise<void> {
