@@ -1,5 +1,5 @@
 export enum ApiActions {
   FDP_STORAGE = 'fdp-storage',
-  SIGNER = 'signer',
+  SIGNER_SIGN_MESSAGE = 'signer.signMessage',
   ECHO = 'echo',
 }

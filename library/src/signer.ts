@@ -5,6 +5,6 @@ export class Signer {
   constructor(private messages: BlossomMessages) {}
 
   public signMessage(message: string): Promise<string> {
-    return this.messages.sendMessage(`${ApiActions.SIGNER}.signMessage`, message)
+    return this.messages.sendMessage(`${ApiActions.SIGNER_SIGN_MESSAGE}`, message)
   }
 }
