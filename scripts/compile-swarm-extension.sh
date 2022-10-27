@@ -1,7 +1,13 @@
 #!/bin/bash
+# Compiles the swarm extension.
+# Parameters:
+# CI - boolean, specifies which configuration to use
+
 SCRIPTS_DIR=$( dirname "$0" )
 
 cd "$SCRIPTS_DIR/.."
+
+CI=$1
 
 rm -rf swarm-extension
 

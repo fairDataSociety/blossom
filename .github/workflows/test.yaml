@@ -70,7 +70,7 @@ jobs:
             ${{ runner.OS }}-node-${{ matrix.node }}-
 
       - name: Compile Swarm Extension
-        run: npm run swarm-ext
+        run: npm run swarm-ext:ci
         if: steps.cache-swarm-ext.outputs.cache-hit != 'true'
 
       - name: Copy configuration

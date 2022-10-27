@@ -12,6 +12,7 @@
     "lint": "eslint --fix \"src/**/*.ts\" \"test/**/*.ts\" && prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint:check": "eslint \"src/**/*.ts\" \"test/**/*.ts\" && prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "swarm-ext": "./scripts/compile-swarm-extension.sh",
+    "swarm-ext:ci": "./scripts/compile-swarm-extension.sh true",
     "test": "jest --runInBand",
     "test:ci": "CI=true jest --runInBand",
     "test:demo": "npm run test -- --demo=true",
