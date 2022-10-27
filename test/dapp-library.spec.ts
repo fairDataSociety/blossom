@@ -51,8 +51,6 @@ describe('Dapp interaction with Blossom, using the library', () => {
         done = true
       }
 
-      expect(done).toEqual(true)
-
       expect(await waitForElementText(page, '#create-pod[complete="true"]')).toEqual('success')
     })
 
