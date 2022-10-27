@@ -23,6 +23,8 @@ describe('Dapp interaction with Blossom, using the library', () => {
     })
 
     test('Should successfully create a pod', async () => {
+      await wait(10000)
+
       await click(page, 'create-pod-btn')
 
       let tries = 0,
