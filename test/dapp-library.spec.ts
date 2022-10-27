@@ -39,6 +39,8 @@ describe('Dapp interaction with Blossom, using the library', () => {
 
         const blossomPage = pages[blossomPageIndex]
 
+        console.log('Page titles', pageTitles)
+
         if (!blossomPage) {
           tries += 1
           continue
