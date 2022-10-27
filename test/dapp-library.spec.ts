@@ -23,14 +23,14 @@ describe('Dapp interaction with Blossom, using the library', () => {
     })
 
     test('Should successfully create a pod', async () => {
-      await wait(10000)
+      await wait(5000)
 
       await click(page, 'create-pod-btn')
 
       let tries = 0,
         done = false
 
-      while (!done && tries < 12) {
+      while (!done && tries < 5) {
         await wait(5000)
 
         const pages = await global.__BROWSER__.pages()
@@ -40,8 +40,6 @@ describe('Dapp interaction with Blossom, using the library', () => {
         const blossomPageIndex = pageTitles.findIndex((title) => title === 'Blossom')
 
         const blossomPage = pages[blossomPageIndex]
-
-        console.log('Page titles', pageTitles)
 
         if (!blossomPage) {
           tries += 1

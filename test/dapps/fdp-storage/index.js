@@ -11,9 +11,12 @@ function setSuccess(id) {
 }
 
 async function createPod() {
-  await blossom.fdpStorage.personalStorage.create('test-pod')
-
-  setSuccess('create-pod')
+  try {
+    await blossom.fdpStorage.personalStorage.create('test-pod')
+    setSuccess('create-pod')
+  } catch (error) {
+    setText('create-pod', error)
+  }
 }
 
 async function checkIfPodCreated() {
