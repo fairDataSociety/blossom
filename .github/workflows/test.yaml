@@ -19,6 +19,7 @@ jobs:
         node-version: [16.x]
 
     env:
+      CI: 'true'
       BEE_VERSION: '1.8.2'
       BEE_API_URL: 'http://172.18.0.1:1633'
       BEE_DEBUG_API_URL: 'http://172.18.0.1:1635'
