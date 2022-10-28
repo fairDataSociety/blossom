@@ -84,7 +84,7 @@ async function setup(): Promise<void> {
 
     global.__POSTAGE_BATCH_ID__ = await createPostageBatch()
 
-    console.log(`Postage batch created ${global.__POSTAGE_BATCH_ID__}`)
+    console.log(`Postage batch created! POSTAGE_BATCH_ID=${global.__POSTAGE_BATCH_ID__}`)
 
     console.log('Waiting for batch to become ready...')
 

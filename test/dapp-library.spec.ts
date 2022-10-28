@@ -1,7 +1,7 @@
 import { Page } from 'puppeteer'
 import { BEE_URL } from './config/constants'
 import { login, logout, register } from './test-utils/account'
-import { click, openPage, wait, waitForElementText } from './test-utils/page'
+import { click, getPageByTitle, openPage, wait, waitForElementText } from './test-utils/page'
 
 const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
 
@@ -27,13 +27,7 @@ describe('Dapp interaction with Blossom, using the library', () => {
 
       await wait(5000)
 
-      const pages = await global.__BROWSER__.pages()
-
-      const pageTitles = await Promise.all(pages.map((page) => page.title()))
-
-      const blossomPageIndex = pageTitles.findIndex((title) => title === 'Blossom')
-
-      const blossomPage = pages[blossomPageIndex]
+      const blossomPage = await getPageByTitle('Blossom')
 
       if (blossomPage) {
         // If confirmation page is not open then an error occurred. That error will be printed

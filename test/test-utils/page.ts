@@ -63,3 +63,13 @@ export async function click(page: Page, id: string): Promise<void> {
 export function wait(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
+
+export async function getPageByTitle(title: string): Promise<Page> {
+  const pages = await global.__BROWSER__.pages()
+
+  const pageTitles = await Promise.all(pages.map((page) => page.title()))
+
+  const blossomPageIndex = pageTitles.findIndex((pageTitle) => pageTitle === title)
+
+  return pages[blossomPageIndex]
+}

@@ -10,7 +10,7 @@ export function extractTextFromSpan(wordElement: ElementHandle<Element>): Promis
   return wordElement.$eval('span', (e) => e.innerHTML)
 }
 
-export function extractMnemonic(wordElements: ElementHandle<Element>[]): Promise<string[]> {
+export function extractTextFromSpanArray(wordElements: ElementHandle<Element>[]): Promise<string[]> {
   return Promise.all(wordElements.map((element) => extractTextFromSpan(element)))
 }
 
@@ -19,7 +19,7 @@ export async function getMnemonic(page: Page): Promise<string[]> {
 
   const wordElements = await getElementChildren(mnemonicElement)
 
-  return extractMnemonic(wordElements)
+  return extractTextFromSpanArray(wordElements)
 }
 
 export async function getMnemonicConfirmationElements(
@@ -28,7 +28,7 @@ export async function getMnemonicConfirmationElements(
 ): Promise<ElementHandle<Element>[]> {
   const wordElements = await getElementChildren(await getElementByTestId(page, 'mnemonic-confirmation'))
 
-  const words = await extractMnemonic(wordElements)
+  const words = await extractTextFromSpanArray(wordElements)
 
   return mnemonic.map((word, index) => {
     let occurrence = 0
