@@ -76,6 +76,7 @@ const Dialog = () => {
             width: '40%',
             margin: 'auto',
           }}
+          data-testid="dialog-confirm-btn"
         >
           {intl.get('CONFIRM')}
         </Button>
@@ -87,6 +88,7 @@ const Dialog = () => {
             width: '40%',
             margin: 'auto',
           }}
+          data-testid="dialog-cancel-btn"
         >
           {intl.get('CANCEL')}
         </Button>
