@@ -35,7 +35,11 @@ describe('Dapp interaction with Blossom, using the library', () => {
 
       const blossomPage = pages[blossomPageIndex]
 
-      await click(blossomPage, 'dialog-confirm-btn')
+      if (blossomPage) {
+        // If confirmation page is not open then an error occurred. That error will be printed
+        // in the next line
+        await click(blossomPage, 'dialog-confirm-btn')
+      }
 
       expect(await waitForElementText(page, '#create-pod[complete="true"]')).toEqual('success')
     })
