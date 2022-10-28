@@ -89,7 +89,7 @@ jobs:
         id: cache-npm-lib
         uses: actions/cache@v3
         with:
-          path: node_modules
+          path: library/node_modules
           key: ${{ runner.os }}-lib-${{ matrix.node }}-${{ hashFiles('**/library/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-lib-${{ matrix.node }}-${{ env.cache-name }}-
