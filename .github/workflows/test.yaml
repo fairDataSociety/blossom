@@ -19,6 +19,7 @@ jobs:
         node-version: [16.x]
 
     env:
+      CI: 'true'
       BEE_VERSION: '1.8.2'
       BEE_API_URL: 'http://172.18.0.1:1633'
       BEE_DEBUG_API_URL: 'http://172.18.0.1:1635'
@@ -69,7 +70,7 @@ jobs:
             ${{ runner.OS }}-node-${{ matrix.node }}-
 
       - name: Compile Swarm Extension
-        run: npm run swarm-ext
+        run: npm run swarm-ext:ci
         if: steps.cache-swarm-ext.outputs.cache-hit != 'true'
 
       - name: Copy configuration
@@ -84,11 +85,19 @@ jobs:
       - name: Run fdp-play
         run: fdp-play start -d --bee-version $BEE_VERSION
 
-      - name: Create Postage Batch
-        run: curl -s -XPOST http://localhost:1635/stamps/10000000/18
+      - name: Cache library node modules
+        id: cache-npm-lib
+        uses: actions/cache@v3
+        with:
+          path: library/node_modules
+          key: ${{ runner.os }}-lib-${{ matrix.node }}-${{ hashFiles('**/library/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-lib-${{ matrix.node }}-${{ env.cache-name }}-
+            ${{ runner.OS }}-lib-${{ matrix.node }}-
 
-      - name: Wait for batch
-        run: sleep 200
+      - name: Install library dependencies
+        run: cd library && npm ci && cd ..
+        if: steps.cache-npm-lib.outputs.cache-hit != 'true'
 
       - name: Run tests
         uses: vojtechsimetka/puppeteer-headful@master

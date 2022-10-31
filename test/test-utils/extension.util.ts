@@ -49,5 +49,5 @@ export async function setSwarmExtensionId(): Promise<void> {
   await (await getElementByTestId(settingsPage, 'swarm-extension-id-submit')).click()
 
   await getElementByTestId(settingsPage, 'settings-swarm-button')
-  settingsPage.close()
+  await settingsPage.close()
 }
