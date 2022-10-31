@@ -19,19 +19,28 @@ async function signMessage(message: string, sender: chrome.runtime.MessageSender
   }
 
   let confirmed: boolean
+  let podName: string
 
   if (isOtherExtension(sender)) {
+    podName = sender.id
     confirmed = await dialogs.ask('EXTENSION_SIGN_MESSAGE_MESSAGE', { extensionId: sender.id, message })
   } else {
     const dappId = await dappService.getDappId(sender.url)
     confirmed = await dialogs.ask('DAPP_SIGN_MESSAGE_MESSAGE', { dappId, message })
+    podName = dappId
   }
 
   if (!confirmed) {
     throw new Error('Blossom: Access denied')
   }
 
-  const wallet = new Wallet(fdp.account.wallet.privateKey)
+  const podWallet = await fdp.personalStorage.getPodWallet(fdp.account.seed, podName)
+
+  if (!podWallet) {
+    throw new Error("Blossom: pod doesn't exist")
+  }
+
+  const wallet = new Wallet(podWallet.privateKey)
 
   return wallet.signMessage(message)
 }
