@@ -10,18 +10,18 @@ describe('Dapp interaction with Blossom, using the library', () => {
   const username = 'fdpuser'
   const password = 'pass12345'
 
+  beforeAll(async () => {
+    await register(username, password)
+    await login(username, password)
+    page = await openPage(FDP_STORAGE_PAGE_URL)
+  })
+
+  afterAll(async () => {
+    await page.close()
+    await logout()
+  })
+
   describe('fdp-storage tests', () => {
-    beforeAll(async () => {
-      await register(username, password)
-      await login(username, password)
-      page = await openPage(FDP_STORAGE_PAGE_URL)
-    })
-
-    afterAll(async () => {
-      await page.close()
-      await logout()
-    })
-
     test('Should successfully create a pod', async () => {
       await click(page, 'create-pod-btn')
 
@@ -60,6 +60,22 @@ describe('Dapp interaction with Blossom, using the library', () => {
       await click(page, 'download-file-btn')
 
       expect(await waitForElementText(page, '#download-file[complete="true"]')).toEqual('success')
+    })
+  })
+
+  describe('Signer tests', () => {
+    test('Should sign a message', async () => {
+      await click(page, 'sign-message-btn')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-confirm-btn')
+
+      expect(await waitForElementText(page, '#sign-message[complete="true"]')).toEqual(
+        '0x505649f8f878db2067138ab30401c6a5e34a4318de94ffc63aa27269e46f6be410641b5a9f22ba47dfbc606b687f9ea7fca46390daeee934e03ce47284bc8c471b',
+      )
     })
   })
 })
