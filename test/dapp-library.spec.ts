@@ -1,6 +1,11 @@
+import { Wallet } from 'ethers'
+import { mnemonicToSeed } from 'ethers/lib/utils'
 import { Page } from 'puppeteer'
+import { hexToBytes } from '../src/utils/encryption'
+import { getWalletByIndex } from '../src/utils/ethers'
 import { BEE_URL } from './config/constants'
-import { login, logout, register } from './test-utils/account'
+import { login, logout, registerExisting } from './test-utils/account'
+import { removeZeroFromHex } from './test-utils/ethers'
 import { click, getPageByTitle, openPage, wait, waitForElementText } from './test-utils/page'
 
 const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
@@ -9,9 +14,10 @@ describe('Dapp interaction with Blossom, using the library', () => {
   let page: Page
   const username = 'fdpuser'
   const password = 'pass12345'
+  const mnemonic = 'screen series sponsor unfair wear measure idle strike flame zone gain process'
 
   beforeAll(async () => {
-    await register(username, password)
+    await registerExisting(username, password, mnemonic)
     await login(username, password)
     page = await openPage(FDP_STORAGE_PAGE_URL)
   })
@@ -73,9 +79,13 @@ describe('Dapp interaction with Blossom, using the library', () => {
 
       await click(blossomPage, 'dialog-confirm-btn')
 
-      expect(await waitForElementText(page, '#sign-message[complete="true"]')).toEqual(
-        '0x505649f8f878db2067138ab30401c6a5e34a4318de94ffc63aa27269e46f6be410641b5a9f22ba47dfbc606b687f9ea7fca46390daeee934e03ce47284bc8c471b',
-      )
+      const podWallet = getWalletByIndex(hexToBytes(removeZeroFromHex(mnemonicToSeed(mnemonic))), 1)
+
+      const wallet = new Wallet(podWallet.privateKey)
+
+      const hash = await wallet.signMessage('Blossom')
+
+      expect(await waitForElementText(page, '#sign-message[complete="true"]')).toEqual(hash)
     })
   })
 })
