@@ -46,7 +46,7 @@ async function downloadFile() {
 
 async function signMessage() {
   try {
-    const hash = await blossom.signer.signMessage('Blossom')
+    const hash = await blossom.signer.signMessage(blossom.dappId, 'Blossom')
     setText('sign-message', hash)
   } catch (error) {
     setText('sign-message', error)

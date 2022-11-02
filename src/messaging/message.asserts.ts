@@ -8,6 +8,7 @@ import {
   RegisterData,
   RegisterDataBase,
   RegisterDataMnemonic,
+  SignerRequest,
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
@@ -100,6 +101,12 @@ export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
   const { accessor, parameters } = (data || {}) as FdpStorageRequest
 
   return typeof accessor === 'string' && Array.isArray(parameters)
+}
+
+export function isSignerRequest(data: unknown): data is SignerRequest {
+  const { podName, message } = (data || {}) as SignerRequest
+
+  return typeof podName === 'string' && typeof message === 'string'
 }
 
 export function assertBeeUrl(url: string): asserts url {
