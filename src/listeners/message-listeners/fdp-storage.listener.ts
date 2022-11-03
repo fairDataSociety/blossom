@@ -21,10 +21,6 @@ async function handleFdpStorageRequest(
   try {
     const [fdp, { extensionId }] = await Promise.all([fdpStorageProvider.getService(), storage.getSwarm()])
 
-    if (!fdp) {
-      throw new Error('Blossom: User is not logged in.')
-    }
-
     const swarmExtension = new SwarmExtension(extensionId)
 
     const { beeApiUrl } = await swarmExtension.beeAddress()

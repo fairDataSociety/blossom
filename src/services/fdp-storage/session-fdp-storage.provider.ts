@@ -19,7 +19,7 @@ export class SessionFdpStorageProvider extends FdpStorageProvider {
     const { network, key } = session || {}
 
     if (!network || !key) {
-      return Promise.resolve(null)
+      throw new Error('Blossom: User is not logged in.')
     }
 
     const fdp = await this.createFdpStorage(network, swarm)

@@ -18,10 +18,6 @@ async function signMessage(
 ): Promise<string> {
   const fdp = await fdpStorageProvider.getService()
 
-  if (!fdp) {
-    throw new Error('Blossom: User is not logged in.')
-  }
-
   const dappId = await dappService.getDappIdFromSender(sender)
 
   // TODO should check permissions

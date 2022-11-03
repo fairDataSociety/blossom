@@ -88,7 +88,7 @@ console.log(content.text()) // 'File content'
 dApps can sign any data using their default pod's private key.
 
 ```typescript
-const hash = await blossom.signer.signMessage(blossom.dappId, 'Data...')
+const signature = await blossom.signer.signMessage(blossom.dappId, 'Data...')
 ```
 
 ### Terminating connection
