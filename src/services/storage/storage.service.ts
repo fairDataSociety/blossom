@@ -1,6 +1,6 @@
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { StorageSession } from '../../model/storage/session.model'
+import { MemorySession, StorageSession } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
 import {
   sessionFactory,
@@ -9,10 +9,12 @@ import {
   swarmFactory,
   dappsFactory,
   accountsFactory,
+  dappFactory,
+  accountDappsFactory,
 } from './storage-factories'
-import migrate from './storage-migration'
+import { migrateDapps } from './storage-migration'
 import { DappId } from '../../model/general.types'
-import { Dapp, Dapps } from '../../model/storage/dapps.model'
+import { AccountDapps, Dapp, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 
 /**
@@ -186,25 +188,78 @@ export class Storage {
     return deleteEntry(Storage.sessionKey)
   }
 
-  public async getDapp(dappId: DappId): Promise<Dapp> {
-    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+  public async getDapp(dappId: DappId, name: string, local: boolean): Promise<Dapp> {
+    const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
 
-    return dapps[dappId]
+    const dapps = (local ? accountDapps.local : accountDapps.ens)[name] || dappsFactory()
+
+    return dapps[dappId] || dappFactory()
   }
 
-  public async updateDapp(dappId: DappId, dapp: Dapp): Promise<void> {
-    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+  public getDappBySession(dappId: DappId, { ensUserName, localUserName }: MemorySession): Promise<Dapp> {
+    return this.getDapp(dappId, ensUserName || localUserName, Boolean(localUserName))
+  }
+
+  public async updateDapp(dappId: DappId, dapp: Partial<Dapp>, name: string, local: boolean): Promise<void> {
+    const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
+
+    const accountDappsRecord = local ? accountDapps.local : accountDapps.ens
+
+    const dapps = accountDappsRecord[name] || dappsFactory()
 
     dapps[dappId] = {
+      ...dappFactory(),
       ...(dapps[dappId] || {}),
       ...dapp,
     }
 
-    return updateObject<Dapps>(Storage.dappsKey, dapps)
+    accountDappsRecord[name] = dapps
+
+    return updateObject<AccountDapps>(Storage.dappsKey, accountDapps)
+  }
+
+  public updateDappBySession(
+    dappId: DappId,
+    dapp: Partial<Dapp>,
+    { ensUserName, localUserName }: MemorySession,
+  ): Promise<void> {
+    return this.updateDapp(dappId, dapp, ensUserName || localUserName, Boolean(localUserName))
   }
 
   public deleteDapps(): Promise<void> {
     return deleteEntry(Storage.dappsKey)
+  }
+
+  public async setDappPodPermission(
+    dappId: DappId,
+    podPermission: PodPermission,
+    name: string,
+    local: boolean,
+  ): Promise<void> {
+    const dapp = await this.getDapp(dappId, name, local)
+
+    const permission = dapp.podPermissions[podPermission.podName]
+
+    if (permission) {
+      permission.allowedActions = podPermission.allowedActions
+    } else {
+      dapp.podPermissions[podPermission.podName] = podPermission
+    }
+
+    return this.updateDapp(dappId, dapp, name, local)
+  }
+
+  public setDappPodPermissionBySession(
+    dappId: DappId,
+    podPermission: PodPermission,
+    { ensUserName, localUserName }: MemorySession,
+  ): Promise<void> {
+    return this.setDappPodPermission(
+      dappId,
+      podPermission,
+      ensUserName || localUserName,
+      Boolean(localUserName),
+    )
   }
 
   public async getAccount(name: string): Promise<StorageAccount> {
@@ -264,8 +319,8 @@ export class Storage {
    * Migrates existing data to match the current version
    * @returns promise
    */
-  public migrate(): Promise<void> {
-    return migrate()
+  public async migrate(): Promise<void> {
+    await updateObject<AccountDapps>(Storage.dappsKey, migrateDapps())
   }
 
   private onChangeListener(changes: { [key: string]: chrome.storage.StorageChange }) {

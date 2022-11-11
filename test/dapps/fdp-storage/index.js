@@ -12,7 +12,7 @@ function setSuccess(id) {
 
 async function createPod() {
   try {
-    await blossom.fdpStorage.personalStorage.create('test-pod')
+    await blossom.fdpStorage.personalStorage.create(blossom.dappId)
     setSuccess('create-pod')
   } catch (error) {
     setText('create-pod', error)

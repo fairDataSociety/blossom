@@ -2,7 +2,7 @@ import { networks } from '../../constants/networks'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { StorageSession } from '../../model/storage/session.model'
-import { Dapps } from '../../model/storage/dapps.model'
+import { AccountDapps, Dapp, Dapps } from '../../model/storage/dapps.model'
 import { Accounts } from '../../model/storage/account.model'
 
 export function networkFactory(): Network {
@@ -25,6 +25,20 @@ export function sessionFactory(): StorageSession {
 
 export function dappsFactory(): Dapps {
   return {}
+}
+
+export function accountDappsFactory(): AccountDapps {
+  return {
+    ens: {},
+    local: {},
+  }
+}
+
+export function dappFactory(): Dapp {
+  return {
+    podPermissions: {},
+    fullStorageAccess: false,
+  }
 }
 
 export function accountsFactory(): Accounts {
