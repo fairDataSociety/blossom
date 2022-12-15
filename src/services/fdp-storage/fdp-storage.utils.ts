@@ -6,7 +6,7 @@ export function dappUrlToId(url: string, beeUrl: string): DappId {
 
   const bzzUrl = beeUrl + (beeUrl.endsWith('/') ? '' : '/') + 'bzz/'
 
-  // extracts dApp ENS name from a bzz link (e.g http://127.0.0.1:1633/bzz/ENS/...)
+  // extracts dApp ENS name from a bzz link (e.g http://localhost:1633/bzz/ENS/...)
   const result = new RegExp(`${bzzUrl}([^/]+).*`).exec(url)
 
   if (!result || !result[1]) {
