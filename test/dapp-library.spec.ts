@@ -30,8 +30,6 @@ describe('Dapp interaction with Blossom, using the library', () => {
       const blossomPage = await getPageByTitle('Blossom')
 
       if (blossomPage) {
-        // If confirmation page is not open then an error occurred. That error will be printed
-        // in the next line
         await click(blossomPage, 'dialog-confirm-btn')
       }
 
@@ -60,6 +58,32 @@ describe('Dapp interaction with Blossom, using the library', () => {
       await click(page, 'download-file-btn')
 
       expect(await waitForElementText(page, '#download-file[complete="true"]')).toEqual('success')
+    })
+
+    test("Shouldn't create a random pod", async () => {
+      await click(page, 'random-pod-create-btn')
+
+      expect(await waitForElementText(page, '#random-pod-create[complete="true"]')).toEqual('failed')
+    })
+
+    test('Should get full access of personal storage', async () => {
+      await click(page, 'request-full-access-btn')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      if (blossomPage) {
+        await click(blossomPage, 'dialog-confirm-btn')
+      }
+
+      expect(await waitForElementText(page, '#full-access[complete="true"]')).toEqual('true')
+    })
+
+    test('Should create a random pod', async () => {
+      await click(page, 'random-pod-create-btn-2')
+
+      expect(await waitForElementText(page, '#random-pod-create-2[complete="true"]')).toEqual('success')
     })
   })
 })
