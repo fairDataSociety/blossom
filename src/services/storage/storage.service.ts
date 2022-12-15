@@ -16,6 +16,8 @@ import { migrateDapps } from './storage-migration'
 import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
+import { Version } from '../../model/storage/version.model'
+import { versionFromString } from '../../utils/converters'
 
 /**
  * Sets any value to the extension storage
@@ -118,9 +120,18 @@ export class Storage {
   static readonly sessionKey = 'session'
   static readonly dappsKey = 'dapps'
   static readonly accountsKey = 'accounts'
+  static readonly storageVersion = 'storage-version'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
+  }
+
+  public getStorageVersion(): Promise<string> {
+    return getEntry<string>(Storage.storageVersion)
+  }
+
+  public setStorageVesion(version: string): Promise<void> {
+    return setEntry<string>(Storage.storageVersion, version)
   }
 
   public getNetworkList(): Promise<Network[]> {
@@ -319,8 +330,28 @@ export class Storage {
    * Migrates existing data to match the current version
    * @returns promise
    */
-  public async migrate(): Promise<void> {
-    await updateObject<AccountDapps>(Storage.dappsKey, migrateDapps())
+  public async migrate(newVersionString: string): Promise<void> {
+    const currentVersionString = await this.getStorageVersion()
+    let currentVersion: Version
+
+    try {
+      currentVersion = versionFromString(currentVersionString)
+    } catch (error) {
+      currentVersion = {
+        major: 0,
+        minor: 0,
+        patch: 0,
+      }
+    }
+
+    const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
+    const updatedAccountDapps = migrateDapps(accountDapps, currentVersion)
+
+    if (updatedAccountDapps) {
+      await updateObject<AccountDapps>(Storage.dappsKey, updatedAccountDapps)
+    }
+
+    await this.setStorageVesion(newVersionString)
   }
 
   private onChangeListener(changes: { [key: string]: chrome.storage.StorageChange }) {

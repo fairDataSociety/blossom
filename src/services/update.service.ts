@@ -9,7 +9,7 @@ export class UpdateService {
 
   private onInstalled(details: chrome.runtime.InstalledDetails) {
     if (details.reason === 'update' && process.env.ENVIRONMENT !== 'development') {
-      this.storage.migrate()
+      this.storage.migrate(chrome.runtime.getManifest().version)
       console.log(`Updated to new version`)
     }
   }
