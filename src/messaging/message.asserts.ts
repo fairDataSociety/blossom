@@ -10,6 +10,7 @@ import {
   RegisterDataMnemonic,
   UsernameCheckData,
 } from '../model/internal-messages.model'
+import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
@@ -100,6 +101,29 @@ export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
   const { accessor, parameters } = (data || {}) as FdpStorageRequest
 
   return typeof accessor === 'string' && Array.isArray(parameters)
+}
+
+export function isPodActions(data: unknown): data is PodActions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (<any>Object).values(PodActions).includes(data)
+}
+
+export function isPodPermission(data: unknown): data is PodPermission {
+  const podPermission = (data || {}) as PodPermission
+
+  return (
+    isString(podPermission.podName) &&
+    Array.isArray(podPermission.allowedActions) &&
+    podPermission.allowedActions.every(isPodActions)
+  )
+}
+
+export function isDapp(data: unknown): data is Dapp {
+  const dapp = (data || {}) as Dapp
+
+  return Boolean(
+    isString(dapp.dappId) && typeof dapp.podPermissions === 'object' && Object.values(isPodPermission),
+  )
 }
 
 export function assertBeeUrl(url: string): asserts url {

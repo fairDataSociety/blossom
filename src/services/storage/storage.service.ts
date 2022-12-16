@@ -14,7 +14,7 @@ import {
 } from './storage-factories'
 import { migrateDapps } from './storage-migration'
 import { DappId } from '../../model/general.types'
-import { AccountDapps, Dapp, PodPermission } from '../../model/storage/dapps.model'
+import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { Version } from '../../model/storage/version.model'
 import { versionFromString } from '../../utils/converters'
@@ -199,29 +199,46 @@ export class Storage {
     return deleteEntry(Storage.sessionKey)
   }
 
-  public async getDapp(dappId: DappId, name: string, local: boolean): Promise<Dapp> {
+  public async getDapps(name: string, local: boolean): Promise<Dapps> {
     const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
 
-    const dapps = (local ? accountDapps.local : accountDapps.ens)[name] || dappsFactory()
-
-    return dapps[dappId] || dappFactory()
+    return (local ? accountDapps.local : accountDapps.ens)[name] || dappsFactory()
   }
 
-  public getDappBySession(dappId: DappId, { ensUserName, localUserName }: MemorySession): Promise<Dapp> {
-    return this.getDapp(dappId, ensUserName || localUserName, Boolean(localUserName))
+  public getDappsBySession({ ensUserName, localUserName }: MemorySession): Promise<Dapps> {
+    return this.getDapps(ensUserName || localUserName, Boolean(localUserName))
   }
 
-  public async updateDapp(dappId: DappId, dapp: Partial<Dapp>, name: string, local: boolean): Promise<void> {
+  public async getDappBySession(dappId: DappId, session: MemorySession): Promise<Dapp> {
+    const dapps = await this.getDappsBySession(session)
+
+    return dapps[dappId] || dappFactory(dappId)
+  }
+
+  public async updateDappBySession(
+    dappId: DappId,
+    dapp: Partial<Dapp>,
+    { ensUserName, localUserName }: MemorySession,
+  ): Promise<void> {
+    const name = ensUserName || localUserName
+
     const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
 
-    const accountDappsRecord = local ? accountDapps.local : accountDapps.ens
+    const accountDappsRecord = Boolean(localUserName) ? accountDapps.local : accountDapps.ens
 
     const dapps = accountDappsRecord[name] || dappsFactory()
 
-    dapps[dappId] = {
-      ...dappFactory(),
+    const updatedDapp = {
+      ...dappFactory(dappId),
       ...(dapps[dappId] || {}),
       ...dapp,
+      dappId,
+    }
+
+    if (!updatedDapp.fullStorageAccess && Object.keys(updatedDapp.podPermissions).length === 0) {
+      delete dapps[dappId]
+    } else {
+      dapps[dappId] = updatedDapp
     }
 
     accountDappsRecord[name] = dapps
@@ -229,25 +246,16 @@ export class Storage {
     return updateObject<AccountDapps>(Storage.dappsKey, accountDapps)
   }
 
-  public updateDappBySession(
-    dappId: DappId,
-    dapp: Partial<Dapp>,
-    { ensUserName, localUserName }: MemorySession,
-  ): Promise<void> {
-    return this.updateDapp(dappId, dapp, ensUserName || localUserName, Boolean(localUserName))
-  }
-
   public deleteDapps(): Promise<void> {
     return deleteEntry(Storage.dappsKey)
   }
 
-  public async setDappPodPermission(
+  public async setDappPodPermissionBySession(
     dappId: DappId,
     podPermission: PodPermission,
-    name: string,
-    local: boolean,
+    session: MemorySession,
   ): Promise<void> {
-    const dapp = await this.getDapp(dappId, name, local)
+    const dapp = await this.getDappBySession(dappId, session)
 
     const permission = dapp.podPermissions[podPermission.podName]
 
@@ -257,20 +265,7 @@ export class Storage {
       dapp.podPermissions[podPermission.podName] = podPermission
     }
 
-    return this.updateDapp(dappId, dapp, name, local)
-  }
-
-  public setDappPodPermissionBySession(
-    dappId: DappId,
-    podPermission: PodPermission,
-    { ensUserName, localUserName }: MemorySession,
-  ): Promise<void> {
-    return this.setDappPodPermission(
-      dappId,
-      podPermission,
-      ensUserName || localUserName,
-      Boolean(localUserName),
-    )
+    return this.updateDappBySession(dappId, dapp, session)
   }
 
   public async getAccount(name: string): Promise<StorageAccount> {

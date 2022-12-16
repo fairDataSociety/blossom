@@ -54,6 +54,8 @@
   "LOGIN_REGISTER_DESCRIPTION": "Create a new account or login with existing one",
   "SWARM": "Swarm",
   "SWARM_DESCRIPTION": "Configure your Swarm extension",
+  "DAPP_PERMISSIONS": "DApp permissions",
+  "DAPP_PERMISSIONS_DESCRIPTION": "Manage your DApp permissions like pod access, etc.",
   "SWARM_EXTENSION_ID": "Swarm Extension ID",
   "SWARM_EXTENSION_ERROR": "Couldn't connect to the Swarm extension. Check if you set the correct extension ID.",
   "DIALOG_CREATE_POD": "Do you want to allow the {dappId} dApp to create or use the {podName} pod?",
@@ -67,5 +69,10 @@
   "FDS": "FDS",
   "LOCAL": "Local",
   "LOCAL_LOGIN": "Local Account Login",
-  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:"
+  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:",
+  "NO_PERMISSIONS": "You don't have any DApp permissions",
+  "PERSONAL_STORAGE_FULL_ACCESS": "Personal Storage Full Access",
+  "DAPP_ID": "DApp ID",
+  "POD": "Pod",
+  "ACCESS": "Access"
 }

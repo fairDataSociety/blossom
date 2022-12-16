@@ -4,6 +4,8 @@ import Main from '../pages/main/main'
 import Network from '../pages/network/network'
 import NetworkAdd from '../pages/network/network-add'
 import NetworkEdit from '../pages/network/network-edit'
+import DappPermissions from '../pages/permissions/dapp-permissions/dapp-permissions.component'
+import Permissions from '../pages/permissions/permissions'
 import Swarm from '../pages/swarm/swarm'
 import RouteCodes from './route-codes'
 
@@ -16,6 +18,8 @@ const Routes = () => {
         <Route path={RouteCodes.networkAdd} element={<NetworkAdd />} />
         <Route path={RouteCodes.networkEdit} element={<NetworkEdit />} />
         <Route path={RouteCodes.swarm} element={<Swarm />} />
+        <Route path={RouteCodes.permissions} element={<Permissions />} />
+        <Route path={RouteCodes.permissionsEdit} element={<DappPermissions />} />
       </ReactRoutes>
     </>
   )

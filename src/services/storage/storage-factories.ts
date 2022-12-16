@@ -4,6 +4,7 @@ import { Swarm } from '../../model/storage/swarm.model'
 import { StorageSession } from '../../model/storage/session.model'
 import { AccountDapps, Dapp, Dapps } from '../../model/storage/dapps.model'
 import { Accounts } from '../../model/storage/account.model'
+import { DappId } from '../../model/general.types'
 
 export function networkFactory(): Network {
   return { ...networks[0] }
@@ -34,10 +35,11 @@ export function accountDappsFactory(): AccountDapps {
   }
 }
 
-export function dappFactory(): Dapp {
+export function dappFactory(dappId: DappId): Dapp {
   return {
     podPermissions: {},
     fullStorageAccess: false,
+    dappId,
   }
 }
 

@@ -22,6 +22,9 @@ enum BackgroundAction {
   DIALOG = 'dialog',
   DIALOG_REQUEST = 'dialog-request',
   DIALOG_RESPONSE = 'dialog-response',
+  GET_ALL_DAPP_IDS = 'get-all-dapp-ids',
+  GET_DAPP_SETTINGS = 'get-dapp-settings',
+  UPDATE_DAPP_SETTINGS = 'update-dapp-settings',
   ECHO = 'echo',
 }
 
