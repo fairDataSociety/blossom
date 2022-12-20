@@ -66,5 +66,6 @@
   "FDS": "FDS",
   "LOCAL": "Local",
   "LOCAL_LOGIN": "Local Account Login",
-  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:"
+  "NO_ACCOUNTS_WARNING": "There are no imported accounts. You can import an account here:",
+  "DISCLAIMER": "Disclaimer: Account integrity persistence and security are not assured. Expect that funds used for account might be lost, as well as any data the account uses."
 }
