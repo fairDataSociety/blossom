@@ -1,3 +1,4 @@
+import { Wallet } from 'ethers'
 import { ElementHandle, Page } from 'puppeteer'
 import { PRIVATE_KEY } from '../config/constants'
 import { sendFunds } from './ethers'
@@ -63,6 +64,8 @@ export async function fillUsernamePasswordForm(
 }
 
 export async function login(username: string, password: string): Promise<void> {
+  await setSwarmExtensionId()
+
   const page = await openExtensionOptionsPage(blossomId, 'auth.html')
 
   await click(page, 'login')
@@ -78,6 +81,33 @@ export async function logout(): Promise<void> {
   await click(page, 'logout-btn')
 
   await getElementByTestId(page, 'settings-registration-login-button')
+}
+
+export async function registerExisting(username: string, password: string, mnemonic: string): Promise<void> {
+  await setSwarmExtensionId()
+
+  const wallet = Wallet.fromMnemonic(mnemonic)
+
+  await sendFunds(PRIVATE_KEY, wallet.address, '0.1')
+
+  const page = await openExtensionOptionsPage(blossomId, 'auth.html')
+
+  await click(page, 'register')
+
+  await fillUsernamePasswordForm(page, username, password)
+
+  await click(page, 'existing-account')
+
+  const mnemonicInput = await getElementByTestId(page, 'mnemonic-input')
+
+  await mnemonicInput.click()
+  await mnemonicInput.type(mnemonic)
+
+  await click(page, 'submit')
+
+  await waitForElementTextByTestId(page, 'complete')
+
+  await page.close()
 }
 
 export async function register(username: string, password: string): Promise<void> {

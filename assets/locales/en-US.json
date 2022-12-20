@@ -74,5 +74,7 @@
   "PERSONAL_STORAGE_FULL_ACCESS": "Personal Storage Full Access",
   "DAPP_ID": "DApp ID",
   "POD": "Pod",
-  "ACCESS": "Access"
+  "ACCESS": "Access",
+  "DAPP_SIGN_MESSAGE_MESSAGE": "Dapp with ID {dappId} wants to sign the following message: {message}. Do you want to sign the message?",
+  "EXTENSION_SIGN_MESSAGE_MESSAGE": "Extension with ID {dappId} wants to sign the following message: {message}. Do you want to sign the message?"
 }

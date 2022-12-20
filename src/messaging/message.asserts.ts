@@ -8,6 +8,7 @@ import {
   RegisterData,
   RegisterDataBase,
   RegisterDataMnemonic,
+  SignerRequest,
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
@@ -124,6 +125,12 @@ export function isDapp(data: unknown): data is Dapp {
   return Boolean(
     isString(dapp.dappId) && typeof dapp.podPermissions === 'object' && Object.values(isPodPermission),
   )
+}
+
+export function isSignerRequest(data: unknown): data is SignerRequest {
+  const { podName, message } = (data || {}) as SignerRequest
+
+  return typeof podName === 'string' && typeof message === 'string'
 }
 
 export function assertBeeUrl(url: string): asserts url {

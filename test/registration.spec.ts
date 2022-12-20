@@ -70,7 +70,6 @@ describe('Successful registration tests', () => {
     expect(await isElementDisabled(page, 'submit')).toBeTruthy()
 
     await rightOrderWordElements[11].click()
-    await rightOrderWordElements[10].click()
     await page.waitForTimeout(50)
     await rightOrderWordElements[10].click()
     await rightOrderWordElements[11].click()

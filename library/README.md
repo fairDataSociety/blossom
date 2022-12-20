@@ -84,6 +84,14 @@ console.log(content.text()) // 'File content'
 > **_NOTE_:** For more available methods, check the
 > [fdp-storage repo](https://github.com/fairDataSociety/fdp-storage#usage)
 
+### Signer
+
+dApps can sign any data using their default pod's private key.
+
+```typescript
+const signature = await blossom.signer.signMessage(blossom.dappId, 'Data...')
+```
+
 ### Terminating connection
 
 Once when the instance of the Blossom class is not needed anymore, connection with the extension can be

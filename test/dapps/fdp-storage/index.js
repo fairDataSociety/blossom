@@ -67,3 +67,12 @@ async function requestFullAccess() {
 
   setText('full-access', allowed)
 }
+
+async function signMessage() {
+  try {
+    const signature = await blossom.signer.signMessage(blossom.dappId, 'Blossom')
+    setText('sign-message', signature)
+  } catch (error) {
+    setText('sign-message', error)
+  }
+}

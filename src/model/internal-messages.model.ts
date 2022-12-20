@@ -61,6 +61,11 @@ export interface NetworkEditData {
   network: Network
 }
 
+export interface SignerRequest {
+  podName: string
+  message: string
+}
+
 /**
  * fdp-storage request
  * It describes which method a dApp wants to invoke and with which parameters

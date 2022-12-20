@@ -19,6 +19,7 @@ enum BackgroundAction {
   SETTINGS_GET_SWARM = 'settings-get-swarm',
   SETTINGS_SET_SWARM = 'settings-set-swarm',
   FDP_STORAGE = 'fdp-storage',
+  SIGNER_SIGN_MESSAGE = 'signer.signMessage',
   DIALOG = 'dialog',
   DIALOG_REQUEST = 'dialog-request',
   DIALOG_RESPONSE = 'dialog-response',
