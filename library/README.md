@@ -31,8 +31,9 @@ const blossom = new Blossom() // Using the default Blossom ID from the Google st
 const blossom = new Blossom('Blossom Extension ID...') // Using custom Blossom ID
 ```
 
-Each dApp should be executed from a BZZ link (e.g. http://127.0.0.1:1633/bzz/dApp-ens-name/). In that case
-dApp's ID is available as `blossom.dappId` property.
+Each dApp should be executed from a BZZ link (e.g. http://dApp-or-ENS-name.swarm.localhost:1633 or
+http://localhost:1633/bzz/dApp-or-ENS-name/). In that case dApp's ID is available as `blossom.dappId`
+property.
 
 To test if connection with the Blossom extension is established, call the `echo` method:
 
