@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import Title from '../../../common/components/title/title.component'
 import { Button, Typography, useTheme } from '@mui/material'
 import RouteCodes from '../../routes/route-codes'
+import Disclaimer from '../../../common/components/disclaimer/disclaimer.component'
 
 const Wrapper = styled('div')(() => ({
   marginTop: '20px',
@@ -37,9 +38,10 @@ const Welcome = () => {
   return (
     <Wrapper>
       <Title>{intl.get('WELCOME_TITLE')}</Title>
-      <Typography variant="subtitle1" marginTop={2}>
+      <Typography variant="subtitle1" align="center" marginTop={2}>
         {intl.get('WELCOME_TEXT')}
       </Typography>
+      <Disclaimer />
       <Footer>
         <Button
           variant="contained"
