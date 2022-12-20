@@ -1,6 +1,11 @@
+import { Wallet } from 'ethers'
+import { mnemonicToSeed } from 'ethers/lib/utils'
 import { Page } from 'puppeteer'
+import { hexToBytes } from '../src/utils/encryption'
+import { getWalletByIndex } from '../src/utils/ethers'
 import { BEE_URL } from './config/constants'
-import { login, logout, register } from './test-utils/account'
+import { login, logout, registerExisting } from './test-utils/account'
+import { removeZeroFromHex } from './test-utils/ethers'
 import { click, getPageByTitle, openPage, wait, waitForElementText } from './test-utils/page'
 
 const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
@@ -9,19 +14,20 @@ describe('Dapp interaction with Blossom, using the library', () => {
   let page: Page
   const username = 'fdpuser'
   const password = 'pass12345'
+  const mnemonic = 'screen series sponsor unfair wear measure idle strike flame zone gain process'
+
+  beforeAll(async () => {
+    await registerExisting(username, password, mnemonic)
+    await login(username, password)
+    page = await openPage(FDP_STORAGE_PAGE_URL)
+  })
+
+  afterAll(async () => {
+    await page.close()
+    await logout()
+  })
 
   describe('fdp-storage tests', () => {
-    beforeAll(async () => {
-      await register(username, password)
-      await login(username, password)
-      page = await openPage(FDP_STORAGE_PAGE_URL)
-    })
-
-    afterAll(async () => {
-      await page.close()
-      await logout()
-    })
-
     test('Should successfully create a pod', async () => {
       await click(page, 'create-pod-btn')
 
@@ -60,6 +66,26 @@ describe('Dapp interaction with Blossom, using the library', () => {
       await click(page, 'download-file-btn')
 
       expect(await waitForElementText(page, '#download-file[complete="true"]')).toEqual('success')
+    })
+  })
+
+  describe('Signer tests', () => {
+    test('Should sign a message', async () => {
+      await click(page, 'sign-message-btn')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-confirm-btn')
+
+      const podWallet = getWalletByIndex(hexToBytes(removeZeroFromHex(mnemonicToSeed(mnemonic))), 1)
+
+      const wallet = new Wallet(podWallet.privateKey)
+
+      const hash = await wallet.signMessage('Blossom')
+
+      expect(await waitForElementText(page, '#sign-message[complete="true"]')).toEqual(hash)
     })
   })
 })

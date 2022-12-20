@@ -20,3 +20,10 @@ export async function checkConnection(): Promise<void> {
 
   await provider.getBlockNumber()
 }
+
+/**
+ * Removes 0x from hex string
+ */
+export function removeZeroFromHex(value: string): string {
+  return value.replace('0x', '')
+}
