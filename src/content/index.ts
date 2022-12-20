@@ -37,7 +37,7 @@ document.addEventListener(BLOSSOM_API_EVENT, async (event: CustomEventInit<Conte
   }
 
   if (!isBackgroundAction(action) || !DAPP_ACTIONS.includes(action)) {
-    console.warn('Blossom: Invalid action')
+    console.warn(`Blossom: Invalid action "${action}"`)
 
     return
   }

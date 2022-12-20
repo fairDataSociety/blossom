@@ -1,4 +1,5 @@
 import { FdpStorage } from '@fairdatasociety/fdp-storage'
+import { ExtendedFdpStorage } from './extended-fdp-storage'
 import { networks } from '../../constants/networks'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
@@ -7,9 +8,9 @@ import { getBatchId } from '../../utils/bee'
 import { createPersonalStorageProxy } from './extended-personal-storage'
 
 export abstract class FdpStorageProvider {
-  public abstract getService(): Promise<FdpStorage>
+  public abstract getService(): Promise<ExtendedFdpStorage>
 
-  protected async createFdpStorage(network: Network, swarm: Swarm): Promise<FdpStorage> {
+  protected async createFdpStorage(network: Network, swarm: Swarm): Promise<ExtendedFdpStorage> {
     const { beeApiUrl, beeDebugApiUrl } = await this.getBeeAddresses(swarm)
     const batchId = await getBatchId(beeDebugApiUrl)
     const { ensRegistry, fdsRegistrar, publicResolver, rpc } = network
@@ -43,9 +44,11 @@ export abstract class FdpStorageProvider {
 
     // Replaces the personalStorage property with a proxy object that extends its functionalities
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(fdpStorage as unknown as any).personalStorage = createPersonalStorageProxy(fdpStorage.personalStorage)
+    ;(fdpStorage as ExtendedFdpStorage).personalStorage = createPersonalStorageProxy(
+      fdpStorage.personalStorage,
+    )
 
-    return fdpStorage
+    return fdpStorage as ExtendedFdpStorage
   }
 
   private async getBeeAddresses(swarm: Swarm): Promise<{
