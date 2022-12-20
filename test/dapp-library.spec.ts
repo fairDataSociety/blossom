@@ -63,6 +63,14 @@ describe('Dapp interaction with Blossom, using the library', () => {
     test("Shouldn't create a random pod", async () => {
       await click(page, 'random-pod-create-btn')
 
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      if (blossomPage) {
+        await click(blossomPage, 'dialog-cancel-btn')
+      }
+
       expect(await waitForElementText(page, '#random-pod-create[complete="true"]')).toEqual('failed')
     })
 

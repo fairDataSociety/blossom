@@ -44,14 +44,22 @@ async function downloadFile() {
   setSuccess('download-file')
 }
 
-async function createRandomPod() {
+async function createRandomPod(id) {
   try {
     await blossom.fdpStorage.personalStorage.create(`random-pod-${String(Math.random()).substring(2)}`)
 
-    setSuccess('random-pod-create')
+    setSuccess(id)
   } catch (error) {
-    setText('random-pod-create', 'failed')
+    setText(id, 'failed')
   }
+}
+
+function createRandomPod1() {
+  createRandomPod('random-pod-create')
+}
+
+function createRandomPod2() {
+  createRandomPod('random-pod-create-2')
 }
 
 async function requestFullAccess() {

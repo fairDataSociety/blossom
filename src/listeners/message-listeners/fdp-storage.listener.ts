@@ -38,7 +38,7 @@ async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Memo
     return true
   }
 
-  const confirmed = dialogs.ask('DIALOG_FDP_FULL_ACCESS', { dappId })
+  const confirmed = await dialogs.ask('DIALOG_FDP_FULL_ACCESS', { dappId })
 
   if (!confirmed) {
     return false
