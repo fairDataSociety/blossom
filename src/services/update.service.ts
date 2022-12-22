@@ -1,16 +1,8 @@
-import { Storage } from './storage/storage.service'
+import { migrate } from './storage/storage-migration'
 
-export class UpdateService {
-  private storage: Storage = new Storage()
-
-  constructor() {
-    chrome.runtime.onInstalled.addListener(this.onInstalled.bind(this))
+chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails) => {
+  if (details.reason === 'update' && process.env.ENVIRONMENT !== 'development') {
+    migrate(chrome.runtime.getManifest().version)
+    console.log(`Updated to new version`)
   }
-
-  private onInstalled(details: chrome.runtime.InstalledDetails) {
-    if (details.reason === 'update' && process.env.ENVIRONMENT !== 'development') {
-      this.storage.migrate(chrome.runtime.getManifest().version)
-      console.log(`Updated to new version`)
-    }
-  }
-}
+})

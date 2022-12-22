@@ -92,9 +92,7 @@ describe('Dapp interaction with Blossom, using the library', () => {
       }
 
       expect(await waitForElementText(page, '#full-access[complete="true"]')).toEqual('true')
-    })
 
-    test('Should create a random pod', async () => {
       await click(page, 'random-pod-create-btn-2')
 
       expect(await waitForElementText(page, '#random-pod-create-2[complete="true"]')).toEqual('success')

@@ -56,10 +56,6 @@ export function setSwarmSettings(swarm: Swarm): Promise<void> {
 export async function getAllDappIds(): Promise<DappId[]> {
   const session = await sessionService.load()
 
-  if (!session) {
-    throw new Error('User is not logged in')
-  }
-
   const dapps = await storage.getDappsBySession(session)
 
   return Object.keys(dapps)
@@ -68,10 +64,6 @@ export async function getAllDappIds(): Promise<DappId[]> {
 export async function getDappSettings(dappId: DappId): Promise<Dapp> {
   const session = await sessionService.load()
 
-  if (!session) {
-    throw new Error('User is not logged in')
-  }
-
   const dapp = await storage.getDappBySession(dappId, session)
 
   return dapp
@@ -79,10 +71,6 @@ export async function getDappSettings(dappId: DappId): Promise<Dapp> {
 
 export async function updateDappSettings(dapp: Dapp): Promise<void> {
   const session = await sessionService.load()
-
-  if (!session) {
-    throw new Error('User is not logged in')
-  }
 
   return storage.updateDappBySession(dapp.dappId, dapp, session)
 }

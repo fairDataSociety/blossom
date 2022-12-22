@@ -1,5 +1,6 @@
 import { Directory, FdpStorage, PersonalStorage } from '@fairdatasociety/fdp-storage'
 import { File } from '@fairdatasociety/fdp-storage/dist/file/file'
+import { IS_DAPP_POD_CREATED } from '../../constants/fdp-storage-methods'
 import { isString } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { Dapp } from '../../model/storage/dapps.model'
@@ -25,7 +26,7 @@ function personalStorageHandler(
   parameters: unknown[],
   dappId: DappId,
 ) {
-  if (method === 'isDappPodCreated') {
+  if (method === IS_DAPP_POD_CREATED) {
     parameters = [dappIdToPodName(dappId)]
   }
 
@@ -43,7 +44,7 @@ function fileHandler(file: File, method: string, parameters: unknown[]) {
 const proxy: Record<string, FdpStorageProxy> = {
   personalStorage: {
     handler: personalStorageHandler,
-    podAllowedMethods: ['create', 'isDappPodCreated'],
+    podAllowedMethods: ['create', IS_DAPP_POD_CREATED],
     fullAccessMethods: ['delete', 'getSharedInfo', 'list', 'saveShared', 'share'],
   },
   directory: {
@@ -73,7 +74,7 @@ export function isPodBasedMethod(property: string, method: string): boolean {
 }
 
 export function getPodNameFromParams(dappId: DappId, method: string, parameters: unknown[]): string {
-  if (method === 'isDappPodCreated') {
+  if (method === IS_DAPP_POD_CREATED) {
     return dappIdToPodName(dappId)
   }
 

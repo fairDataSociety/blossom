@@ -14,7 +14,7 @@ export function versionFromString(version: string): Version {
 
   const [major, minor, patch] = parts.map((versionNumber) => parseInt(versionNumber))
 
-  if (major === NaN || minor === NaN || patch === NaN) {
+  if (Number.isNaN(major) || Number.isNaN(minor) || Number.isNaN(patch)) {
     throw new Error('Invalid version string')
   }
 
@@ -28,7 +28,7 @@ export function versionFromString(version: string): Version {
 export function versionToString(version: Version): string {
   const { major, minor, patch } = version || {}
 
-  if (major === NaN || minor === NaN || patch === NaN) {
+  if (Number.isNaN(major) || Number.isNaN(minor) || Number.isNaN(patch)) {
     throw new Error('Invalid version object')
   }
 

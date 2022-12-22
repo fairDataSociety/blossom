@@ -38,9 +38,15 @@ export class SessionService {
   }
 
   public async load(): Promise<MemorySession> {
-    const session = await this.storage.getSession()
+    const rawSession = await this.storage.getSession()
 
-    return this.processSession(session)
+    const session = await this.processSession(rawSession)
+
+    if (!session) {
+      throw new Error('User is not logged in')
+    }
+
+    return session
   }
 
   public close(): Promise<void> {

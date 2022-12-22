@@ -97,10 +97,6 @@ async function handleFdpStorageRequest(
 
     const [dappId, session] = await Promise.all([getDappId(sender), sessionService.load()])
 
-    if (!session) {
-      throw new Error('Blossom: User is not logged in.')
-    }
-
     const dapp = await storage.getDappBySession(dappId, session)
 
     if (property === 'personalStorage' && method === 'requestFullAccess') {
