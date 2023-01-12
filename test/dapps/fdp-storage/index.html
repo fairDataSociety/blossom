@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FDP Storage Test Dapp</title>
+    <script src="blossom.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <button data-testid="create-pod-btn" onclick="createPod()">Create Pod</button>
+    <h1 id="create-pod">Loading...</h1>
+
+    <button data-testid="check-pod-btn" onclick="checkIfPodCreated()">Check Pod</button>
+    <h1 id="pod-created">Loading...</h1>
+
+    <button data-testid="create-directory-btn" onclick="createDirectory()">Create Directory</button>
+    <h1 id="create-directory">Loading...</h1>
+
+    <button data-testid="upload-file-btn" onclick="uploadFile()">Upload File</button>
+    <h1 id="upload-file">Loading...</h1>
+
+    <button data-testid="download-file-btn" onclick="downloadFile()">Download File</button>
+    <h1 id="download-file">Loading...</h1>
+
+    <button data-testid="sign-message-btn" onclick="signMessage()">Sign Message</button>
+    <h1 id="sign-message">Loading...</h1>
+  </body>
+</html>

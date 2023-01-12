@@ -1,5 +1,14 @@
 import { ElementHandle, Page } from 'puppeteer'
 
+export async function openPage(url: string): Promise<Page> {
+  const page = await global.__BROWSER__.newPage()
+  await page.goto(url, {
+    waitUntil: 'networkidle0',
+  })
+
+  return page
+}
+
 export async function waitForElementText(page: Page, selector: string): Promise<string> {
   await page.waitForSelector(selector)
 
@@ -49,4 +58,18 @@ export async function getTextFromInput(page: Page, id: string): Promise<string> 
 
 export async function click(page: Page, id: string): Promise<void> {
   return (await getElementByTestId(page, id)).click()
+}
+
+export function wait(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
+export async function getPageByTitle(title: string): Promise<Page> {
+  const pages = await global.__BROWSER__.pages()
+
+  const pageTitles = await Promise.all(pages.map((page) => page.title()))
+
+  const blossomPageIndex = pageTitles.findIndex((pageTitle) => pageTitle === title)
+
+  return pages[blossomPageIndex]
 }

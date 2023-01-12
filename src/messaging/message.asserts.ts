@@ -8,11 +8,16 @@ import {
   RegisterData,
   RegisterDataBase,
   RegisterDataMnemonic,
+  SignerRequest,
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
+
+export function isString(data: unknown): data is string {
+  return typeof data === 'string'
+}
 
 export function isLoginData(data: unknown): data is LoginData {
   const { username, password, network } = (data || {}) as LoginData
@@ -96,6 +101,12 @@ export function isFdpStorageRequest(data: unknown): data is FdpStorageRequest {
   const { accessor, parameters } = (data || {}) as FdpStorageRequest
 
   return typeof accessor === 'string' && Array.isArray(parameters)
+}
+
+export function isSignerRequest(data: unknown): data is SignerRequest {
+  const { podName, message } = (data || {}) as SignerRequest
+
+  return typeof podName === 'string' && typeof message === 'string'
 }
 
 export function assertBeeUrl(url: string): asserts url {
