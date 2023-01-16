@@ -209,7 +209,7 @@ export class Storage {
     return this.getDapps(ensUserName || localUserName, Boolean(localUserName))
   }
 
-  public async getDappBySession(dappId: DappId, session: MemorySession): Promise<Dapp> {
+  public async getDappBySession(dappId: DappId, session: MemorySession): Promise<Dapp | undefined> {
     const dapps = await this.getDappsBySession(session)
 
     return dapps[dappId] || dappFactory(dappId)

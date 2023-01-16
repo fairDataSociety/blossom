@@ -51,7 +51,7 @@ async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Memo
 
 async function handlePodBasedMethod(
   dappId: DappId,
-  dapp: Dapp,
+  dapp: Dapp | undefined,
   session: MemorySession,
   fdp: FdpStorage,
   property: string,
