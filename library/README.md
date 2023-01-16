@@ -44,6 +44,8 @@ console.log(text) // 'test'
 
 ### FDP Storage
 
+#### Pod access
+
 If the user is logged in, dApp can access its own pod. Each dApp can have only one pod and its name must be
 the same as the `blossom.dappId` property.
 
@@ -53,14 +55,24 @@ To check if dApp's pod is already created:
 const podIsCreated = await blossom.fdpStorage.personalStorage.isDappPodCreated()
 ```
 
-If not created, then it can be created calling:
+If not created, then it can be created by calling:
 
 ```typescript
 const pod = await blossom.fdpStorage.personalStorage.create(blossom.dappId)
 ```
 
-Afterwards, dApp can execute various operations on that pod, like creating, reading files and directories,
-etc.
+If other pod name is provided, that pod can be created/accessed only if the user allows it. Otherwise an
+`Access denied` error will be thrown.
+
+For applications that need access to all pods (like file system apps, etc.), they can request full access:
+
+```typescript
+const allowed = await blossom.fdpStorage.personalStorage.requestFullAccess()
+```
+
+#### File access
+
+dApp can execute various operations with allowed pods, like creating, reading files and directories, etc.
 
 For example, to create a directory:
 
