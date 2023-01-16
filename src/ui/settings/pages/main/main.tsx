@@ -4,6 +4,7 @@ import { Stack, Typography } from '@mui/material'
 import Router from '@mui/icons-material/Router'
 import VpnKey from '@mui/icons-material/VpnKey'
 import Hive from '@mui/icons-material/Hive'
+import Security from '@mui/icons-material/Security'
 import Section from './section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
@@ -63,6 +64,16 @@ const Main = () => {
         >
           {intl.get('SWARM')}
         </Section>
+        {user && (
+          <Section
+            description={intl.get('DAPP_PERMISSIONS_DESCRIPTION')}
+            image={<Security />}
+            onClick={() => navigate(RouteCodes.permissions)}
+            dataTestId="settings-permissions"
+          >
+            {intl.get('DAPP_PERMISSIONS')}
+          </Section>
+        )}
       </Stack>
     </>
   )

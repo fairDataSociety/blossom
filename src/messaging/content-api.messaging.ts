@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
-import { Address } from '../model/general.types'
+import { Address, DappId } from '../model/general.types'
 import {
   AccountResponse,
   ImportAccountData,
@@ -12,6 +12,7 @@ import {
   UsernameCheckData,
   UserResponse,
 } from '../model/internal-messages.model'
+import { Dapp } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
@@ -93,6 +94,18 @@ export function getSwarmSettings(): Promise<Swarm> {
 
 export function setSwarmSettings(swarm: Swarm): Promise<void> {
   return sendMessage<Swarm, void>(BackgroundAction.SETTINGS_SET_SWARM, swarm)
+}
+
+export function getAllDappIds(): Promise<DappId[]> {
+  return sendMessage<void, DappId[]>(BackgroundAction.GET_ALL_DAPP_IDS)
+}
+
+export function getDappSettings(dappId: DappId): Promise<Dapp> {
+  return sendMessage<DappId, Dapp>(BackgroundAction.GET_DAPP_SETTINGS, dappId)
+}
+
+export function updateDappSettings(dapp: Dapp): Promise<void> {
+  return sendMessage<Dapp, void>(BackgroundAction.UPDATE_DAPP_SETTINGS, dapp)
 }
 
 export function echo<Data>(data: Data): Promise<Data> {

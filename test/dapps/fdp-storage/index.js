@@ -12,7 +12,7 @@ function setSuccess(id) {
 
 async function createPod() {
   try {
-    await blossom.fdpStorage.personalStorage.create('test-pod')
+    await blossom.fdpStorage.personalStorage.create(blossom.dappId)
     setSuccess('create-pod')
   } catch (error) {
     setText('create-pod', error)
@@ -42,6 +42,30 @@ async function downloadFile() {
   const content = await blossom.fdpStorage.file.downloadData(blossom.dappId, '/blossom/test.txt')
 
   setSuccess('download-file')
+}
+
+async function createRandomPod(id) {
+  try {
+    await blossom.fdpStorage.personalStorage.create(`random-pod-${String(Math.random()).substring(2)}`)
+
+    setSuccess(id)
+  } catch (error) {
+    setText(id, 'failed')
+  }
+}
+
+function createRandomPod1() {
+  createRandomPod('random-pod-create')
+}
+
+function createRandomPod2() {
+  createRandomPod('random-pod-create-2')
+}
+
+async function requestFullAccess() {
+  const allowed = await blossom.fdpStorage.personalStorage.requestFullAccess()
+
+  setText('full-access', allowed)
 }
 
 async function signMessage() {

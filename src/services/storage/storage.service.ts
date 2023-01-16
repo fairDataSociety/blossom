@@ -1,6 +1,6 @@
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { StorageSession } from '../../model/storage/session.model'
+import { MemorySession, StorageSession } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
 import {
   sessionFactory,
@@ -9,11 +9,15 @@ import {
   swarmFactory,
   dappsFactory,
   accountsFactory,
+  dappFactory,
+  accountDappsFactory,
 } from './storage-factories'
-import migrate from './storage-migration'
+import { migrateDapps } from './storage-migration'
 import { DappId } from '../../model/general.types'
-import { Dapp, Dapps } from '../../model/storage/dapps.model'
+import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
+import { Version } from '../../model/storage/version.model'
+import { versionFromString } from '../../utils/converters'
 
 /**
  * Sets any value to the extension storage
@@ -116,9 +120,18 @@ export class Storage {
   static readonly sessionKey = 'session'
   static readonly dappsKey = 'dapps'
   static readonly accountsKey = 'accounts'
+  static readonly storageVersion = 'storage-version'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
+  }
+
+  public getStorageVersion(): Promise<string> {
+    return getEntry<string>(Storage.storageVersion)
+  }
+
+  public setStorageVesion(version: string): Promise<void> {
+    return setEntry<string>(Storage.storageVersion, version)
   }
 
   public getNetworkList(): Promise<Network[]> {
@@ -186,25 +199,73 @@ export class Storage {
     return deleteEntry(Storage.sessionKey)
   }
 
-  public async getDapp(dappId: DappId): Promise<Dapp> {
-    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+  public async getDapps(name: string, local: boolean): Promise<Dapps> {
+    const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
 
-    return dapps[dappId]
+    return (local ? accountDapps.local : accountDapps.ens)[name] || dappsFactory()
   }
 
-  public async updateDapp(dappId: DappId, dapp: Dapp): Promise<void> {
-    const dapps = await getObject<Dapps>(Storage.dappsKey, dappsFactory)
+  public getDappsBySession({ ensUserName, localUserName }: MemorySession): Promise<Dapps> {
+    return this.getDapps(ensUserName || localUserName, Boolean(localUserName))
+  }
 
-    dapps[dappId] = {
+  public async getDappBySession(dappId: DappId, session: MemorySession): Promise<Dapp | undefined> {
+    const dapps = await this.getDappsBySession(session)
+
+    return dapps[dappId] || dappFactory(dappId)
+  }
+
+  public async updateDappBySession(
+    dappId: DappId,
+    dapp: Partial<Dapp>,
+    { ensUserName, localUserName }: MemorySession,
+  ): Promise<void> {
+    const name = ensUserName || localUserName
+
+    const accountDapps = await getObject<AccountDapps>(Storage.dappsKey, accountDappsFactory)
+
+    const accountDappsRecord = Boolean(localUserName) ? accountDapps.local : accountDapps.ens
+
+    const dapps = accountDappsRecord[name] || dappsFactory()
+
+    const updatedDapp = {
+      ...dappFactory(dappId),
       ...(dapps[dappId] || {}),
       ...dapp,
+      dappId,
     }
 
-    return updateObject<Dapps>(Storage.dappsKey, dapps)
+    if (!updatedDapp.fullStorageAccess && Object.keys(updatedDapp.podPermissions).length === 0) {
+      delete dapps[dappId]
+    } else {
+      dapps[dappId] = updatedDapp
+    }
+
+    accountDappsRecord[name] = dapps
+
+    return updateObject<AccountDapps>(Storage.dappsKey, accountDapps)
   }
 
   public deleteDapps(): Promise<void> {
     return deleteEntry(Storage.dappsKey)
+  }
+
+  public async setDappPodPermissionBySession(
+    dappId: DappId,
+    podPermission: PodPermission,
+    session: MemorySession,
+  ): Promise<void> {
+    const dapp = await this.getDappBySession(dappId, session)
+
+    const permission = dapp.podPermissions[podPermission.podName]
+
+    if (permission) {
+      permission.allowedActions = podPermission.allowedActions
+    } else {
+      dapp.podPermissions[podPermission.podName] = podPermission
+    }
+
+    return this.updateDappBySession(dappId, dapp, session)
   }
 
   public async getAccount(name: string): Promise<StorageAccount> {
@@ -258,14 +319,6 @@ export class Storage {
     Object.values(this.listeners).forEach((listeners) => {
       removeAllValues(listeners, listener)
     })
-  }
-
-  /**
-   * Migrates existing data to match the current version
-   * @returns promise
-   */
-  public migrate(): Promise<void> {
-    return migrate()
   }
 
   private onChangeListener(changes: { [key: string]: chrome.storage.StorageChange }) {

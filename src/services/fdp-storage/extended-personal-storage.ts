@@ -1,5 +1,6 @@
 import { PersonalStorage } from '@fairdatasociety/fdp-storage'
 import { HDNode } from 'ethers/lib/utils'
+import { IS_DAPP_POD_CREATED } from '../../constants/fdp-storage-methods'
 import { getWalletByIndex } from '../../utils/ethers'
 
 export async function isDappPodCreated(podName: string): Promise<boolean> {
@@ -28,7 +29,7 @@ export function createPersonalStorageProxy(personalStorage: PersonalStorage): Ex
     personalStorage as ExtendedPersonalStorage,
     {
       get(target: PersonalStorage, property: string) {
-        if (property === 'isDappPodCreated') {
+        if (property === IS_DAPP_POD_CREATED) {
           return isDappPodCreated.bind(target)
         }
 
