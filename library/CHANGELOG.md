@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/fairDataSociety/blossom/compare/blossom-lib-v0.1.0...blossom-lib-v0.2.0) (2023-01-16)
+
+
+### Features
+
+* add signer ([#91](https://github.com/fairDataSociety/blossom/issues/91)) ([17d5acc](https://github.com/fairDataSociety/blossom/commit/17d5acc20755756a127258e3166948241ff80f2d))
+* pod permissions ([#103](https://github.com/fairDataSociety/blossom/issues/103)) ([66c33fb](https://github.com/fairDataSociety/blossom/commit/66c33fbe872159e88a20a8b8c1bf5d0c089acd34))
+
+
+### Bug Fixes
+
+* swarm api ([#99](https://github.com/fairDataSociety/blossom/issues/99)) ([b2d46de](https://github.com/fairDataSociety/blossom/commit/b2d46dea9b1186d170661b9e926a59fc81f308fd))
+
 ## 0.1.0 (2022-09-01)
 
 This is the first version of JS library of Blossom!
