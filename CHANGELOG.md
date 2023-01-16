@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.1.1...blossom-ext-v0.2.0) (2023-01-16)
+
+
+### Features
+
+* add disclaimer ([#102](https://github.com/fairDataSociety/blossom/issues/102)) ([4b9d537](https://github.com/fairDataSociety/blossom/commit/4b9d537e4d9d90091638c4494e0adcff92f4d12a))
+* add signer ([#91](https://github.com/fairDataSociety/blossom/issues/91)) ([17d5acc](https://github.com/fairDataSociety/blossom/commit/17d5acc20755756a127258e3166948241ff80f2d))
+* pod permissions ([#103](https://github.com/fairDataSociety/blossom/issues/103)) ([66c33fb](https://github.com/fairDataSociety/blossom/commit/66c33fbe872159e88a20a8b8c1bf5d0c089acd34))
+
+
+### Bug Fixes
+
+* duplicate words in mnemonic ([#95](https://github.com/fairDataSociety/blossom/issues/95)) ([#97](https://github.com/fairDataSociety/blossom/issues/97)) ([0d2ab27](https://github.com/fairDataSociety/blossom/commit/0d2ab273700a589eaba4526d538885f937a905c0))
+* library release ([#84](https://github.com/fairDataSociety/blossom/issues/84)) ([#89](https://github.com/fairDataSociety/blossom/issues/89)) ([6e45990](https://github.com/fairDataSociety/blossom/commit/6e45990fd6b1aebaaca27e0ddc2ca8823cf133c2))
+* loader-utils vulnerability ([#96](https://github.com/fairDataSociety/blossom/issues/96)) ([5d3ce11](https://github.com/fairDataSociety/blossom/commit/5d3ce11cec4652750a2437bfb74405333c092c49))
+* swarm api ([#99](https://github.com/fairDataSociety/blossom/issues/99)) ([b2d46de](https://github.com/fairDataSociety/blossom/commit/b2d46dea9b1186d170661b9e926a59fc81f308fd))
+
 ## [0.1.1](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.1.0...blossom-ext-v0.1.1) (2022-09-21)
 
 
