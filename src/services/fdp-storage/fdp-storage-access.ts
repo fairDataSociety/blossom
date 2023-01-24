@@ -1,5 +1,7 @@
 import { Directory, FdpStorage, PersonalStorage } from '@fairdatasociety/fdp-storage'
 import { File } from '@fairdatasociety/fdp-storage/dist/file/file'
+import { IS_DAPP_POD_CREATED } from '../../constants/fdp-storage-methods'
+import { isString } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { Dapp } from '../../model/storage/dapps.model'
 import { dappIdToPodName } from './fdp-storage.utils'
@@ -12,7 +14,11 @@ type FdpStorageHandler = (
   dapp: Dapp,
 ) => Promise<unknown>
 
-type FdpStorageProxy = { handler: FdpStorageHandler; allowedMethods: string[]; requiresPod: boolean }
+type FdpStorageProxy = {
+  handler: FdpStorageHandler
+  podAllowedMethods: string[]
+  fullAccessMethods: string[]
+}
 
 function personalStorageHandler(
   personalStorage: PersonalStorage,
@@ -20,9 +26,11 @@ function personalStorageHandler(
   parameters: unknown[],
   dappId: DappId,
 ) {
-  parameters.shift()
+  if (method === IS_DAPP_POD_CREATED) {
+    parameters = [dappIdToPodName(dappId)]
+  }
 
-  return personalStorage[method](dappIdToPodName(dappId), ...parameters)
+  return personalStorage[method](...parameters)
 }
 
 function directoryHandler(directory: Directory, method: string, parameters: unknown[]) {
@@ -36,19 +44,45 @@ function fileHandler(file: File, method: string, parameters: unknown[]) {
 const proxy: Record<string, FdpStorageProxy> = {
   personalStorage: {
     handler: personalStorageHandler,
-    allowedMethods: ['create', 'isDappPodCreated'],
-    requiresPod: false,
+    podAllowedMethods: ['create', IS_DAPP_POD_CREATED],
+    fullAccessMethods: ['delete', 'getSharedInfo', 'list', 'saveShared', 'share'],
   },
   directory: {
     handler: directoryHandler,
-    allowedMethods: ['read', 'create', 'delete'],
-    requiresPod: true,
+    podAllowedMethods: ['read', 'create', 'delete'],
+    fullAccessMethods: [],
   },
   file: {
     handler: fileHandler,
-    allowedMethods: ['downloadData', 'uploadData', 'delete', 'share'],
-    requiresPod: true,
+    podAllowedMethods: [
+      'downloadData',
+      'uploadData',
+      'delete',
+      'share',
+      'defaultUploadOptions',
+      'getSharedInfo',
+      'saveShared',
+    ],
+    fullAccessMethods: [],
   },
+}
+
+export function isPodBasedMethod(property: string, method: string): boolean {
+  const propertyProxy = proxy[property]
+
+  return Boolean(propertyProxy && propertyProxy.podAllowedMethods.includes(method))
+}
+
+export function getPodNameFromParams(dappId: DappId, method: string, parameters: unknown[]): string {
+  if (method === IS_DAPP_POD_CREATED) {
+    return dappIdToPodName(dappId)
+  }
+
+  if (!isString(parameters[0])) {
+    throw new Error('Blossom: Invalid pod name')
+  }
+
+  return parameters[0]
 }
 
 export function callFdpStorageMethod(
@@ -57,7 +91,7 @@ export function callFdpStorageMethod(
   method: string,
   parameters: unknown[],
   dappId: DappId,
-  dapp: Dapp,
+  dapp: Dapp | null,
 ) {
   const propertyProxy = proxy[property]
 
@@ -65,14 +99,18 @@ export function callFdpStorageMethod(
     throw new Error('Blossom: property is not accessible')
   }
 
-  const { handler, allowedMethods, requiresPod } = propertyProxy
+  const { handler, podAllowedMethods, fullAccessMethods } = propertyProxy
 
-  if (!allowedMethods.includes(method)) {
-    throw new Error('Blossom: method not allowed')
+  let methodAllowed = false
+
+  if (dapp?.fullStorageAccess) {
+    methodAllowed = podAllowedMethods.includes(method) || fullAccessMethods.includes(method)
+  } else {
+    methodAllowed = podAllowedMethods.includes(method)
   }
 
-  if (requiresPod && (parameters[0] as string) !== dappIdToPodName(dappId)) {
-    throw new Error('Blossom: pod is not accessible')
+  if (!methodAllowed) {
+    throw new Error('Blossom: method not allowed')
   }
 
   console.log(`Invoking fdpStorage.${property}.${method} by dapp with ID ${dappId}`)

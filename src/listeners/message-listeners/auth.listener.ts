@@ -150,9 +150,11 @@ export function openAuthPage(): Promise<void> {
 }
 
 export async function getCurrentUser(): Promise<UserResponse> {
-  const sessionData = await session.load()
+  let sessionData
 
-  if (!sessionData) {
+  try {
+    sessionData = await session.load()
+  } catch (error) {
     return null
   }
 

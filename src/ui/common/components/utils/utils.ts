@@ -9,6 +9,10 @@ export const FlexColumnDiv = styled('div')({
   flexDirection: 'column',
 })
 
+export const MarginAuto = styled('div')({
+  margin: 'auto',
+})
+
 export const MarginLeftAuto = styled('div')({
   marginLeft: 'auto',
 })
