@@ -2,7 +2,7 @@
 
 ## Official [link](https://chrome.google.com/webstore/detail/blossom/caedjloenbhibmaeffockkiallpngmmd) to chrome web store
 
-![](./src/webstore.png)
+![](./assets/webstore.png)
 
 [Fair Data Protocol](https://fairdataprotocol.bzz.link/) Browser Extension.
 
