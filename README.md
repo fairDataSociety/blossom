@@ -1,5 +1,9 @@
 # Blossom
 
+## Official [link](https://chrome.google.com/webstore/detail/blossom/caedjloenbhibmaeffockkiallpngmmd) to chrome web store
+
+![](./assets/webstore.png)
+
 [Fair Data Protocol](https://fairdataprotocol.bzz.link/) Browser Extension.
 
 The Blossom acts as a web3 framework for dApps and a [Fair Data Society account](https://github.com/fairDataSociety/FIPs/blob/master/text/0013-iaas.md) manager for end-users.
