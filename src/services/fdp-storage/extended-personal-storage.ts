@@ -6,9 +6,9 @@ import { getWalletByIndex } from '../../utils/ethers'
 export async function isDappPodCreated(podName: string): Promise<boolean> {
   const personalStorage = this as PersonalStorage
 
-  const pods = await personalStorage.list()
+  const podList = await personalStorage.list()
 
-  return pods.getPods().some((pod) => pod.name === podName)
+  return podList.pods.some((pod) => pod.name === podName)
 }
 
 export async function getPodWallet(seed: Uint8Array, podName: string): Promise<HDNode | null> {
@@ -44,9 +44,9 @@ export function createPersonalStorageProxy(personalStorage: PersonalStorage): Ex
 }
 
 async function getPodIndex(personalStorage: PersonalStorage, podName: string): Promise<number | null> {
-  const pods = await personalStorage.list()
+  const podList = await personalStorage.list()
 
-  const pod = pods.getPods().find((pod) => pod.name === podName)
+  const pod = podList.pods.find((pod) => pod.name === podName)
 
   return pod ? pod.index : null
 }
