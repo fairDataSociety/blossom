@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.0...blossom-ext-v0.2.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* compatibility with new fdp-storage ([#111](https://github.com/fairDataSociety/blossom/issues/111)) ([055581d](https://github.com/fairDataSociety/blossom/commit/055581dff51ba8b5a15bc758b73faa23c6f3efa5))
+
 ## [0.2.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.1.1...blossom-ext-v0.2.0) (2023-01-16)
 
 
