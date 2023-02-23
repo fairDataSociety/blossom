@@ -61,7 +61,7 @@
     "@emotion/styled": "^11.8.1",
     "@ethersphere/bee-js": "^5.0.0",
     "@ethersphere/swarm-extension": "^0.7.0",
-    "@fairdatasociety/fdp-storage": "https://github.com/fairDataSociety/fdp-storage.git#fix/bee-js-762",
+    "@fairdatasociety/fdp-storage": "github:fairDataSociety/fdp-storage#fix/bee-js-new-762",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.5.0",
     "@mui/system": "^5.5.0",
