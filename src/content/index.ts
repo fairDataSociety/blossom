@@ -1,7 +1,17 @@
 import { DAPP_ACTIONS } from '../constants/dapp-actions.enum'
 import { BLOSSOM_API_EVENT, BLOSSOM_API_RESPONSE_EVENT } from '../constants/events'
+import { isConvertedUint8Array } from '../messaging/message.asserts'
 import { ContentPageMessage, MessageResponse, sendMessage } from '../messaging/scripts.messaging'
+import { restoreUint8Array } from '../utils/array'
 import { isNumber, isBackgroundAction } from '../utils/asserts'
+
+function deserializeResponse(response: unknown): unknown {
+  if (isConvertedUint8Array(response)) {
+    return restoreUint8Array(response)
+  }
+
+  return response
+}
 
 /**
  * Utility function that creates a CustomEvent that sends response back to the library
@@ -45,7 +55,7 @@ document.addEventListener(BLOSSOM_API_EVENT, async (event: CustomEventInit<Conte
   try {
     const response = await sendMessage<unknown, MessageResponse<unknown>>(action, data)
 
-    createResponseEvent(requestId, { data: response })
+    createResponseEvent(requestId, { data: deserializeResponse(response) })
   } catch (error) {
     createResponseEvent(requestId, { error })
   }

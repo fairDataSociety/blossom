@@ -138,3 +138,12 @@ export function assertBeeUrl(url: string): asserts url {
     throw new Error('Blossom: Invalid Bee URL')
   }
 }
+
+export function isConvertedUint8Array(data: unknown): data is Record<string, number> {
+  return (
+    typeof data === 'object' &&
+    Object.entries(data).every(
+      ([key, value]) => !Number.isNaN(key) && Number.isInteger(Number(key)) && Number.isInteger(value),
+    )
+  )
+}

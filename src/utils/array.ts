@@ -7,3 +7,11 @@ export function removeAllValues(array: Array<unknown>, value: unknown) {
     }
   }
 }
+
+export function restoreUint8Array(data: Record<string, number>): Uint8Array {
+  return new Uint8Array(
+    Object.keys(data)
+      .sort((a, b) => Number(a) - Number(b))
+      .map((key) => data[key]),
+  )
+}

@@ -1,9 +1,10 @@
 import { Directory, FdpStorage, PersonalStorage } from '@fairdatasociety/fdp-storage'
 import { File } from '@fairdatasociety/fdp-storage/dist/file/file'
 import { IS_DAPP_POD_CREATED } from '../../constants/fdp-storage-methods'
-import { isString } from '../../messaging/message.asserts'
+import { isConvertedUint8Array, isString } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { Dapp } from '../../model/storage/dapps.model'
+import { restoreUint8Array } from '../../utils/array'
 import { dappIdToPodName } from './fdp-storage.utils'
 
 type FdpStorageHandler = (
@@ -18,6 +19,16 @@ type FdpStorageProxy = {
   handler: FdpStorageHandler
   podAllowedMethods: string[]
   fullAccessMethods: string[]
+}
+
+function deserializeParameters(parameters: unknown[]): unknown[] {
+  return parameters.map((parameter) => {
+    if (isConvertedUint8Array(parameter)) {
+      return restoreUint8Array(parameter)
+    }
+
+    return parameter
+  })
 }
 
 function personalStorageHandler(
@@ -38,7 +49,7 @@ function directoryHandler(directory: Directory, method: string, parameters: unkn
 }
 
 function fileHandler(file: File, method: string, parameters: unknown[]) {
-  return file[method](...parameters)
+  return file[method](...deserializeParameters(parameters))
 }
 
 const proxy: Record<string, FdpStorageProxy> = {
