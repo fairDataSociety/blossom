@@ -15,6 +15,7 @@ import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
+import { SerializedMessageData } from './scripts.messaging'
 
 export function isString(data: unknown): data is string {
   return typeof data === 'string'
@@ -139,11 +140,8 @@ export function assertBeeUrl(url: string): asserts url {
   }
 }
 
-export function isConvertedUint8Array(data: unknown): data is Record<string, number> {
-  return (
-    typeof data === 'object' &&
-    Object.entries(data).every(
-      ([key, value]) => !Number.isNaN(key) && Number.isInteger(Number(key)) && Number.isInteger(value),
-    )
-  )
+export function isSerializedUint8Array(data: unknown): data is SerializedMessageData {
+  const { type, value } = (data || {}) as SerializedMessageData
+
+  return type === 'bytes' && isString(value)
 }

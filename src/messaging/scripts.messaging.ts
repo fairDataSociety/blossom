@@ -14,6 +14,11 @@ export interface ContentPageMessage<Data> extends Message<Data> {
   requestId: number
 }
 
+export interface SerializedMessageData {
+  type: 'bytes'
+  value: string
+}
+
 /**
  * Sends a message to the service worker script.
  * @param action Service worker script action
