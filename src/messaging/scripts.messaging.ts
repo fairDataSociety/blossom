@@ -14,7 +14,7 @@ export interface ContentPageMessage<Data> extends Message<Data> {
   requestId: number
 }
 
-export interface SerializedMessageData {
+export interface BytesMessage {
   type: 'bytes'
   value: string
 }
