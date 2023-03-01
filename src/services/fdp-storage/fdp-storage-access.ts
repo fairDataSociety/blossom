@@ -1,9 +1,11 @@
 import { Directory, FdpStorage, PersonalStorage } from '@fairdatasociety/fdp-storage'
 import { File } from '@fairdatasociety/fdp-storage/dist/file/file'
 import { IS_DAPP_POD_CREATED } from '../../constants/fdp-storage-methods'
-import { isString } from '../../messaging/message.asserts'
+import { isSerializedUint8Array, isString } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { Dapp } from '../../model/storage/dapps.model'
+import { isPromise, isUint8Array } from '../../utils/asserts'
+import { stringToUint8Array, uint8ArrayToSerializedParameter } from '../../utils/converters'
 import { dappIdToPodName } from './fdp-storage.utils'
 
 type FdpStorageHandler = (
@@ -18,6 +20,24 @@ type FdpStorageProxy = {
   handler: FdpStorageHandler
   podAllowedMethods: string[]
   fullAccessMethods: string[]
+}
+
+function deserializeParameters(parameters: unknown[]): unknown[] {
+  return parameters.map((parameter) => {
+    if (isSerializedUint8Array(parameter)) {
+      return stringToUint8Array(parameter.value)
+    }
+
+    return parameter
+  })
+}
+
+function serializeResponse(response: unknown): unknown {
+  if (isUint8Array(response)) {
+    return uint8ArrayToSerializedParameter(response)
+  }
+
+  return response
 }
 
 function personalStorageHandler(
@@ -38,7 +58,7 @@ function directoryHandler(directory: Directory, method: string, parameters: unkn
 }
 
 function fileHandler(file: File, method: string, parameters: unknown[]) {
-  return file[method](...parameters)
+  return file[method](...deserializeParameters(parameters))
 }
 
 const proxy: Record<string, FdpStorageProxy> = {
@@ -115,5 +135,19 @@ export function callFdpStorageMethod(
 
   console.log(`Invoking fdpStorage.${property}.${method} by dapp with ID ${dappId}`)
 
-  return handler(fdpStorage[property], method, parameters, dappId, dapp)
+  const response = handler(fdpStorage[property], method, deserializeParameters(parameters), dappId, dapp)
+
+  if (!isPromise(response)) {
+    return serializeResponse(response)
+  }
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await response
+
+      resolve(serializeResponse(result))
+    } catch (error) {
+      reject(error)
+    }
+  })
 }

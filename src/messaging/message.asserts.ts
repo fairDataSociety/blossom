@@ -15,6 +15,7 @@ import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { KeyData, StorageSession } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
+import { BytesMessage } from './scripts.messaging'
 
 export function isString(data: unknown): data is string {
   return typeof data === 'string'
@@ -137,4 +138,10 @@ export function assertBeeUrl(url: string): asserts url {
   if (!url || !(url.startsWith('http://') || url.startsWith('https://'))) {
     throw new Error('Blossom: Invalid Bee URL')
   }
+}
+
+export function isSerializedUint8Array(data: unknown): data is BytesMessage {
+  const { type, value } = (data || {}) as BytesMessage
+
+  return type === 'bytes' && isString(value)
 }

@@ -1,4 +1,5 @@
 import { isString } from '../messaging/message.asserts'
+import { BytesMessage } from '../messaging/scripts.messaging'
 import { Version } from '../model/storage/version.model'
 
 export function versionFromString(version: string): Version {
@@ -33,4 +34,19 @@ export function versionToString(version: Version): string {
   }
 
   return `${major}.${minor}.${patch}`
+}
+
+export function uint8ArrayToString(bytes: Uint8Array): string {
+  return new TextDecoder().decode(bytes)
+}
+
+export function stringToUint8Array(serializedBytes: string): Uint8Array {
+  return new TextEncoder().encode(serializedBytes)
+}
+
+export function uint8ArrayToSerializedParameter(bytes: Uint8Array): BytesMessage {
+  return {
+    type: 'bytes',
+    value: uint8ArrayToString(bytes),
+  }
 }

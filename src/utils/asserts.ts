@@ -21,3 +21,13 @@ export function areNetworksEqual(network1: Network, network2: Network): boolean 
     network1.publicResolver === network2.publicResolver
   )
 }
+
+export function isUint8Array(data: unknown): data is Uint8Array {
+  return ArrayBuffer.isView(data)
+}
+
+export function isPromise(value: unknown): value is Promise<unknown> {
+  const promise = (value || {}) as Promise<unknown>
+
+  return typeof promise.then === 'function' && typeof promise.catch === 'function'
+}
