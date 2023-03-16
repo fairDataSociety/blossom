@@ -6,19 +6,25 @@ import { BeeDebug } from '@ethersphere/bee-js'
  * @param beeDebugUrl URL of Bee debug API
  */
 export async function getBatchId(beeDebugUrl: string): Promise<string> {
-  const beeDebug = new BeeDebug(beeDebugUrl)
+  try {
+    const beeDebug = new BeeDebug(beeDebugUrl)
 
-  const batches = await beeDebug.getAllPostageBatch()
+    const batches = await beeDebug.getAllPostageBatch()
 
-  if (batches.length === 0) {
-    throw new Error('Postage batch not exists')
+    if (batches.length === 0) {
+      throw new Error('Postage batch not exists')
+    }
+
+    const { batchID, usable } = batches.pop()
+
+    if (!batchID || !usable) {
+      throw new Error('Incorrect batch id found')
+    }
+
+    return batchID
+  } catch (error) {
+    console.warn(String(error))
+
+    return '0'
   }
-
-  const { batchID, usable } = batches.pop()
-
-  if (!batchID || !usable) {
-    throw new Error('Incorrect batch id found')
-  }
-
-  return batchID
 }
