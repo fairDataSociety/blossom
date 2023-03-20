@@ -12,12 +12,9 @@ import {
   dappFactory,
   accountDappsFactory,
 } from './storage-factories'
-import { migrateDapps } from './storage-migration'
 import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
-import { Version } from '../../model/storage/version.model'
-import { versionFromString } from '../../utils/converters'
 
 /**
  * Sets any value to the extension storage
