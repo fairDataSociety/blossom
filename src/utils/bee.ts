@@ -1,4 +1,5 @@
 import { BeeDebug } from '@ethersphere/bee-js'
+import { NULL_BATCH_ID } from '../constants/constants'
 
 /**
  * Gets postage batch ID from already created batches
@@ -25,6 +26,6 @@ export async function getBatchId(beeDebugUrl: string): Promise<string> {
   } catch (error) {
     console.warn(String(error))
 
-    return '0'
+    return NULL_BATCH_ID
   }
 }
