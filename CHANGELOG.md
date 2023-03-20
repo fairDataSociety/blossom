@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.2...blossom-ext-v0.2.3) (2023-03-20)
+
+
+### Bug Fixes
+
+* batch id ([#121](https://github.com/fairDataSociety/blossom/issues/121)) ([#122](https://github.com/fairDataSociety/blossom/issues/122)) ([84dbf06](https://github.com/fairDataSociety/blossom/commit/84dbf06a3b07e9cce09b1af010f9094c65589808))
+
 ## [0.2.2](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.1...blossom-ext-v0.2.2) (2023-03-01)
 
 
