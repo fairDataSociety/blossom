@@ -17,7 +17,8 @@ export function migrateDapps(accountDapps: AccountDapps, { major, minor }: Versi
  * @returns promise
  */
 export async function migrate(newVersionString: string): Promise<void> {
-  const currentVersionString = await this.getStorageVersion()
+  const storage = new Storage()
+  const currentVersionString = await storage.getStorageVersion()
   let currentVersion: Version
 
   try {
