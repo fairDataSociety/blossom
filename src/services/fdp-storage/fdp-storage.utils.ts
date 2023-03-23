@@ -1,3 +1,4 @@
+import { whitelistedDapps } from '../../constants/whitelisted-dapps'
 import { assertBeeUrl } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 
@@ -27,18 +28,37 @@ function extractDappIdFromRegex(url: string, regex: RegExp): string | null {
   return null
 }
 
+function extractDappIdFromWhitelistedDapps(url: string): string | undefined {
+  const { dappId } = whitelistedDapps.find(({ url: dappUrl }) => url.startsWith(dappUrl)) || {}
+
+  return dappId
+}
+
+function isDappIdForged(dappId: string, url: string): boolean {
+  let isWhitelistedDappId = false
+
+  const matchingUrl = whitelistedDapps.some(({ url: currentUrl, dappId: currentDappId }) => {
+    if (currentDappId === dappId) {
+      isWhitelistedDappId = true
+
+      return url.startsWith(currentUrl)
+    }
+
+    return false
+  })
+
+  return isWhitelistedDappId && !matchingUrl
+}
+
 export function dappUrlToId(url: string, beeUrl: string): DappId {
   assertBeeUrl(beeUrl)
 
-  let dappId = extractDappIdFromRegex(url, constructBzzRegex(beeUrl))
+  const dappId =
+    extractDappIdFromWhitelistedDapps(url) ||
+    extractDappIdFromRegex(url, constructBzzRegex(beeUrl)) ||
+    extractDappIdFromRegex(url, constructSubdomainRegex(beeUrl))
 
-  if (dappId) {
-    return dappId
-  }
-
-  dappId = extractDappIdFromRegex(url, constructSubdomainRegex(beeUrl))
-
-  if (dappId) {
+  if (dappId && !isDappIdForged(dappId, url)) {
     return dappId
   }
 
