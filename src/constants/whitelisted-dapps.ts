@@ -12,5 +12,4 @@ export const whitelistedDapps: Array<{ url: string; dappId: string }> = [
   { url: 'https://fairdrive.fairdatasociety.org/apps/dracula', dappId: 'dracula' },
   { url: 'https://fairdrive.dev.fairdatasociety.org/apps/slidezz', dappId: 'slidezz-dev' },
   { url: 'https://fairdrive.fairdatasociety.org/apps/slidezz', dappId: 'slidezz' },
-  { url: 'http://localhost:3000', dappId: 'fairdrive' },
 ]
