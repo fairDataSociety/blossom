@@ -11,11 +11,11 @@ export function isSerializedUint8Array(data: unknown): data is BytesMessage {
 }
 
 export function uint8ArrayToString(bytes: Uint8Array): string {
-  return new TextDecoder().decode(bytes)
+  return bytes.toString()
 }
 
 export function stringToUint8Array(serializedBytes: string): Uint8Array {
-  return new TextEncoder().encode(serializedBytes)
+  return Uint8Array.from(serializedBytes.split(',').map(num => Number(num)))
 }
 
 export function uint8ArrayToSerializedParameter(bytes: Uint8Array): BytesMessage {
