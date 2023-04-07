@@ -10,17 +10,31 @@ export function isSerializedUint8Array(data: unknown): data is BytesMessage {
   return type === 'bytes' && typeof value === 'string'
 }
 
-export function uint8ArrayToString(bytes: Uint8Array): string {
-  return bytes.toString()
+function convertBlobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(blob)
+    reader.onloadend = () => {
+      const base64data = reader.result
+      resolve(base64data as string)
+    }
+    reader.onerror = error => {
+      reject(error)
+    }
+  })
+}
+
+export function uint8ArrayToString(bytes: Uint8Array): Promise<string> {
+  return convertBlobToBase64(new Blob([bytes]))
 }
 
 export function stringToUint8Array(serializedBytes: string): Uint8Array {
-  return Uint8Array.from(serializedBytes.split(',').map(num => Number(num)))
+  return Uint8Array.from(atob(serializedBytes.substring(37)), c => c.charCodeAt(0))
 }
 
-export function uint8ArrayToSerializedParameter(bytes: Uint8Array): BytesMessage {
+export async function uint8ArrayToSerializedParameter(bytes: Uint8Array): Promise<BytesMessage> {
   return {
     type: 'bytes',
-    value: uint8ArrayToString(bytes),
+    value: await uint8ArrayToString(bytes),
   }
 }

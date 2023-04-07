@@ -32,9 +32,9 @@ function deserializeParameters(parameters: unknown[]): unknown[] {
   })
 }
 
-function serializeResponse(response: unknown): unknown {
+async function serializeResponse(response: unknown): Promise<unknown> {
   if (isUint8Array(response)) {
-    return uint8ArrayToSerializedParameter(response)
+    return await uint8ArrayToSerializedParameter(response)
   }
 
   return response
@@ -145,7 +145,7 @@ export function callFdpStorageMethod(
     try {
       const result = await response
 
-      resolve(serializeResponse(result))
+      resolve(await serializeResponse(result))
     } catch (error) {
       reject(error)
     }
