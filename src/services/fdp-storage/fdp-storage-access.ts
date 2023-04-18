@@ -5,7 +5,7 @@ import { isSerializedUint8Array, isString } from '../../messaging/message.assert
 import { DappId } from '../../model/general.types'
 import { Dapp } from '../../model/storage/dapps.model'
 import { isPromise, isUint8Array } from '../../utils/asserts'
-import { stringToUint8Array, uint8ArrayToSerializedParameter } from '../../utils/converters'
+import { base64ToUint8Array, uint8ArrayToSerializedParameter } from '../../utils/converters'
 import { dappIdToPodName } from './fdp-storage.utils'
 
 type FdpStorageHandler = (
@@ -25,7 +25,7 @@ type FdpStorageProxy = {
 function deserializeParameters(parameters: unknown[]): unknown[] {
   return parameters.map((parameter) => {
     if (isSerializedUint8Array(parameter)) {
-      return stringToUint8Array(parameter.value)
+      return base64ToUint8Array(parameter.value)
     }
 
     return parameter

@@ -6,7 +6,7 @@ import { FdpStorage, PersonalStorage } from '../model/fdp-storage.model'
 import {
   isSerializedUint8Array,
   uint8ArrayToSerializedParameter,
-  stringToUint8Array,
+  base64ToUint8Array,
   isUint8Array,
 } from '../utils/serialization'
 
@@ -24,7 +24,7 @@ function serializeParameters(parameters: unknown[]): Promise<unknown[]> {
 
 function deserializeResponse(response: unknown): unknown {
   if (isSerializedUint8Array(response)) {
-    return stringToUint8Array(response.value)
+    return base64ToUint8Array(response.value)
   }
 
   return response
