@@ -6,23 +6,25 @@ import { FdpStorage, PersonalStorage } from '../model/fdp-storage.model'
 import {
   isSerializedUint8Array,
   uint8ArrayToSerializedParameter,
-  stringToUint8Array,
+  base64ToUint8Array,
   isUint8Array,
 } from '../utils/serialization'
 
-function serializeParameters(parameters: unknown[]): unknown[] {
-  return parameters.map(parameter => {
-    if (isUint8Array(parameter)) {
-      return uint8ArrayToSerializedParameter(parameter)
-    }
+function serializeParameters(parameters: unknown[]): Promise<unknown[]> {
+  return Promise.all(
+    parameters.map(async parameter => {
+      if (isUint8Array(parameter)) {
+        return await uint8ArrayToSerializedParameter(parameter)
+      }
 
-    return parameter
-  })
+      return parameter
+    }),
+  )
 }
 
 function deserializeResponse(response: unknown): unknown {
   if (isSerializedUint8Array(response)) {
-    return stringToUint8Array(response.value)
+    return base64ToUint8Array(response.value)
   }
 
   return response
@@ -36,7 +38,7 @@ function createProxy<T extends object>(path: string, messages: BlossomMessages):
         return async (...parameters: unknown[]) => {
           const response = await messages.sendMessage(ApiActions.FDP_STORAGE, {
             accessor: `${path}.${property}`,
-            parameters: serializeParameters(parameters),
+            parameters: await serializeParameters(parameters),
           } as FdpStorageRequest)
 
           return deserializeResponse(response)

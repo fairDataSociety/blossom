@@ -38,5 +38,5 @@ export async function migrate(newVersionString: string): Promise<void> {
     await updateObject<AccountDapps>(Storage.dappsKey, updatedAccountDapps)
   }
 
-  await this.setStorageVesion(newVersionString)
+  await storage.setStorageVesion(newVersionString)
 }
