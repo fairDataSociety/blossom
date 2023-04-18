@@ -35,19 +35,13 @@ function extractDappIdFromWhitelistedDapps(url: string): string | undefined {
 }
 
 function isDappIdForged(dappId: string, url: string): boolean {
-  let isWhitelistedDappId = false
+  const whitelistedDapp = whitelistedDapps.find(({ dappId: currentDappId }) => currentDappId === dappId)
 
-  const matchingUrl = whitelistedDapps.some(({ url: currentUrl, dappId: currentDappId }) => {
-    if (currentDappId === dappId) {
-      isWhitelistedDappId = true
-
-      return url.startsWith(currentUrl)
-    }
-
+  if (!whitelistedDapp) {
     return false
-  })
+  }
 
-  return isWhitelistedDappId && !matchingUrl
+  return !url.startsWith(whitelistedDapp.url)
 }
 
 export function dappUrlToId(url: string, beeUrl: string): DappId {
