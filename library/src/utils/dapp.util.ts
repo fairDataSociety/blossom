@@ -7,7 +7,7 @@ export function getDappId(): string | null {
   // extracts dApp ENS name from a bzz link (e.g http://localhost:1633/bzz/ENS/...)
   let result = dappIdRegex.exec(url)
 
-  if (!result) {
+  if (!result || !result[1]) {
     result = subdomainDappIdRegex.exec(url)
   }
 
