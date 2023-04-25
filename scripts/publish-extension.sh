@@ -11,7 +11,8 @@ echo "Fetching an access token..."
 
 STORE_ACCESS_TOKEN=$(curl "https://accounts.google.com/o/oauth2/token" -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&code=$CODE&grant_type=authorization_code&redirect_uri=urn:ietf:wg:oauth:2.0:oob" | grep -Po  'access_token"\s?:\s?"\K.*?(?=")')
 
-"Uploading the zip file..."
+echo "Uploading the zip file..."
+
 curl \
 -H "Authorization: Bearer $STORE_ACCESS_TOKEN"  \
 -H "x-goog-api-version: 2" \
@@ -31,4 +32,4 @@ curl \
 -v \
 https://www.googleapis.com/chromewebstore/v1.1/items/$EXTENSION_ID/publish
 
-"New version has been published."
+echo "New version has been published."
