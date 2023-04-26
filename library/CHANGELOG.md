@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/fairDataSociety/blossom/compare/blossom-lib-v0.2.2...blossom-lib-v0.3.0) (2023-04-25)
+
+
+### Bug Fixes
+
+* serialization [#130](https://github.com/fairDataSociety/blossom/issues/130) ([#131](https://github.com/fairDataSociety/blossom/issues/131)) ([12dfca3](https://github.com/fairDataSociety/blossom/commit/12dfca3b8176f3ba3bacfe28a4bd61fb22715550))
+
 ## [0.2.2](https://github.com/fairDataSociety/blossom/compare/blossom-lib-v0.2.1...blossom-lib-v0.2.2) (2023-03-01)
 
 
