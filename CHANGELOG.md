@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.3...blossom-ext-v0.3.0) (2023-04-25)
+
+
+### Features
+
+* add whitelisted dapps ([#129](https://github.com/fairDataSociety/blossom/issues/129)) ([1b7a878](https://github.com/fairDataSociety/blossom/commit/1b7a8785f9042035ea1204074a05c23eb0c4afc9))
+
+
+### Bug Fixes
+
+* migration ([#126](https://github.com/fairDataSociety/blossom/issues/126)) ([3232c2e](https://github.com/fairDataSociety/blossom/commit/3232c2edd62b3c6f8063a3fcc34459d9de050e6c))
+* serialization [#130](https://github.com/fairDataSociety/blossom/issues/130) ([#131](https://github.com/fairDataSociety/blossom/issues/131)) ([12dfca3](https://github.com/fairDataSociety/blossom/commit/12dfca3b8176f3ba3bacfe28a4bd61fb22715550))
+
 ## [0.2.3](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.2...blossom-ext-v0.2.3) (2023-03-20)
 
 
