@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.3](https://github.com/fairDataSociety/blossom/compare/blossom-lib-v0.2.2...blossom-lib-v0.2.3) (2023-04-25)
+## [0.3.0](https://github.com/fairDataSociety/blossom/compare/blossom-lib-v0.2.2...blossom-lib-v0.3.0) (2023-04-25)
 
 
 ### Bug Fixes
