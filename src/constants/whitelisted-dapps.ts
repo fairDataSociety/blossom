@@ -1,7 +1,7 @@
 // Maps whitelisted dapps to their ENS names
 export const whitelistedDapps: Array<{ url: string; dappId: string }> = [
-  { url: 'https://fairdrive.dev.fairdatasociety.org', dappId: 'fairdrive-dev' },
-  { url: 'https://fairdrive.fairdatasociety.org', dappId: 'fairdrive' },
+  { url: 'https://app.fairdrive.dev.fairdatasociety.org', dappId: 'fairdrive-dev' },
+  { url: 'https://app.fairdrive.fairdatasociety.org', dappId: 'fairdrive' },
   { url: 'https://fairdrive.dev.fairdatasociety.org/apps/consents', dappId: 'consents-dev' },
   { url: 'https://fairdrive.fairdatasociety.org/apps/consents', dappId: 'consents' },
   { url: 'https://app.photo.dev.fairdatasociety.org', dappId: 'photo-album-dev' },
