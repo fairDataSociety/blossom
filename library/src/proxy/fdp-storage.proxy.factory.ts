@@ -48,6 +48,17 @@ function createProxy<T extends object>(path: string, messages: BlossomMessages):
   )
 }
 
+function createObjectProxy<T extends object>(path: string): T {
+  return new Proxy<T>({} as T, {
+    get() {
+      return {}
+    },
+    set() {
+      return true
+    },
+  })
+}
+
 function createFdpStorageProxy(messages: BlossomMessages): FdpStorage {
   return {
     account: createProxy<AccountData>('account', messages),
@@ -57,6 +68,7 @@ function createFdpStorageProxy(messages: BlossomMessages): FdpStorage {
     ens: createProxy<Record<string, unknown>>('ens', messages),
     file: createProxy<Record<string, unknown>>('file', messages),
     personalStorage: createProxy<PersonalStorage>('personalStorage', messages),
+    cache: createObjectProxy<{ object: any }>('cache'),
   } as unknown as FdpStorage
 }
 

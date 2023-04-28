@@ -46,6 +46,6 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
-    "@fairdatasociety/fdp-storage": "^0.7.0"
+    "@fairdatasociety/fdp-storage": "^0.7.1"
   }
 }
