@@ -32,6 +32,8 @@ If you don't have a running Bee node, you can use the FDS gateway:
 https://bee-1.fairdatasociety.org
 ```
 
+> **_NOTE:_** If you use a public gateway, you do not have control over data persistence and lose some privacy, as the gateway can see the traffic you generate.
+
 # Installation
 
 Now when the Swarm extension is installed and configured, to install the Blossom extension open the [Google Web Store page](https://chrome.google.com/webstore/detail/blossom/caedjloenbhibmaeffockkiallpngmmd){:target="\_blank"}.
@@ -48,7 +50,7 @@ A new page will open where you can choose whether you want to create a portable 
 
 Portable accounts are encrypted and stored in the Swarm network. That way the user can access them on any device using the password they provided in registration process.
 
-There is also an option to create a local account, which is not stored in the Sworm network. Instead, it's stored only on the user's local machine.
+There is also an option to create a local account, which is not stored in the Swarm network. Instead, it's stored only on the user's local machine.
 
 ### Creating a portable account
 
@@ -58,17 +60,17 @@ To create a portable account click on the `REGISTER` button. In the next screen,
 
 > **_NOTE:_** You can add a custom blockchain to the list, but in order to register an account there it must have all the required smart contracts deployed. Check the [Adding a custom blockchain network](#adding-a-custom-blockchain-network) section for more information.
 
-Choose a username and password for your account, and click the `REGISTER` button. If the username is available and password is secure enough, a new screen will open. There you can choose to generate a new seed phrase for your account which is the `NEW ACCOUNT` option, or you can provide an existing seed phrase - `EXISTING ACCOUNT`.
+Choose a username and password for your account, and click the `REGISTER` button. Make sure the password is very strong as it cannot be changed and it protects access to your data. If the username is available and password is secure enough, a new screen will open. There you can choose to generate a new seed phrase for your account which is the `NEW ACCOUNT` option, or you can provide an existing seed phrase - `EXISTING ACCOUNT`.
 
 ![Blossom Registration Options](/assets/img/register-account-options.png){:width="70%"}
 
 #### **Creating account with new mnemonic**
 
-Choosing the `NEW ACCOUNT` option will generate a new mnemonic. Write down the words that apper in the screen and keep them safely. After confirming the menmonic, a new screen will appear with instructions how to fund your new account.
+Choosing the `NEW ACCOUNT` option will generate a new mnemonic. Write down the words that appear in the screen and keep them safely. After confirming the menmonic, a new screen will appear with instructions how to fund your new account.
 
 ![Blossom Registration Options](/assets/img/blossom-waiting-payment.png)
 
-At this point you need to transfer some amount of ETH to the account that appeared. The easiest way is by using the Metamask browser extension.
+At this point you need to transfer some amount of ETH to the account that is shown. The easiest way is by using the Metamask browser extension.
 
 #### **Sending funds with Metamask**
 
@@ -157,4 +159,4 @@ Click the `SAVE` button and the new network will appear in the list. This networ
 
 # Updates and new versions
 
-To learn about new features and new dApps check the [Blsoom repo](https://github.com/fairDataSociety/blossom) or the [Discord channel](https://discord.com/channels/888359049551310869/1100339001774309446).
+To learn about new features and new dApps check the [Blossom repo](https://github.com/fairDataSociety/blossom) or the [Discord channel](https://discord.com/channels/888359049551310869/1100339001774309446).
