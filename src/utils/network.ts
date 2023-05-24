@@ -1,7 +1,7 @@
 import { FdpContracts } from '@fairdatasociety/fdp-storage'
 import { Address } from '../model/general.types'
 
-const { getEnvironmentConfig } = FdpContracts
+const { getEnsEnvironmentConfig } = FdpContracts
 
 export function extractNetworkConfig(environment: FdpContracts.Environments): {
   ensRegistry: Address
@@ -12,7 +12,7 @@ export function extractNetworkConfig(environment: FdpContracts.Environments): {
   const {
     contractAddresses: { ensRegistry, fdsRegistrar, publicResolver },
     rpcUrl,
-  } = getEnvironmentConfig(environment)
+  } = getEnsEnvironmentConfig(environment)
 
   return {
     ensRegistry: ensRegistry as unknown as Address,
