@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.3.1...blossom-ext-v0.4.0) (2023-05-26)
+
+
+### Features
+
+* update manifest.json verison ([#148](https://github.com/fairDataSociety/blossom/issues/148)) ([04b5171](https://github.com/fairDataSociety/blossom/commit/04b5171db9fce5178ae6155e0438c24cf060f3b6))
+
 ## [0.3.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.3...blossom-ext-v0.3.0) (2023-04-25)
 
 
