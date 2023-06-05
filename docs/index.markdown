@@ -54,9 +54,9 @@ There is also an option to create a local account, which is not stored in the Sw
 
 ### Creating a portable account
 
-To create a portable account click on the `REGISTER` button. In the next screen, first choose the blockchain you want to register the account to. At the moment there are only `FDP-Play` and `Görli` blockchains.
+To create a portable account click on the `REGISTER` button. In the next screen, first choose the blockchain you want to register the account to. At the moment there are only `FDP-Play`, `Sepolia` and `Görli` blockchains.
 
-> **_NOTE:_** For FDP-Play option, the fdp-play environment must be running locally. Check [its repo](https://github.com/fairDataSociety/fdp-play){:target="\_blank"} for more info
+> **_NOTE:_** For FDP-Play option, the fdp-play environment must be running locally. Check [its repo](https://github.com/fairDataSociety/fdp-play){:target="\_blank"} for more information.
 
 > **_NOTE:_** You can add a custom blockchain to the list, but in order to register an account there it must have all the required smart contracts deployed. Check the [Adding a custom blockchain network](#adding-a-custom-blockchain-network) section for more information.
 
@@ -76,20 +76,20 @@ At this point you need to transfer some amount of ETH to the account that is sho
 
 Install the Metamask extension from the [Google Web Store page](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn){:target="\_blank"} if you haven't already.
 
-Once when the onboarding process is completed, add `Görli` blockchain. Click on the Metamask icon, then on the network dropdown and the `Add network` button.
+Once when the onboarding process is completed, add `Sepolia` blockchain. Click on the Metamask icon, then on the network dropdown and the `Add network` button.
 
 ![Metamask add network](/assets/img/metamask-add-network.png){:width="50%"}
 
 A list of all available networks will appear. Click on the `Add a network manually` at the bottom. Set the following values to the form fields:
 
-- Network name - `Görli`
-- New RPC URL - `https://xdai.dev.fairdatasociety.org` or your RPC provider URL
+- Network name - `Goerli`
+- New RPC URL - `https://rpc.sepolia.org` or your RPC provider URL
 - Chain ID - enter `1` and an error will appear saying that the chain ID is not valid providing the correct value. Now enter that suggested value instead.
 - Currency symbol - `ETH`
 
-After clicking the "Save" button, the `Görli` network will appear in the list of available networks. You can import your account and make transactions on the `Görli` network now.
+After clicking the "Save" button, the `Sepolia` network will appear in the list of available networks. You can import your account and make transactions on the `Sepolia` network now.
 
-Now copy the address from the Blossom page, and send some funds to it. It requires approximately 0.03 Goerli ETH, but that value can vary depending on the traffic. Send the funds and wait until the transaction gets confirmed. Once when it gets confirmed, a spinner will appear on the page. At that moment registration process will start. If it takes too long, like few minutes without any progress, that most likely means that the amount sent to the account is not enough. Try sending additional funds and wait a little bit.
+Now copy the address from the Blossom page, and send some funds to it. It requires approximately 0.002 Sepolia ETH, but that value can vary depending on the traffic. Send the funds and wait until the transaction gets confirmed. Once when it gets confirmed, a spinner will appear on the page. At that moment registration process will start. If it takes too long, like few minutes without any progress, that most likely means that the amount sent to the account is not enough. Try sending additional funds and wait a little bit.
 
 After successful registration, a message will appear confirming that the account was created.
 
