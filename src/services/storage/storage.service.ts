@@ -11,10 +11,12 @@ import {
   accountsFactory,
   dappFactory,
   accountDappsFactory,
+  generalFactory,
 } from './storage-factories'
 import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
+import { General } from '../../model/storage/general.model'
 
 /**
  * Sets any value to the extension storage
@@ -118,6 +120,7 @@ export class Storage {
   static readonly dappsKey = 'dapps'
   static readonly accountsKey = 'accounts'
   static readonly storageVersion = 'storage-version'
+  static readonly generalKey = 'general'
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -298,6 +301,14 @@ export class Storage {
 
   public deleteAccounts(): Promise<void> {
     return deleteEntry(Storage.accountsKey)
+  }
+
+  public updateGeneral(data: Partial<General>): Promise<void> {
+    return updateObject(Storage.generalKey, data)
+  }
+
+  public getGeneral(): Promise<General> {
+    return getObject(Storage.generalKey, generalFactory)
   }
 
   public onNetworkChange(listener: (network: Network) => void) {
