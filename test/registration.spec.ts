@@ -5,6 +5,7 @@ import {
   fillUsernamePasswordForm,
   getMnemonic,
   getMnemonicConfirmationElements,
+  logout,
 } from './test-utils/account'
 import { sendFunds } from './test-utils/ethers'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
@@ -120,6 +121,7 @@ describe('Registration with an existing account', () => {
   })
 
   afterAll(async () => {
+    await logout()
     await page.close()
   })
 
