@@ -5,6 +5,7 @@ import { StorageSession } from '../../model/storage/session.model'
 import { AccountDapps, Dapp, Dapps } from '../../model/storage/dapps.model'
 import { Accounts } from '../../model/storage/account.model'
 import { DappId } from '../../model/general.types'
+import { General } from '../../model/storage/general.model'
 
 export function networkFactory(): Network {
   return { ...networks[0] }
@@ -45,4 +46,10 @@ export function dappFactory(dappId: DappId): Dapp {
 
 export function accountsFactory(): Accounts {
   return {}
+}
+
+export function generalFactory(): General {
+  return {
+    errors: {},
+  }
 }

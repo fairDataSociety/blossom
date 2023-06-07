@@ -5,12 +5,13 @@ import locales from './locales.listener'
 import account from './account.listener'
 import settings from './settings.listener'
 import signer from './signer.listener'
+import general from './general.listener'
 import test from './test.listener'
 import { isInternalMessage, isOtherExtension } from '../../utils/extension'
 import { DAPP_ACTIONS, E2E_ACTIONS } from '../../constants/dapp-actions.enum'
 import BackgroundAction from '../../constants/background-actions.enum'
 
-const listenrs = [auth, fdpStorage, locales, account, settings, signer, test]
+const listenrs = [auth, fdpStorage, locales, account, settings, signer, general, test]
 
 export function messageHandler(
   message: Message<unknown>,

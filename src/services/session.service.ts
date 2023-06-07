@@ -1,3 +1,4 @@
+import { ErrorCode } from '../constants/errors'
 import { isStorageSession } from '../messaging/message.asserts'
 import { Address } from '../model/general.types'
 import { Network } from '../model/storage/network.model'
@@ -10,12 +11,13 @@ import {
   wordArrayToBytes,
   wordArrayToHex,
 } from '../utils/encryption'
-import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { generateRandomString } from '../utils/random'
+import { Errors } from './error.service'
 import { Storage } from './storage/storage.service'
 
 export class SessionService {
   private storage: Storage = new Storage()
+  private errors: Errors = new Errors()
 
   public async open(
     ensUserName: string,
@@ -26,7 +28,7 @@ export class SessionService {
   ): Promise<void> {
     const key = await this.encryptSeed(seed)
 
-    removeWarningBadge()
+    await this.removeGlobalError()
 
     return this.storage.setSession({
       ensUserName,
@@ -43,14 +45,16 @@ export class SessionService {
     const session = await this.processSession(rawSession)
 
     if (!session) {
+      await this.setGlobalError()
+
       throw new Error('User is not logged in')
     }
 
     return session
   }
 
-  public close(): Promise<void> {
-    setWarningBadge()
+  public async close(): Promise<void> {
+    await this.setGlobalError()
 
     return this.storage.deleteSession()
   }
@@ -63,14 +67,14 @@ export class SessionService {
 
   private async processSession(session: StorageSession): Promise<MemorySession> {
     if (!session) {
-      setWarningBadge()
+      await this.setGlobalError()
 
       return null
     }
 
     if (!isStorageSession(session)) {
       this.storage.deleteSession()
-      setWarningBadge()
+      await this.setGlobalError()
 
       return null
     }
@@ -81,12 +85,12 @@ export class SessionService {
 
     if (!session.key.seed) {
       this.storage.deleteSession()
-      setWarningBadge()
+      await this.setGlobalError()
 
       return null
     }
 
-    removeWarningBadge()
+    await this.removeGlobalError()
 
     return memorySession
   }
@@ -132,6 +136,14 @@ export class SessionService {
     }
 
     return wordArrayToBytes(decrypt(sessionKey, hexToWordArray(encryptedSeed)))
+  }
+
+  private setGlobalError() {
+    return this.errors.addGlobalError(ErrorCode.USER_NOT_LOGGED_IN)
+  }
+
+  private removeGlobalError() {
+    return this.errors.removeGlobalError(ErrorCode.USER_NOT_LOGGED_IN)
   }
 
   private generateRandomUrl(): string {

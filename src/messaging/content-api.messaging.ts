@@ -108,6 +108,10 @@ export function updateDappSettings(dapp: Dapp): Promise<void> {
   return sendMessage<Dapp, void>(BackgroundAction.UPDATE_DAPP_SETTINGS, dapp)
 }
 
+export function getGlobalError(): Promise<string> {
+  return sendMessage<void, string>(BackgroundAction.GET_ERROR)
+}
+
 export function echo<Data>(data: Data): Promise<Data> {
   return sendMessage<Data, Data>(BackgroundAction.ECHO, data)
 }

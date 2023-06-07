@@ -5,6 +5,7 @@ import {
   fillUsernamePasswordForm,
   getMnemonic,
   getMnemonicConfirmationElements,
+  logout,
 } from './test-utils/account'
 import { sendFunds } from './test-utils/ethers'
 import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
@@ -13,6 +14,7 @@ import {
   dataTestId,
   getElementByTestId,
   isElementDisabled,
+  wait,
   waitForElementText,
   waitForElementTextByTestId,
 } from './test-utils/page'
@@ -120,6 +122,7 @@ describe('Registration with an existing account', () => {
   })
 
   afterAll(async () => {
+    await logout()
     await page.close()
   })
 
@@ -166,7 +169,10 @@ describe('Login tests', () => {
 
   test('Should login with valid credentials', async () => {
     await page.reload()
+
     await fillUsernamePasswordForm(page, username, password)
+
+    await wait(100)
 
     await assertUserLogin(username)
 
