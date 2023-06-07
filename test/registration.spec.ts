@@ -14,6 +14,7 @@ import {
   dataTestId,
   getElementByTestId,
   isElementDisabled,
+  wait,
   waitForElementText,
   waitForElementTextByTestId,
 } from './test-utils/page'
@@ -168,7 +169,10 @@ describe('Login tests', () => {
 
   test('Should login with valid credentials', async () => {
     await page.reload()
+
     await fillUsernamePasswordForm(page, username, password)
+
+    await wait(100)
 
     await assertUserLogin(username)
 
