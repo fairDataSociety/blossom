@@ -1,14 +1,52 @@
-import { BigNumber } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isAddress } from '../../messaging/message.asserts'
+import { isAddress, isTransaction } from '../../messaging/message.asserts'
 import { Address } from '../../model/general.types'
 import { createMessageHandler } from './message-handler'
 import { Blockchain } from '../../services/blockchain.service'
+import { Transaction } from '../../model/internal-messages.model'
+import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
+import { isInternalMessage } from '../../utils/extension'
+import { Dialog } from '../../services/dialog.service'
+import { getDappId } from './listener.utils'
+import { errorMessages } from '../../constants/errors'
 
+const dialogs = new Dialog()
 const blockchain = new Blockchain()
+const fdpStorageProvider = new SessionFdpStorageProvider()
 
-export function getAccountBalance(address: Address): Promise<BigNumber> {
-  return blockchain.getAccountBalance(address)
+export async function getAccountBalance(address: Address): Promise<string> {
+  const balance = await blockchain.getAccountBalance(address)
+
+  return balance.toString()
+}
+
+export async function getUserAccountBalance(): Promise<string> {
+  const fdp = await fdpStorageProvider.getService()
+
+  const balance = await blockchain.getAccountBalance(fdp.account.wallet.address)
+
+  return balance.toString()
+}
+
+export async function sendTransaction(
+  { to, amount }: Transaction,
+  sender: chrome.runtime.MessageSender,
+): Promise<providers.TransactionReceipt> {
+  const fdp = await fdpStorageProvider.getService()
+
+  const { wallet } = fdp.account
+
+  if (!isInternalMessage(sender)) {
+    const dappId = await getDappId(sender)
+    const confirmed = await dialogs.ask('DIALOG_DAPP_TRANSACTION', { dappId, to, amount })
+
+    if (!confirmed) {
+      throw new Error(errorMessages.ACCESS_DENIED)
+    }
+  }
+
+  return blockchain.sendTransaction(wallet.privateKey, to, BigNumber.from(amount))
 }
 
 const messageHandler = createMessageHandler([
@@ -16,6 +54,15 @@ const messageHandler = createMessageHandler([
     action: BackgroundAction.GET_BALANCE,
     assert: isAddress,
     handler: getAccountBalance,
+  },
+  {
+    action: BackgroundAction.GET_USER_BALANCE,
+    handler: getUserAccountBalance,
+  },
+  {
+    action: BackgroundAction.SEND_TRANSACTION,
+    assert: isTransaction,
+    handler: sendTransaction,
   },
 ])
 

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet tests</title>
+    <script src="blossom.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <button data-testid="get-balance-btn" onclick="getInitialBalance()">Get balance</button>
+    <h1 id="balance">Empty</h1>
+    <button data-testid="send-transaction-btn-1" onclick="sendTransaction1()">Send transaction</button>
+    <h1 id="updated-balance-1">Empty</h1>
+    <button data-testid="send-transaction-btn-2" onclick="sendTransaction2()">Send transaction</button>
+    <h1 id="updated-balance-2">Empty</h1>
+  </body>
+</html>

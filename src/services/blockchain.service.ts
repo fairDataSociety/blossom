@@ -1,5 +1,5 @@
-import { BigNumber, providers } from 'ethers'
-import { Address } from '../model/general.types'
+import { BigNumber, Wallet, providers } from 'ethers'
+import { Address, PrivateKey } from '../model/general.types'
 import { Storage } from './storage/storage.service'
 
 export class Blockchain {
@@ -7,6 +7,20 @@ export class Blockchain {
 
   public async getAccountBalance(address: Address): Promise<BigNumber> {
     return (await this.getProvider()).getBalance(address)
+  }
+
+  public async sendTransaction(
+    privateKey: PrivateKey,
+    to: Address,
+    value: BigNumber,
+  ): Promise<providers.TransactionReceipt> {
+    const provider = await this.getProvider()
+
+    const wallet = new Wallet(privateKey).connect(provider)
+
+    const tx = await wallet.sendTransaction({ to, value })
+
+    return tx.wait()
   }
 
   private async getProvider(): Promise<providers.JsonRpcProvider> {

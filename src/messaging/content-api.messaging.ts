@@ -63,9 +63,9 @@ export function getLocales(): Promise<LocaleData> {
 }
 
 export async function getAccountBalance(address: Address): Promise<BigNumber> {
-  const { hex } = await sendMessage<Address, { hex: string }>(BackgroundAction.GET_BALANCE, address)
+  const balance = await sendMessage<Address, string>(BackgroundAction.GET_BALANCE, address)
 
-  return BigNumber.from(hex)
+  return BigNumber.from(balance)
 }
 
 export function getSelectedNetwork(): Promise<Network> {

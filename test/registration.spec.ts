@@ -172,7 +172,7 @@ describe('Login tests', () => {
 
     await fillUsernamePasswordForm(page, username, password)
 
-    await wait(100)
+    await wait(500)
 
     await assertUserLogin(username)
 

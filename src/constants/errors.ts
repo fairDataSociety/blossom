@@ -1,5 +1,9 @@
 import { ErrorObject } from '../model/error.model'
 
+export const errorMessages = {
+  ACCESS_DENIED: 'Blossom: Access denied',
+}
+
 export enum ErrorCode {
   USER_NOT_LOGGED_IN,
 }

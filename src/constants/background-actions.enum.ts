@@ -11,6 +11,8 @@ enum BackgroundAction {
   GET_CURRENT_USER = 'get-current-user',
   GET_LOCAL_ACCOUNTS = 'get-local-accounts',
   GET_BALANCE = 'get-balance',
+  GET_USER_BALANCE = 'get-user-balance',
+  SEND_TRANSACTION = 'send-transaction',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',
   SETTINGS_ADD_NETWORK = 'settings-add-network',

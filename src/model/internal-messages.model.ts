@@ -83,3 +83,9 @@ export interface DialogQuestion {
   question: string
   placeholders: Record<string, string>
 }
+
+export interface Transaction {
+  to: Address
+  // in wei
+  amount: string
+}
