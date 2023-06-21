@@ -1,22 +1,22 @@
 import { BigNumber, providers } from 'ethers'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isAddress, isTransaction } from '../../messaging/message.asserts'
-import { Address } from '../../model/general.types'
+import { isTransaction } from '../../messaging/message.asserts'
 import { createMessageHandler } from './message-handler'
 import { Blockchain } from '../../services/blockchain.service'
-import { Transaction } from '../../model/internal-messages.model'
+import { AccountBalanceRequest, Transaction } from '../../model/internal-messages.model'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { isInternalMessage } from '../../utils/extension'
 import { Dialog } from '../../services/dialog.service'
 import { getDappId } from './listener.utils'
 import { errorMessages } from '../../constants/errors'
+import { isAccountBalanceRequest } from '../../messaging/message.asserts'
 
 const dialogs = new Dialog()
 const blockchain = new Blockchain()
 const fdpStorageProvider = new SessionFdpStorageProvider()
 
-export async function getAccountBalance(address: Address): Promise<string> {
-  const balance = await blockchain.getAccountBalance(address)
+export async function getAccountBalance({ address, rpcUrl }: AccountBalanceRequest): Promise<string> {
+  const balance = await blockchain.getAccountBalance(address, rpcUrl)
 
   return balance.toString()
 }
@@ -52,7 +52,7 @@ export async function sendTransaction(
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_BALANCE,
-    assert: isAddress,
+    assert: isAccountBalanceRequest,
     handler: getAccountBalance,
   },
   {

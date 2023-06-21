@@ -5,8 +5,8 @@ import { Storage } from './storage/storage.service'
 export class Blockchain {
   private storage: Storage = new Storage()
 
-  public async getAccountBalance(address: Address): Promise<BigNumber> {
-    return (await this.getProvider()).getBalance(address)
+  public async getAccountBalance(address: Address, rpcUrl?: string): Promise<BigNumber> {
+    return (await this.getProvider(rpcUrl)).getBalance(address)
   }
 
   public async sendTransaction(
@@ -23,8 +23,13 @@ export class Blockchain {
     return tx.wait()
   }
 
-  private async getProvider(): Promise<providers.JsonRpcProvider> {
-    const { rpc } = await this.storage.getNetwork()
+  private async getProvider(rpcUrl?: string): Promise<providers.JsonRpcProvider> {
+    let rpc = rpcUrl
+
+    if (!rpc) {
+      const network = await this.storage.getNetwork()
+      rpc = network.rpc
+    }
 
     return this.createProvider(rpc)
   }

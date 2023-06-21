@@ -79,5 +79,8 @@
   "DAPP_SIGN_MESSAGE_MESSAGE": "Dapp with ID {dappId} wants to sign the following message: {message}. Do you want to sign the message?",
   "EXTENSION_SIGN_MESSAGE_MESSAGE": "Extension with ID {dappId} wants to sign the following message: {message}. Do you want to sign the message?",
   "ERROR_USER_NOT_LOGGED_IN": "User is not logged in",
-  "DIALOG_DAPP_TRANSACTION": "dApp with ID {dappId} wants to send a transaction.\nTo address: {to}\nAmount: {amount}\nDo you allow this transaction?"
+  "DIALOG_DAPP_TRANSACTION": "dApp with ID {dappId} wants to send a transaction.\nTo address: {to}\nAmount: {amount}\nDo you allow this transaction?",
+  "WALLET": "Wallet",
+  "WALLET_DESCRIPTION": "Check your account balance, send transactions, etc.",
+  "SEND": "Send"
 }

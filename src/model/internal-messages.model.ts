@@ -89,3 +89,8 @@ export interface Transaction {
   // in wei
   amount: string
 }
+
+export interface AccountBalanceRequest {
+  address: Address
+  rpcUrl?: string
+}

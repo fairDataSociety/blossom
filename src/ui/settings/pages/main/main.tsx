@@ -5,6 +5,7 @@ import Router from '@mui/icons-material/Router'
 import VpnKey from '@mui/icons-material/VpnKey'
 import Hive from '@mui/icons-material/Hive'
 import Security from '@mui/icons-material/Security'
+import Wallet from '@mui/icons-material/Wallet'
 import Section from './section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
@@ -63,6 +64,26 @@ const Main = () => {
             {intl.get('LOGIN_OR_REGISTER')}
           </Section>
         )}
+        {user && (
+          <>
+            <Section
+              description={intl.get('DAPP_PERMISSIONS_DESCRIPTION')}
+              image={<Security />}
+              onClick={() => navigate(RouteCodes.permissions)}
+              dataTestId="settings-permissions"
+            >
+              {intl.get('DAPP_PERMISSIONS')}
+            </Section>
+            <Section
+              description={intl.get('WALLET_DESCRIPTION')}
+              image={<Wallet />}
+              onClick={() => navigate(RouteCodes.wallet)}
+              dataTestId="wallet"
+            >
+              {intl.get('WALLET')}
+            </Section>
+          </>
+        )}
         <Section
           description={intl.get('NETWORK_SETTINGS_DESCRIPTION')}
           image={<Router />}
@@ -79,16 +100,6 @@ const Main = () => {
         >
           {intl.get('SWARM')}
         </Section>
-        {user && (
-          <Section
-            description={intl.get('DAPP_PERMISSIONS_DESCRIPTION')}
-            image={<Security />}
-            onClick={() => navigate(RouteCodes.permissions)}
-            dataTestId="settings-permissions"
-          >
-            {intl.get('DAPP_PERMISSIONS')}
-          </Section>
-        )}
       </Stack>
     </>
   )

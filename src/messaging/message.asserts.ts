@@ -1,5 +1,6 @@
 import { Address } from '../model/general.types'
 import {
+  AccountBalanceRequest,
   FdpStorageRequest,
   ImportAccountData,
   LocalLoginData,
@@ -151,4 +152,10 @@ export function isTransaction(data: unknown): data is Transaction {
   const { to, amount } = (data || {}) as Transaction
 
   return isAddress(to) && isString(amount)
+}
+
+export function isAccountBalanceRequest(data: unknown): data is AccountBalanceRequest {
+  const { address, rpcUrl } = (data || {}) as AccountBalanceRequest
+
+  return isAddress(address) && (!rpcUrl || isString(rpcUrl))
 }

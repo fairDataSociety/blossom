@@ -6,6 +6,7 @@ enum RouteCodes {
   swarm = '/swarm',
   permissions = '/permissions',
   permissionsEdit = '/permissions/:dappId',
+  wallet = '/wallet',
 }
 
 export default RouteCodes

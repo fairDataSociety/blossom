@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
 import { Address, DappId } from '../model/general.types'
 import {
+  AccountBalanceRequest,
   AccountResponse,
   ImportAccountData,
   LocalLoginData,
@@ -62,8 +63,11 @@ export function getLocales(): Promise<LocaleData> {
   return sendMessage<void, LocaleData>(BackgroundAction.GET_LOCALES)
 }
 
-export async function getAccountBalance(address: Address): Promise<BigNumber> {
-  const balance = await sendMessage<Address, string>(BackgroundAction.GET_BALANCE, address)
+export async function getAccountBalance(address: Address, rpcUrl?: string): Promise<BigNumber> {
+  const balance = await sendMessage<AccountBalanceRequest, string>(BackgroundAction.GET_BALANCE, {
+    address,
+    rpcUrl,
+  })
 
   return BigNumber.from(balance)
 }

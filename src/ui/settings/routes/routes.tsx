@@ -8,6 +8,7 @@ import DappPermissions from '../pages/permissions/dapp-permissions/dapp-permissi
 import Permissions from '../pages/permissions/permissions'
 import Swarm from '../pages/swarm/swarm'
 import RouteCodes from './route-codes'
+import WalletRoutes from '../../common/components/wallet/routes/wallet-routes'
 
 const Routes = () => {
   return (
@@ -20,6 +21,7 @@ const Routes = () => {
         <Route path={RouteCodes.swarm} element={<Swarm />} />
         <Route path={RouteCodes.permissions} element={<Permissions />} />
         <Route path={RouteCodes.permissionsEdit} element={<DappPermissions />} />
+        <Route path={RouteCodes.wallet} element={<WalletRoutes />} />
       </ReactRoutes>
     </>
   )
