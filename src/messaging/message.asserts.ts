@@ -13,7 +13,7 @@ import {
 } from '../model/internal-messages.model'
 import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
-import { KeyData, StorageSession } from '../model/storage/session.model'
+import { Session } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
 import { BytesMessage } from './scripts.messaging'
 
@@ -83,19 +83,14 @@ export function isSwarm(data: unknown): data is Swarm {
   return typeof extensionId === 'string'
 }
 
-export function isStorageKeyData(data: unknown): data is KeyData<string> {
-  const { seed, url } = (data || {}) as KeyData<string>
-
-  return typeof seed === 'string' && typeof url === 'string'
-}
-
-export function isStorageSession(data: unknown): data is StorageSession {
-  const { ensUserName, localUserName, network, key } = (data || {}) as StorageSession
+export function isSession(data: unknown): data is Session {
+  const { ensUserName, localUserName, network, seed, address } = (data || {}) as Session
 
   return (
     (typeof ensUserName === 'string' || typeof localUserName === 'string') &&
     isNetwork(network) &&
-    isStorageKeyData(key)
+    isAddress(address) &&
+    seed?.byteLength === 64
   )
 }
 
