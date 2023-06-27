@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
-import { Address, DappId } from '../model/general.types'
+import { Address, BigNumberString, DappId } from '../model/general.types'
 import {
   AccountBalanceRequest,
   AccountResponse,
@@ -10,6 +10,7 @@ import {
   NetworkEditData,
   RegisterData,
   RegisterResponse,
+  Transaction,
   UsernameCheckData,
   UserResponse,
 } from '../model/internal-messages.model'
@@ -70,6 +71,19 @@ export async function getAccountBalance(address: Address, rpcUrl?: string): Prom
   })
 
   return BigNumber.from(balance)
+}
+
+export function sendTransaction(transaction: Transaction): Promise<void> {
+  return sendMessage<Transaction, void>(BackgroundAction.SEND_TRANSACTION, transaction)
+}
+
+export async function estimateGasPrice(transaction: Transaction): Promise<BigNumber> {
+  const price = await sendMessage<Transaction, BigNumberString>(
+    BackgroundAction.ESTIMATE_GAS_PRICE,
+    transaction,
+  )
+
+  return BigNumber.from(price)
 }
 
 export function getSelectedNetwork(): Promise<Network> {

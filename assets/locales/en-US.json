@@ -82,5 +82,14 @@
   "DIALOG_DAPP_TRANSACTION": "dApp with ID {dappId} wants to send a transaction.\nTo address: {to}\nAmount: {amount}\nDo you allow this transaction?",
   "WALLET": "Wallet",
   "WALLET_DESCRIPTION": "Check your account balance, send transactions, etc.",
-  "SEND": "Send"
+  "SEND": "Send",
+  "AMOUNT": "Amount",
+  "ADDRESS": "Address",
+  "AMOUNT_ERROR": "Amount must be an integer or a decimal number greater than zero (e.g. 0.123).",
+  "ADDRESS_ERROR": "Please provide a valid Ethereum address.",
+  "ESTIMATED_GAS_PRICE": "Estimated gas price",
+  "GAS_PRICE_DISCLAIMER": "Gas estimation might not be accurate.",
+  "TRANSACTION_COMPLETE": "Transaction has been processed successfully.",
+  "SEND_ANOTHER": "Send another",
+  "BACK": "Back"
 }

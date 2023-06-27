@@ -10,13 +10,14 @@ import { Dialog } from '../../services/dialog.service'
 import { getDappId } from './listener.utils'
 import { errorMessages } from '../../constants/errors'
 import { isAccountBalanceRequest } from '../../messaging/message.asserts'
+import { BigNumberString } from '../../model/general.types'
 
 const dialogs = new Dialog()
 const blockchain = new Blockchain()
 const fdpStorageProvider = new SessionFdpStorageProvider()
 
 export async function getAccountBalance({ address, rpcUrl }: AccountBalanceRequest): Promise<string> {
-  const balance = await blockchain.getAccountBalance(address, rpcUrl)
+  const balance = await new Blockchain(rpcUrl).getAccountBalance(address)
 
   return balance.toString()
 }
@@ -30,7 +31,7 @@ export async function getUserAccountBalance(): Promise<string> {
 }
 
 export async function sendTransaction(
-  { to, amount }: Transaction,
+  { to, value, rpcUrl }: Transaction,
   sender: chrome.runtime.MessageSender,
 ): Promise<providers.TransactionReceipt> {
   const fdp = await fdpStorageProvider.getService()
@@ -39,14 +40,22 @@ export async function sendTransaction(
 
   if (!isInternalMessage(sender)) {
     const dappId = await getDappId(sender)
-    const confirmed = await dialogs.ask('DIALOG_DAPP_TRANSACTION', { dappId, to, amount })
+    const confirmed = await dialogs.ask('DIALOG_DAPP_TRANSACTION', { dappId, to, amount: value })
 
     if (!confirmed) {
       throw new Error(errorMessages.ACCESS_DENIED)
     }
+
+    return new Blockchain(rpcUrl).sendTransaction(wallet.privateKey, to, BigNumber.from(value))
   }
 
-  return blockchain.sendTransaction(wallet.privateKey, to, BigNumber.from(amount))
+  return blockchain.sendTransaction(wallet.privateKey, to, BigNumber.from(value))
+}
+
+export async function estimateGasPrice(transaction: Transaction): Promise<BigNumberString> {
+  const gasEstimation = await new Blockchain(transaction.rpcUrl).estimateGas(transaction)
+
+  return gasEstimation.toString()
 }
 
 const messageHandler = createMessageHandler([
@@ -63,6 +72,11 @@ const messageHandler = createMessageHandler([
     action: BackgroundAction.SEND_TRANSACTION,
     assert: isTransaction,
     handler: sendTransaction,
+  },
+  {
+    action: BackgroundAction.ESTIMATE_GAS_PRICE,
+    assert: isTransaction,
+    handler: estimateGasPrice,
   },
 ])
 

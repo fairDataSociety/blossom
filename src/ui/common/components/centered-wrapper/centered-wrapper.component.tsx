@@ -14,6 +14,7 @@ const InnerDiv = styled('div')(() => ({
   displey: 'flex',
   margin: 'auto',
   minWidth: '500px',
+  maxWidth: '500px',
 }))
 
 const CenteredWrapper = ({ children }: CenteredWrapperProps) => {

@@ -5,7 +5,7 @@ import { CssBaseline } from '@mui/material'
 import defaultTheme from '../common/styles/light-theme'
 import CenteredWrapper from '../common/components/centered-wrapper/centered-wrapper.component'
 import Locales from '../common/components/locales/locales'
-import Wallet from '../common/components/wallet/components/wallet'
+import Routes from './routes/routes'
 
 const App = () => (
   <HashRouter>
@@ -14,7 +14,7 @@ const App = () => (
       <React.StrictMode>
         <Locales>
           <CenteredWrapper>
-            <Wallet />
+            <Routes />
           </CenteredWrapper>
         </Locales>
       </React.StrictMode>

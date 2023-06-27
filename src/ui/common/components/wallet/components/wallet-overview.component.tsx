@@ -13,14 +13,18 @@ import { roundEther } from '../../../utils/ethers'
 import ClipboardButton from '../../clipboard-button/clipboard-button.component'
 import { useNavigate } from 'react-router-dom'
 import WalletRouteCodes from '../routes/wallet-route-codes'
+import { useWallet } from '../context/wallet.context'
+import ErrorMessage from '../../error-message/error-message.component'
 
 interface WalletOverviewProps {
   user: UserResponse
 }
 
 const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => {
-  const [selectedNetwork, setSelectedNetwork] = useState<Network>(network)
+  const { walletNetwork, setWalletNetwork } = useWallet()
+  const [selectedNetwork, setSelectedNetwork] = useState<Network>(walletNetwork || network)
   const [balance, setBalance] = useState<BigNumber | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const { networks } = useNetworks()
   const navigate = useNavigate()
 
@@ -29,13 +33,16 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       const balance = await getAccountBalance(address, network.rpc)
 
       setBalance(balance)
-    } catch (error) {}
+    } catch (error) {
+      setError(String(error))
+    }
   }
 
   const onNetworkChange = (networkLabel: string) => {
     const network = networks.find(({ label }) => networkLabel === label)
     setSelectedNetwork(network)
     setBalance(null)
+    setWalletNetwork(network)
     loadData(network)
   }
 
@@ -74,6 +81,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
         <ClipboardButton text={address} />
       </FlexDiv>
       <Divider sx={{ marginBottom: '10px' }} />
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       {balance ? (
         <>
           <Typography variant="h5" align="center">

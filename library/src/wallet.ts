@@ -15,9 +15,9 @@ export class Wallet {
   /**
    * Creates a transaction with current user as signer.
    * @param address receiver account
-   * @param amount transaction amount in wei
+   * @param value transaction value in wei
    */
-  public sendTransaction(address: string, amount: string): Promise<void> {
-    return this.messages.sendMessage(ApiActions.SEND_TRANSACTION, { to: address, amount })
+  public sendTransaction(address: string, value: string): Promise<void> {
+    return this.messages.sendMessage(ApiActions.SEND_TRANSACTION, { to: address, value })
   }
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { IconButton, SvgIconTypeMap, Typography } from '@mui/material'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { useNavigate } from 'react-router-dom'
-import { FlexDiv } from '../../../common/components/utils/utils'
+import { FlexDiv } from '../utils/utils'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 
 export interface HeaderProps {

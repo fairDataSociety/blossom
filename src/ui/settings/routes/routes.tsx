@@ -21,7 +21,7 @@ const Routes = () => {
         <Route path={RouteCodes.swarm} element={<Swarm />} />
         <Route path={RouteCodes.permissions} element={<Permissions />} />
         <Route path={RouteCodes.permissionsEdit} element={<DappPermissions />} />
-        <Route path={RouteCodes.wallet} element={<WalletRoutes />} />
+        <Route path={`${RouteCodes.wallet}/*`} element={<WalletRoutes />} />
       </ReactRoutes>
     </>
   )

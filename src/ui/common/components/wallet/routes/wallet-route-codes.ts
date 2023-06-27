@@ -1,7 +1,7 @@
 enum WalletRouteCodes {
-  home = '/',
-  send = '/send',
-  settings = '/settings',
+  home = '',
+  send = 'send',
+  settings = 'settings',
 }
 
 export default WalletRouteCodes

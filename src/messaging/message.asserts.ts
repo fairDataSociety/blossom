@@ -149,9 +149,9 @@ export function isSerializedUint8Array(data: unknown): data is BytesMessage {
 }
 
 export function isTransaction(data: unknown): data is Transaction {
-  const { to, amount } = (data || {}) as Transaction
+  const { to, value, data: txData, rpcUrl } = (data || {}) as Transaction
 
-  return isAddress(to) && isString(amount)
+  return isAddress(to) && isString(rpcUrl) && (isString(value) || isString(txData))
 }
 
 export function isAccountBalanceRequest(data: unknown): data is AccountBalanceRequest {

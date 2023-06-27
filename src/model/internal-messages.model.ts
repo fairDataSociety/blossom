@@ -1,5 +1,6 @@
 import { Network } from './storage/network.model'
-import { Address, Mnemonic, PrivateKey } from './general.types'
+import { Address, BigNumberString, HexStringVariate, Mnemonic, PrivateKey } from './general.types'
+import { RequireAtLeastOne } from './utils/require-at-least-one'
 
 export interface LoginData {
   username: string
@@ -84,11 +85,17 @@ export interface DialogQuestion {
   placeholders: Record<string, string>
 }
 
-export interface Transaction {
+export interface TransactionBase {
   to: Address
-  // in wei
-  amount: string
+  rpcUrl: string
 }
+
+export type Transaction = TransactionBase &
+  RequireAtLeastOne<{
+    // in wei
+    value?: BigNumberString
+    data?: HexStringVariate
+  }>
 
 export interface AccountBalanceRequest {
   address: Address
