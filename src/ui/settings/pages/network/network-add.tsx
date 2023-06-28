@@ -26,7 +26,7 @@ const NetworkAdd = () => {
 
   return (
     <FlexColumnDiv>
-      <Header title={intl.get('NETWORK')} image={Router} backRoute={RouteCodes.network} />
+      <Header title={intl.get('NETWORK')} image={Router} backRoute={RouteCodes.network} showOpenPage />
       <NetworkForm network={emptyNetwork} disabled={false} onChange={onCreateNetwork} canDelete={false} />
     </FlexColumnDiv>
   )

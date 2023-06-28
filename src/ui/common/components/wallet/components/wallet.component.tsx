@@ -12,7 +12,7 @@ const Wallet = () => {
 
   return (
     <FlexColumnDiv>
-      <Header title={intl.get('WALLET')} image={WalletImage} />
+      <Header title={intl.get('WALLET')} image={WalletImage} showOpenPage />
       {user && <WalletOverview user={user} />}
       {/* TODO Show lock screen if locked */}
       {error && <ErrorMessage>{error}</ErrorMessage>}

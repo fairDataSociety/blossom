@@ -17,7 +17,7 @@ const NetworkComponent = () => {
 
   return (
     <FlexColumnDiv>
-      <Header title={intl.get('NETWORK')} image={Router} />
+      <Header title={intl.get('NETWORK')} image={Router} showOpenPage />
       <NetworkList onSelect={({ label }) => navigate(label)} networks={networks} />
     </FlexColumnDiv>
   )

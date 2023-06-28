@@ -91,5 +91,6 @@
   "GAS_PRICE_DISCLAIMER": "Gas estimation might not be accurate.",
   "TRANSACTION_COMPLETE": "Transaction has been processed successfully.",
   "SEND_ANOTHER": "Send another",
-  "BACK": "Back"
+  "BACK": "Back",
+  "OPEN_PAGE_BUTTON_TITLE": "Open in a tab"
 }
