@@ -13,6 +13,7 @@ enum BackgroundAction {
   GET_BALANCE = 'get-balance',
   GET_USER_BALANCE = 'get-user-balance',
   SEND_TRANSACTION = 'send-transaction',
+  GET_WALLET_TRANSACTIONS = 'get-wallet-transactions',
   ESTIMATE_GAS_PRICE = 'estimate-gas-price',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',

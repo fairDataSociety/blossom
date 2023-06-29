@@ -19,6 +19,7 @@ import { Network } from '../model/storage/network.model'
 import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
+import { Transactions } from '../model/storage/wallet.model'
 
 export function login(data: LoginData): Promise<void> {
   return sendMessage<LoginData, void>(BackgroundAction.LOGIN, data)
@@ -84,6 +85,10 @@ export async function estimateGasPrice(transaction: Transaction): Promise<BigNum
   )
 
   return BigNumber.from(price)
+}
+
+export function getWalletTransactions(networkLabel: string): Promise<Transactions> {
+  return sendMessage<string, Transactions>(BackgroundAction.GET_WALLET_TRANSACTIONS, networkLabel)
 }
 
 export function getSelectedNetwork(): Promise<Network> {

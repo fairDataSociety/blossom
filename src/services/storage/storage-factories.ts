@@ -6,6 +6,7 @@ import { AccountDapps, Dapp, Dapps } from '../../model/storage/dapps.model'
 import { Accounts } from '../../model/storage/account.model'
 import { DappId } from '../../model/general.types'
 import { General } from '../../model/storage/general.model'
+import { Wallets } from '../../model/storage/wallet.model'
 
 export function networkFactory(): Network {
   return { ...networks[0] }
@@ -51,5 +52,30 @@ export function accountsFactory(): Accounts {
 export function generalFactory(): General {
   return {
     errors: {},
+  }
+}
+
+export function walletsFactory(): Wallets {
+  return {}
+}
+
+export function walletTransactionsFactory(wallets: Wallets, accountName: string, networkLabel: string) {
+  let wallet = wallets[accountName]
+
+  if (!wallet) {
+    wallet = wallets[accountName] = {
+      transactionsByNetworkLabel: {},
+    }
+  }
+
+  if (!wallet.transactionsByNetworkLabel) {
+    wallet.transactionsByNetworkLabel = {}
+  }
+
+  if (!wallet.transactionsByNetworkLabel[networkLabel]) {
+    wallet.transactionsByNetworkLabel[networkLabel] = {
+      regular: [],
+      asset: [],
+    }
   }
 }

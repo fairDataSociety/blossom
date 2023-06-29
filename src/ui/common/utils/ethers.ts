@@ -1,3 +1,5 @@
+import { Address } from '../../../model/general.types'
+
 export const valueRegex = /^\d+(\.\d+)?$/g
 export const addressRegex = /^0x[a-fA-F0-9]{40}$/g
 
@@ -17,4 +19,8 @@ export function isValueValid(value: string): boolean {
 
 export function isAddressValid(address: string): boolean {
   return addressRegex.test(address)
+}
+
+export function displayAddress(address: Address): string {
+  return `${address.substring(0, 5)}...${address.substring(address.length - 4)}`
 }

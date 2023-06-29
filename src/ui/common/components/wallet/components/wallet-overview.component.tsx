@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import { BigNumber, utils } from 'ethers'
 import Send from '@mui/icons-material/Send'
-import SettingsApplications from '@mui/icons-material/SettingsApplications'
 import { FlexColumnDiv, FlexDiv } from '../../utils/utils'
 import { getAccountBalance } from '../../../../../messaging/content-api.messaging'
 import { UserResponse } from '../../../../../model/internal-messages.model'
@@ -15,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import WalletRouteCodes from '../routes/wallet-route-codes'
 import { useWallet } from '../context/wallet.context'
 import ErrorMessage from '../../error-message/error-message.component'
+import TransactionHistory from './transaction-history/transaction-history.component'
 
 interface WalletOverviewProps {
   user: UserResponse
@@ -97,16 +97,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
           >
             {intl.get('SEND')}
           </Button>
-          <Button
-            variant="contained"
-            endIcon={<SettingsApplications />}
-            onClick={() => navigate(WalletRouteCodes.settings)}
-            data-testid="send-button"
-            size="small"
-            sx={{ marginTop: '20px' }}
-          >
-            {intl.get('SETTINGS')}
-          </Button>
+          <TransactionHistory networkLabel={selectedNetwork.label} />
         </>
       ) : (
         <CircularProgress sx={{ margin: 'auto' }} />

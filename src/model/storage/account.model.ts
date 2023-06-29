@@ -1,11 +1,13 @@
 import { Address, Bytes } from '../general.types'
 import { Network } from './network.model'
+import { Wallet } from './wallet.model'
 
 export interface Account<SeedType> {
   name: string
   address: Address
   seed: SeedType
   network: Network
+  wallet: Wallet
 }
 
 /**

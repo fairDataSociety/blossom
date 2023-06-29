@@ -92,5 +92,8 @@
   "TRANSACTION_COMPLETE": "Transaction has been processed successfully.",
   "SEND_ANOTHER": "Send another",
   "BACK": "Back",
-  "OPEN_PAGE_BUTTON_TITLE": "Open in a tab"
+  "OPEN_PAGE_BUTTON_TITLE": "Open in a tab",
+  "ACTIVITY": "Activity",
+  "TOKENS": "Tokens",
+  "NFTS": "NFTs"
 }

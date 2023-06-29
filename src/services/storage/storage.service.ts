@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { MemorySession, StorageSession } from '../../model/storage/session.model'
@@ -12,11 +13,14 @@ import {
   dappFactory,
   accountDappsFactory,
   generalFactory,
+  walletsFactory,
+  walletTransactionsFactory,
 } from './storage-factories'
 import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { General } from '../../model/storage/general.model'
+import { Transaction, TransactionType, Transactions } from '../../model/storage/wallet.model'
 
 /**
  * Sets any value to the extension storage
@@ -121,6 +125,9 @@ export class Storage {
   static readonly accountsKey = 'accounts'
   static readonly storageVersion = 'storage-version'
   static readonly generalKey = 'general'
+  static readonly wallets = 'wallets'
+
+  static walletsMutex = new Mutex()
 
   constructor() {
     chrome.storage.onChanged.addListener(this.onChangeListener.bind(this))
@@ -309,6 +316,53 @@ export class Storage {
 
   public getGeneral(): Promise<General> {
     return getObject(Storage.generalKey, generalFactory)
+  }
+
+  public async getWalletTransactions(accountName: string, networkLabel: string): Promise<Transactions> {
+    const wallets = await getObject(Storage.wallets, walletsFactory)
+
+    walletTransactionsFactory(wallets, accountName, networkLabel)
+
+    return wallets[accountName].transactionsByNetworkLabel[networkLabel]
+  }
+
+  public async addWalletTransaction(
+    transaction: Transaction,
+    accountName: string,
+    networkLabel: string,
+    type: TransactionType,
+  ): Promise<void> {
+    const release = await Storage.walletsMutex.acquire()
+
+    try {
+      const wallets = await getObject(Storage.wallets, walletsFactory)
+
+      walletTransactionsFactory(wallets, accountName, networkLabel)
+
+      wallets[accountName].transactionsByNetworkLabel[networkLabel][type].push(transaction)
+
+      return updateObject(Storage.wallets, wallets)
+    } catch (error) {
+      throw error
+    } finally {
+      release()
+    }
+  }
+
+  public async clearWalletTransactions(accountName: string): Promise<void> {
+    const release = await Storage.walletsMutex.acquire()
+
+    try {
+      const wallets = await getObject(Storage.wallets, walletsFactory)
+
+      delete wallets[accountName]
+
+      return updateObject(Storage.wallets, wallets)
+    } catch (error) {
+      throw error
+    } finally {
+      release()
+    }
   }
 
   public onNetworkChange(listener: (network: Network) => void) {
