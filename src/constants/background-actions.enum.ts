@@ -14,6 +14,7 @@ enum BackgroundAction {
   GET_USER_BALANCE = 'get-user-balance',
   SEND_TRANSACTION = 'send-transaction',
   GET_WALLET_TRANSACTIONS = 'get-wallet-transactions',
+  CLEAR_WALLET_DATA = 'clear-wallet-data',
   ESTIMATE_GAS_PRICE = 'estimate-gas-price',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',
@@ -31,6 +32,7 @@ enum BackgroundAction {
   GET_DAPP_SETTINGS = 'get-dapp-settings',
   UPDATE_DAPP_SETTINGS = 'update-dapp-settings',
   GET_ERROR = 'get-error',
+  GET_WALLET_CONTACTS = 'get-wallet-contacts',
   ECHO = 'echo',
 }
 

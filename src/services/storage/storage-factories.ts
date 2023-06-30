@@ -65,6 +65,7 @@ export function walletTransactionsFactory(wallets: Wallets, accountName: string,
   if (!wallet) {
     wallet = wallets[accountName] = {
       transactionsByNetworkLabel: {},
+      accounts: {},
     }
   }
 

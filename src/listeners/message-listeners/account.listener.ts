@@ -11,7 +11,7 @@ import { Dialog } from '../../services/dialog.service'
 import { getDappId } from './listener.utils'
 import { errorMessages } from '../../constants/errors'
 import { isAccountBalanceRequest } from '../../messaging/message.asserts'
-import { BigNumberString } from '../../model/general.types'
+import { Address, BigNumberString } from '../../model/general.types'
 import { Storage } from '../../services/storage/storage.service'
 import { SessionService } from '../../services/session.service'
 import { Transactions } from '../../model/storage/wallet.model'
@@ -100,6 +100,20 @@ export async function getWalletTransactions(networkLabel: string): Promise<Trans
   return storage.getWalletTransactions(ensUserName || localUserName, networkLabel)
 }
 
+export async function clearWalletData(): Promise<void> {
+  const { ensUserName, localUserName } = await session.load()
+
+  return storage.clearWalletTransactions(ensUserName || localUserName)
+}
+
+export async function getWalletContacts(): Promise<Address[]> {
+  const { ensUserName, localUserName, network } = await session.load()
+
+  const { accounts } = await storage.getWalletData(ensUserName || localUserName, network.label)
+
+  return Object.keys(accounts)
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_BALANCE,
@@ -123,6 +137,14 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_WALLET_TRANSACTIONS,
     handler: getWalletTransactions,
+  },
+  {
+    action: BackgroundAction.CLEAR_WALLET_DATA,
+    handler: clearWalletData,
+  },
+  {
+    action: BackgroundAction.GET_WALLET_CONTACTS,
+    handler: getWalletContacts,
   },
 ])
 

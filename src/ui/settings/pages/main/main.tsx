@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import { Stack, Typography } from '@mui/material'
-import Router from '@mui/icons-material/Router'
+import Settings from '@mui/icons-material/Settings'
 import VpnKey from '@mui/icons-material/VpnKey'
-import Hive from '@mui/icons-material/Hive'
 import Security from '@mui/icons-material/Security'
 import Wallet from '@mui/icons-material/Wallet'
-import Section from './section.component'
+import Section from '../../components/section/section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
 import {
@@ -85,20 +84,12 @@ const Main = () => {
           </>
         )}
         <Section
-          description={intl.get('NETWORK_SETTINGS_DESCRIPTION')}
-          image={<Router />}
-          onClick={() => navigate(RouteCodes.network)}
-          dataTestId="settings-network"
+          description={intl.get('SETTINGS_DESCRIPTION')}
+          image={<Settings />}
+          onClick={() => navigate(RouteCodes.settings)}
+          dataTestId="settings"
         >
-          {intl.get('NETWORK')}
-        </Section>
-        <Section
-          description={intl.get('SWARM_DESCRIPTION')}
-          image={<Hive />}
-          onClick={() => navigate(RouteCodes.swarm)}
-          dataTestId="settings-swarm"
-        >
-          {intl.get('SWARM')}
+          {intl.get('SETTINGS')}
         </Section>
       </Stack>
     </>

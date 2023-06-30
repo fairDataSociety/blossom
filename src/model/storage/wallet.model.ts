@@ -24,6 +24,8 @@ export type TransactionsByNetworkLabel = Record<string, Transactions>
 
 export interface Wallet {
   lockInterval?: number
+  // TODO Define contacts
+  accounts: Record<Address, {}>
   transactionsByNetworkLabel: TransactionsByNetworkLabel
 }
 

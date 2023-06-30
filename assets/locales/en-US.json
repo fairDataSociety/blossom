@@ -38,6 +38,7 @@
   "CONFIRM": "Confirm",
   "CANCEL": "Cancel",
   "SETTINGS": "Settings",
+  "SETTINGS_DESCRIPTION": "Extension settings - wallet, connectivity, logs...",
   "NETWORK": "Network",
   "NETWORK_SETTINGS_DESCRIPTION": "Configure your network settings here, like RPC server...",
   "NETWORK_NAME": "Network name",
@@ -95,5 +96,13 @@
   "OPEN_PAGE_BUTTON_TITLE": "Open in a tab",
   "ACTIVITY": "Activity",
   "TOKENS": "Tokens",
-  "NFTS": "NFTs"
+  "NFTS": "NFTs",
+  "WALLET_CONFIG_DESCRIPTION": "Wallet configuration.",
+  "CLEAR_ACTIVITY_DATA": "Clear Activity Data",
+  "CLEAR_ACTIVITY_DATA_DESCRIPTION": "Clear all wallet logs for current account.",
+  "CLEAR_ACTIVITY_DATA_CONFIRMATION": "Do you really want to clear all your wallet data?",
+  "SELECT": "Select",
+  "SELECT_ADDRESS": "Choose address to send to",
+  "PROCEED": "Proceed",
+  "SENDING_TO": "Sednding to"
 }

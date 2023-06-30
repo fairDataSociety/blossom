@@ -34,7 +34,7 @@ const SwarmComponent = () => {
 
   return (
     <FlexColumnDiv>
-      <Header title={intl.get('SWARM')} image={Hive} />
+      <Header title={intl.get('SWARM')} image={Hive} backRoute={RouteCodes.settings} />
       <SwarmExtension extensionId={swarm.extensionId} onUpdate={updateExtensionId} />
     </FlexColumnDiv>
   )

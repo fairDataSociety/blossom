@@ -20,7 +20,7 @@ import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { General } from '../../model/storage/general.model'
-import { Transaction, TransactionType, Transactions } from '../../model/storage/wallet.model'
+import { Transaction, TransactionType, Transactions, Wallet } from '../../model/storage/wallet.model'
 
 /**
  * Sets any value to the extension storage
@@ -318,6 +318,16 @@ export class Storage {
     return getObject(Storage.generalKey, generalFactory)
   }
 
+  public async getWalletData(accountName: string, networkLabel: string): Promise<Wallet> {
+    const wallets = await getObject(Storage.wallets, walletsFactory)
+
+    if (!wallets[accountName]) {
+      walletTransactionsFactory(wallets, accountName, networkLabel)
+    }
+
+    return wallets[accountName]
+  }
+
   public async getWalletTransactions(accountName: string, networkLabel: string): Promise<Transactions> {
     const wallets = await getObject(Storage.wallets, walletsFactory)
 
@@ -340,6 +350,7 @@ export class Storage {
       walletTransactionsFactory(wallets, accountName, networkLabel)
 
       wallets[accountName].transactionsByNetworkLabel[networkLabel][type].push(transaction)
+      wallets[accountName].accounts[transaction.content.to] = {}
 
       return updateObject(Storage.wallets, wallets)
     } catch (error) {
@@ -357,7 +368,7 @@ export class Storage {
 
       delete wallets[accountName]
 
-      return updateObject(Storage.wallets, wallets)
+      return setEntry(Storage.wallets, wallets)
     } catch (error) {
       throw error
     } finally {

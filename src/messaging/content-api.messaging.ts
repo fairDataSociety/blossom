@@ -91,6 +91,10 @@ export function getWalletTransactions(networkLabel: string): Promise<Transaction
   return sendMessage<string, Transactions>(BackgroundAction.GET_WALLET_TRANSACTIONS, networkLabel)
 }
 
+export function clearWalletData(): Promise<void> {
+  return sendMessage<void, void>(BackgroundAction.CLEAR_WALLET_DATA)
+}
+
 export function getSelectedNetwork(): Promise<Network> {
   return sendMessage<void, Network>(BackgroundAction.SETTINGS_GET_SELECTED_NETWORK)
 }

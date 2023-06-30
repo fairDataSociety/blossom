@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import intl from 'react-intl-universal'
+import React from 'react'
 import {
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   styled,
   tableCellClasses,
@@ -27,6 +25,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    padding: '4px 10px',
   },
 }))
 
