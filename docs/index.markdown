@@ -82,7 +82,7 @@ Once when the onboarding process is completed, add `Sepolia` blockchain. Click o
 
 A list of all available networks will appear. Click on the `Add a network manually` at the bottom. Set the following values to the form fields:
 
-- Network name - `Goerli`
+- Network name - `Sepolia`
 - New RPC URL - `https://rpc.sepolia.org` or your RPC provider URL
 - Chain ID - enter `1` and an error will appear saying that the chain ID is not valid providing the correct value. Now enter that suggested value instead.
 - Currency symbol - `ETH`

@@ -1,7 +1,7 @@
 import { Mutex } from 'async-mutex'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { MemorySession, StorageSession } from '../../model/storage/session.model'
+import { Session } from '../../model/storage/session.model'
 import { removeAllValues } from '../../utils/array'
 import {
   sessionFactory,
@@ -22,23 +22,27 @@ import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { General } from '../../model/storage/general.model'
 import { Transaction, TransactionType, Transactions, Wallet } from '../../model/storage/wallet.model'
 
+export type StorageType = 'local' | 'session'
+
 /**
  * Sets any value to the extension storage
  * @param key entry's key
  * @param value any value
+ * @param type storage type
  * @returns promise
  */
-export function setEntry<T>(key: string, value: T): Promise<void> {
-  return chrome.storage.local.set({ [key]: value })
+export function setEntry<T>(key: string, value: T, type: StorageType = 'local'): Promise<void> {
+  return chrome.storage[type].set({ [key]: value })
 }
 
 /**
  * Retreives value of provided key from the extension storage
  * @param key entry's key
+ * @param type storage type
  * @returns value from the extension storage
  */
-export async function getEntry<T>(key: string): Promise<T> {
-  const data = await chrome.storage.local.get([key])
+export async function getEntry<T>(key: string, type: StorageType = 'local'): Promise<T> {
+  const data = await chrome.storage[type].get([key])
 
   return data[key] as T
 }
@@ -46,10 +50,11 @@ export async function getEntry<T>(key: string): Promise<T> {
 /**
  * Deletes value from the extension storage
  * @param key entry's key
+ * @param type storage type
  * @returns promise
  */
-export function deleteEntry(key: string): Promise<void> {
-  return chrome.storage.local.remove([key])
+export function deleteEntry(key: string, type: StorageType = 'local'): Promise<void> {
+  return chrome.storage[type].remove([key])
 }
 
 /**
@@ -57,18 +62,24 @@ export function deleteEntry(key: string): Promise<void> {
  * The new object is merged to the existing one. Only shallow marge is performed.
  * @param key entry's key
  * @param object object to store
+ * @param type storage type
  * @returns promise
  */
-export async function updateObject<T extends object>(key: string, object: T): Promise<void> {
-  const existingObject = await getObject<T>(key, () => ({} as T))
+export async function updateObject<T extends object>(
+  key: string,
+  object: T,
+  type: StorageType = 'local',
+): Promise<void> {
+  const existingObject = await getObject<T>(key, () => ({} as T), type)
 
-  return setEntry<T>(key, { ...existingObject, ...object })
+  return setEntry<T>(key, { ...existingObject, ...object }, type)
 }
 
 /**
  * Retreives object from the extension storage
  * @param key entry's key
  * @param factory function that creates default object if it is not found
+ * @param type storage type
  * @returns object from the extension storage or an object with default values
  */
 export async function getObject<T extends object>(
@@ -76,8 +87,9 @@ export async function getObject<T extends object>(
   factory: () => T = () => {
     throw new Error('A factory function must be provided')
   },
+  type: StorageType = 'local',
 ): Promise<T> {
-  const object = await getEntry<T>(key)
+  const object = await getEntry<T>(key, type)
 
   return typeof object === 'object' ? object : factory()
 }
@@ -87,16 +99,22 @@ export async function getObject<T extends object>(
  * The new array is replaced with the existing one.
  * @param key entry's key
  * @param array array to store
+ * @param type storage type
  * @returns promise
  */
-export function setArray<T extends object>(key: string, array: T[]): Promise<void> {
-  return setEntry<T[]>(key, array)
+export function setArray<T extends object>(
+  key: string,
+  array: T[],
+  type: StorageType = 'local',
+): Promise<void> {
+  return setEntry<T[]>(key, array, type)
 }
 
 /**
  * Retreives array from the extension storage
  * @param key entry's key
  * @param factory function that creates default array if it is not found
+ * @param type storage type
  * @returns array from the extension storage or an array with default values
  */
 export async function getArray<T extends object>(
@@ -104,8 +122,9 @@ export async function getArray<T extends object>(
   factory: () => T[] = () => {
     throw new Error('A factory function must be provided')
   },
+  type: StorageType = 'local',
 ): Promise<T[]> {
-  const array = await getEntry<T>(key)
+  const array = await getEntry<T>(key, type)
 
   return Array.isArray(array) ? array : factory()
 }
@@ -115,7 +134,10 @@ export async function getArray<T extends object>(
  * Provides default values for non existing entries
  */
 export class Storage {
-  private listeners: Record<string, Array<(entry: unknown) => void>> = {}
+  private listeners: Record<StorageType, Record<string, Array<(entry: unknown) => void>>> = {
+    local: {},
+    session: {},
+  }
 
   static readonly networkKey = 'network'
   static readonly networkListKey = 'network-list'
@@ -194,16 +216,16 @@ export class Storage {
     return updateObject<Swarm>(Storage.swarmKey, swarm)
   }
 
-  public setSession(session: StorageSession): Promise<void> {
-    return updateObject<StorageSession>(Storage.sessionKey, session)
+  public setSession(session: Session): Promise<void> {
+    return updateObject<Session>(Storage.sessionKey, session, 'session')
   }
 
-  public getSession(): Promise<StorageSession> {
-    return getObject<StorageSession>(Storage.sessionKey, sessionFactory)
+  public getSession(): Promise<Session> {
+    return getObject<Session>(Storage.sessionKey, sessionFactory, 'session')
   }
 
   public deleteSession(): Promise<void> {
-    return deleteEntry(Storage.sessionKey)
+    return deleteEntry(Storage.sessionKey, 'session')
   }
 
   public async getDapps(name: string, local: boolean): Promise<Dapps> {
@@ -212,11 +234,11 @@ export class Storage {
     return (local ? accountDapps.local : accountDapps.ens)[name] || dappsFactory()
   }
 
-  public getDappsBySession({ ensUserName, localUserName }: MemorySession): Promise<Dapps> {
+  public getDappsBySession({ ensUserName, localUserName }: Session): Promise<Dapps> {
     return this.getDapps(ensUserName || localUserName, Boolean(localUserName))
   }
 
-  public async getDappBySession(dappId: DappId, session: MemorySession): Promise<Dapp | undefined> {
+  public async getDappBySession(dappId: DappId, session: Session): Promise<Dapp | undefined> {
     const dapps = await this.getDappsBySession(session)
 
     return dapps[dappId] || dappFactory(dappId)
@@ -225,7 +247,7 @@ export class Storage {
   public async updateDappBySession(
     dappId: DappId,
     dapp: Partial<Dapp>,
-    { ensUserName, localUserName }: MemorySession,
+    { ensUserName, localUserName }: Session,
   ): Promise<void> {
     const name = ensUserName || localUserName
 
@@ -260,7 +282,7 @@ export class Storage {
   public async setDappPodPermissionBySession(
     dappId: DappId,
     podPermission: PodPermission,
-    session: MemorySession,
+    session: Session,
   ): Promise<void> {
     const dapp = await this.getDappBySession(dappId, session)
 
@@ -384,26 +406,29 @@ export class Storage {
     this.setListener(Storage.swarmKey, listener)
   }
 
-  public onSessionChange(listener: (session: StorageSession) => void) {
-    this.setListener(Storage.sessionKey, listener)
+  public onSessionChange(listener: (session: Session) => void) {
+    this.setListener(Storage.sessionKey, listener, 'session')
   }
 
-  public removeListener(listener: (entry: unknown) => void) {
-    Object.values(this.listeners).forEach((listeners) => {
+  public removeListener(listener: (entry: unknown) => void, type: StorageType = 'local') {
+    Object.values(this.listeners[type]).forEach((listeners) => {
       removeAllValues(listeners, listener)
     })
   }
 
-  private onChangeListener(changes: { [key: string]: chrome.storage.StorageChange }) {
+  private onChangeListener(
+    changes: { [key: string]: chrome.storage.StorageChange },
+    type: StorageType = 'local',
+  ) {
     for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
-      ;(this.listeners[key] || []).forEach((listener) => listener(newValue || oldValue))
+      ;(this.listeners[type][key] || []).forEach((listener) => listener(newValue || oldValue))
     }
   }
 
-  private setListener(key: string, listener: (entry: unknown) => void) {
-    if (!this.listeners[key]) {
-      this.listeners[key] = []
+  private setListener(key: string, listener: (entry: unknown) => void, type: StorageType = 'local') {
+    if (!this.listeners[type][key]) {
+      this.listeners[type][key] = []
     }
-    this.listeners[key].push(listener)
+    this.listeners[type][key].push(listener)
   }
 }

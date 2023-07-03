@@ -4,7 +4,7 @@ import { isFdpStorageRequest } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { FdpStorageRequest } from '../../model/internal-messages.model'
 import { Dapp, PodActions } from '../../model/storage/dapps.model'
-import { MemorySession } from '../../model/storage/session.model'
+import { Session } from '../../model/storage/session.model'
 import { Dialog } from '../../services/dialog.service'
 import {
   callFdpStorageMethod,
@@ -16,15 +16,15 @@ import { SessionService } from '../../services/session.service'
 import { Storage } from '../../services/storage/storage.service'
 import { isPodActionAllowed } from '../../utils/permissions'
 import { createMessageHandler } from './message-handler'
-import { getDappId } from './listener.utils'
 import { errorMessages } from '../../constants/errors'
+import { getDappId } from './listener.utils'
 
 const fdpStorageProvider = new SessionFdpStorageProvider()
 const dialogs = new Dialog()
 const storage = new Storage()
 const sessionService = new SessionService()
 
-async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: MemorySession): Promise<boolean> {
+async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Session): Promise<boolean> {
   if (dapp && dapp.fullStorageAccess) {
     return true
   }
@@ -43,7 +43,7 @@ async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Memo
 async function handlePodBasedMethod(
   dappId: DappId,
   dapp: Dapp | undefined,
-  session: MemorySession,
+  session: Session,
   fdp: FdpStorage,
   property: string,
   method: string,

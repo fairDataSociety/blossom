@@ -1,4 +1,4 @@
-import { MemorySession } from '../../model/storage/session.model'
+import { Session } from '../../model/storage/session.model'
 import { Swarm } from '../../model/storage/swarm.model'
 import { SessionService } from '../session.service'
 import { Storage } from '../storage/storage.service'
@@ -15,16 +15,16 @@ export class SessionFdpStorageProvider extends FdpStorageProvider {
     return this.createFdpStorageInternal(session, swarm)
   }
 
-  private async createFdpStorageInternal(session: MemorySession, swarm: Swarm): Promise<ExtendedFdpStorage> {
-    const { network, key } = session || {}
+  private async createFdpStorageInternal(session: Session, swarm: Swarm): Promise<ExtendedFdpStorage> {
+    const { network, seed } = session || {}
 
-    if (!network || !key) {
+    if (!network || !seed) {
       throw new Error('Blossom: User is not logged in.')
     }
 
     const fdp = await this.createFdpStorage(network, swarm)
 
-    fdp.account.setAccountFromSeed(key.seed)
+    fdp.account.setAccountFromSeed(new Uint8Array(seed))
 
     return fdp
   }
