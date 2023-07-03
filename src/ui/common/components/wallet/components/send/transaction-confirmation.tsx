@@ -46,7 +46,11 @@ const TransactionConfirmation = ({
               <Send />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={address} secondary={intl.get('SENDING_TO')} />
+          <ListItemText
+            primary={address}
+            secondary={intl.get('SENDING_TO')}
+            sx={{ overflowWrap: 'anywhere' }}
+          />
         </ListItem>
         <ListItem alignItems="center">
           <ListItemText primary={utils.formatEther(realValue)} secondary={intl.get('AMOUNT')} />

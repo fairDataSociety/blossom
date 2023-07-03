@@ -39,6 +39,7 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
           padding: '20px',
           display: 'flex',
           alignItems: 'center',
+          overflowWrap: 'anywhere',
         }}
       >
         {address}
