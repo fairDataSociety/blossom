@@ -4,7 +4,7 @@ import { isFdpStorageRequest } from '../../messaging/message.asserts'
 import { DappId } from '../../model/general.types'
 import { FdpStorageRequest } from '../../model/internal-messages.model'
 import { Dapp, PodActions } from '../../model/storage/dapps.model'
-import { MemorySession } from '../../model/storage/session.model'
+import { Session } from '../../model/storage/session.model'
 import { Dialog } from '../../services/dialog.service'
 import {
   callFdpStorageMethod,
@@ -33,7 +33,7 @@ async function getDappId(sender: chrome.runtime.MessageSender): Promise<DappId> 
   return dappUrlToId(sender.url, beeApiUrl)
 }
 
-async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: MemorySession): Promise<boolean> {
+async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Session): Promise<boolean> {
   if (dapp && dapp.fullStorageAccess) {
     return true
   }
@@ -52,7 +52,7 @@ async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Memo
 async function handlePodBasedMethod(
   dappId: DappId,
   dapp: Dapp | undefined,
-  session: MemorySession,
+  session: Session,
   fdp: FdpStorage,
   property: string,
   method: string,
