@@ -3,6 +3,7 @@ import {
   AccountBalanceRequest,
   FdpStorageRequest,
   ImportAccountData,
+  InternalTransaction,
   LocalLoginData,
   LoginData,
   NetworkEditData,
@@ -143,10 +144,16 @@ export function isSerializedUint8Array(data: unknown): data is BytesMessage {
   return type === 'bytes' && isString(value)
 }
 
-export function isTransaction(data: unknown): data is Transaction {
-  const { to, value, data: txData, rpcUrl } = (data || {}) as Transaction
+export function isInternalTransaction(data: unknown): data is InternalTransaction {
+  const { to, value, data: txData, rpcUrl } = (data || {}) as InternalTransaction
 
   return isAddress(to) && isString(rpcUrl) && (isString(value) || isString(txData))
+}
+
+export function isTransaction(data: unknown): data is Transaction {
+  const { to, value, data: txData } = (data || {}) as Transaction
+
+  return isAddress(to) && (isString(value) || isString(txData))
 }
 
 export function isAccountBalanceRequest(data: unknown): data is AccountBalanceRequest {

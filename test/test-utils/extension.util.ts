@@ -42,12 +42,15 @@ export async function openExtensionOptionsPage(extensionId: string, page: string
 
 export async function setSwarmExtensionId(): Promise<void> {
   const settingsPage = await openExtensionOptionsPage(global.__BLOSSOM_ID__, 'settings.html')
+
+  await (await getElementByTestId(settingsPage, 'settings-button')).click()
+
   await (await getElementByTestId(settingsPage, 'settings-swarm-button')).click()
 
   await typeToInput(settingsPage, 'swarm-extension-id-input', global.__SWARM_ID__)
 
   await (await getElementByTestId(settingsPage, 'swarm-extension-id-submit')).click()
 
-  await getElementByTestId(settingsPage, 'settings-swarm-button')
+  await getElementByTestId(settingsPage, 'settings-button')
   await settingsPage.close()
 }

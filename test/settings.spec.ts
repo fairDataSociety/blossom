@@ -35,6 +35,8 @@ describe('Settings page tests', () => {
   })
 
   test('Should add a new network', async () => {
+    await (await getElementByTestId(page, 'settings-button')).click()
+
     await (await getElementByTestId(page, 'settings-network-button')).click()
 
     let networkElements = await getNetworkElements(page)

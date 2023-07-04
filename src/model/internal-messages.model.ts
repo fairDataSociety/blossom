@@ -87,7 +87,6 @@ export interface DialogQuestion {
 
 export interface TransactionBase {
   to: Address
-  rpcUrl: string
 }
 
 export type Transaction = TransactionBase &
@@ -96,6 +95,10 @@ export type Transaction = TransactionBase &
     value?: BigNumberString
     data?: HexStringVariate
   }>
+
+export type InternalTransaction = {
+  rpcUrl: string
+} & Transaction
 
 export interface AccountBalanceRequest {
   address: Address

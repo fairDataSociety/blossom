@@ -1,12 +1,11 @@
 import { BigNumber, providers } from 'ethers'
 import { v4 as uuidv4 } from 'uuid'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isTransaction } from '../../messaging/message.asserts'
+import { isInternalTransaction, isTransaction } from '../../messaging/message.asserts'
 import { createMessageHandler } from './message-handler'
 import { Blockchain } from '../../services/blockchain.service'
-import { AccountBalanceRequest, Transaction } from '../../model/internal-messages.model'
+import { AccountBalanceRequest, InternalTransaction, Transaction } from '../../model/internal-messages.model'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
-import { isInternalMessage } from '../../utils/extension'
 import { Dialog } from '../../services/dialog.service'
 import { getDappId } from './listener.utils'
 import { errorMessages } from '../../constants/errors'
@@ -22,6 +21,32 @@ const session = new SessionService()
 const blockchain = new Blockchain()
 const fdpStorageProvider = new SessionFdpStorageProvider()
 
+function saveTransaction(
+  transaction: Transaction | InternalTransaction,
+  transactionContent: providers.TransactionReceipt,
+  accountName: string,
+  networkLabel: string,
+): Promise<void> {
+  return storage.addWalletTransaction(
+    {
+      id: uuidv4(),
+      time: new Date().getTime(),
+      direction: 'sent',
+      content: {
+        from: transactionContent.from,
+        to: transactionContent.to,
+        value: transaction.value,
+        data: transaction.data,
+        gas: transactionContent.gasUsed.toString(),
+        gasPrice: transactionContent.effectiveGasPrice.toString(),
+      },
+    },
+    accountName,
+    networkLabel,
+    'regular',
+  )
+}
+
 export async function getAccountBalance({ address, rpcUrl }: AccountBalanceRequest): Promise<string> {
   const balance = await new Blockchain(rpcUrl).getAccountBalance(address)
 
@@ -36,10 +61,40 @@ export async function getUserAccountBalance(): Promise<string> {
   return balance.toString()
 }
 
+export async function sendTransactionInternal(
+  transaction: InternalTransaction,
+): Promise<providers.TransactionReceipt> {
+  const { to, value, rpcUrl } = transaction
+  const [fdp, { ensUserName, localUserName }, networks] = await Promise.all([
+    fdpStorageProvider.getService(),
+    session.load(),
+    storage.getNetworkList(),
+  ])
+
+  const network = networks.find(({ rpc }) => rpc === rpcUrl)
+
+  if (!network) {
+    throw new Error('RPC URL is not allowed')
+  }
+
+  const { wallet } = fdp.account
+
+  const transactionContent = await new Blockchain(rpcUrl).sendTransaction(
+    wallet.privateKey,
+    to,
+    BigNumber.from(value),
+  )
+
+  await saveTransaction(transaction, transactionContent, ensUserName || localUserName, network.label)
+
+  return transactionContent
+}
+
 export async function sendTransaction(
-  { to, value, data, rpcUrl }: Transaction,
+  transaction: InternalTransaction,
   sender: chrome.runtime.MessageSender,
 ): Promise<providers.TransactionReceipt> {
+  const { to, value } = transaction
   const [fdp, { ensUserName, localUserName, network }] = await Promise.all([
     fdpStorageProvider.getService(),
     session.load(),
@@ -47,48 +102,21 @@ export async function sendTransaction(
 
   const { wallet } = fdp.account
 
-  let transactionContent: providers.TransactionReceipt
+  const dappId = await getDappId(sender)
+  const confirmed = await dialogs.ask('DIALOG_DAPP_TRANSACTION', { dappId, to, amount: value })
 
-  if (!isInternalMessage(sender)) {
-    const dappId = await getDappId(sender)
-    const confirmed = await dialogs.ask('DIALOG_DAPP_TRANSACTION', { dappId, to, amount: value })
-
-    if (!confirmed) {
-      throw new Error(errorMessages.ACCESS_DENIED)
-    }
-
-    transactionContent = await new Blockchain(rpcUrl).sendTransaction(
-      wallet.privateKey,
-      to,
-      BigNumber.from(value),
-    )
-  } else {
-    transactionContent = await blockchain.sendTransaction(wallet.privateKey, to, BigNumber.from(value))
+  if (!confirmed) {
+    throw new Error(errorMessages.ACCESS_DENIED)
   }
 
-  await storage.addWalletTransaction(
-    {
-      id: uuidv4(),
-      time: new Date().getTime(),
-      direction: 'sent',
-      content: {
-        from: transactionContent.from,
-        to: transactionContent.to,
-        value,
-        data,
-        gas: transactionContent.gasUsed.toString(),
-        gasPrice: transactionContent.effectiveGasPrice.toString(),
-      },
-    },
-    ensUserName || localUserName,
-    network.label,
-    'regular',
-  )
+  const transactionContent = await blockchain.sendTransaction(wallet.privateKey, to, BigNumber.from(value))
+
+  await saveTransaction(transaction, transactionContent, ensUserName || localUserName, network.label)
 
   return transactionContent
 }
 
-export async function estimateGasPrice(transaction: Transaction): Promise<BigNumberString> {
+export async function estimateGasPrice(transaction: InternalTransaction): Promise<BigNumberString> {
   const gasEstimation = await new Blockchain(transaction.rpcUrl).estimateGas(transaction)
 
   return gasEstimation.toString()
@@ -123,6 +151,11 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_USER_BALANCE,
     handler: getUserAccountBalance,
+  },
+  {
+    action: BackgroundAction.SEND_TRANSACTION_INTERNAL,
+    assert: isInternalTransaction,
+    handler: sendTransactionInternal,
   },
   {
     action: BackgroundAction.SEND_TRANSACTION,

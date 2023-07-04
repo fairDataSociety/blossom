@@ -5,12 +5,12 @@ import {
   AccountBalanceRequest,
   AccountResponse,
   ImportAccountData,
+  InternalTransaction,
   LocalLoginData,
   LoginData,
   NetworkEditData,
   RegisterData,
   RegisterResponse,
-  Transaction,
   UsernameCheckData,
   UserResponse,
 } from '../model/internal-messages.model'
@@ -74,12 +74,12 @@ export async function getAccountBalance(address: Address, rpcUrl?: string): Prom
   return BigNumber.from(balance)
 }
 
-export function sendTransaction(transaction: Transaction): Promise<void> {
-  return sendMessage<Transaction, void>(BackgroundAction.SEND_TRANSACTION, transaction)
+export function sendTransaction(transaction: InternalTransaction): Promise<void> {
+  return sendMessage<InternalTransaction, void>(BackgroundAction.SEND_TRANSACTION_INTERNAL, transaction)
 }
 
-export async function estimateGasPrice(transaction: Transaction): Promise<BigNumber> {
-  const price = await sendMessage<Transaction, BigNumberString>(
+export async function estimateGasPrice(transaction: InternalTransaction): Promise<BigNumber> {
+  const price = await sendMessage<InternalTransaction, BigNumberString>(
     BackgroundAction.ESTIMATE_GAS_PRICE,
     transaction,
   )
