@@ -63,6 +63,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
         size="small"
         fullWidth
         onChange={(event) => onNetworkChange(event.target.value)}
+        data-testid="network-select"
       >
         {networks.map(({ label }) => (
           <MenuItem key={label} value={label}>
@@ -84,7 +85,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {balance ? (
         <>
-          <Typography variant="h5" align="center">
+          <Typography variant="h5" align="center" data-testid="balance">
             {roundEther(utils.formatEther(balance))} ETH
           </Typography>
           <Button

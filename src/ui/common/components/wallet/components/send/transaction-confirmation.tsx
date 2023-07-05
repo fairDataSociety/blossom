@@ -84,6 +84,7 @@ const TransactionConfirmation = ({
             disabled={loading}
             onClick={onSubmit}
             sx={{ width: '200px' }}
+            data-testid="send-button"
           >
             {intl.get('SEND')}
           </Button>

@@ -7,13 +7,14 @@ import { BEE_URL } from './config/constants'
 import { login, logout, registerExisting } from './test-utils/account'
 import { removeZeroFromHex } from './test-utils/ethers'
 import { click, getPageByTitle, openPage, wait, waitForElementText } from './test-utils/page'
+import { getRandomString } from './test-utils/extension.util'
 
 const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
 const WALLET_PAGE_URL = `${BEE_URL}/bzz/${global.WALLET_PAGE_REFERENCE}/`
 
 describe('Dapp interaction with Blossom, using the library', () => {
   let page: Page
-  const username = 'fdpuser'
+  const username = 'fdpuser-' + getRandomString()
   const password = 'pass12345'
   const mnemonic = 'screen series sponsor unfair wear measure idle strike flame zone gain process'
 

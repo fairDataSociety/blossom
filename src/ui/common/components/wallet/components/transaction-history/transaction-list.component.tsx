@@ -40,12 +40,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 const TransactionList = ({ transactions }: TransactionListProps) => {
-  console.log(transactions)
-
   return (
     <TableContainer component={Paper}>
       <Table size="small">
-        <TableBody>
+        <TableBody data-testid="transaction-history">
           {transactions.map(({ id, time, content }) => (
             <StyledTableRow key={id}>
               <StyledTableCell component="th" scope="row">

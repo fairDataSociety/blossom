@@ -73,3 +73,11 @@ export async function getPageByTitle(title: string): Promise<Page> {
 
   return pages[blossomPageIndex]
 }
+
+export async function getNetworkElementsFromSelect(page: Page): Promise<ElementHandle<Element>[]> {
+  await (await (await getElementByTestId(page, 'network-select')).$('fieldset')).click()
+
+  await wait(500)
+
+  return getElementChildren(await (await getElementBySelector(page, '#menu-')).$('ul'))
+}

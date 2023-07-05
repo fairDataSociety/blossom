@@ -57,7 +57,7 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
           onChange={(event) => setValue(event.target.value)}
           error={Boolean(errors.amount)}
           helperText={errors.amount && intl.get('AMOUNT_ERROR')}
-          data-testid="amount"
+          data-testid="amount-input"
         />
         <GasEstimation
           to={isAddressValid(address) ? address : user.address}
@@ -70,7 +70,7 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
           variant="contained"
           type="submit"
           size="large"
-          data-testid="submit"
+          data-testid="amount-submit"
           sx={{
             marginTop: '50px',
           }}

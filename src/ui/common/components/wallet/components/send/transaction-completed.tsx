@@ -16,7 +16,7 @@ const TransactionCompleted = ({ onReset }: TransactionCompletedProps) => {
     <FlexColumnDiv>
       <FlexColumnDiv sx={{ marginTop: '20px' }}>
         <CheckCircle color="success" sx={{ margin: '0 auto' }} />
-        <Typography align="center" variant="body1">
+        <Typography align="center" variant="body1" data-testid="transaction-complete-text">
           {intl.get('TRANSACTION_COMPLETE')}
         </Typography>
       </FlexColumnDiv>
@@ -37,6 +37,7 @@ const TransactionCompleted = ({ onReset }: TransactionCompletedProps) => {
           marginTop: '20px',
         }}
         onClick={() => navigate('..')}
+        data-testid="back-button"
       >
         {intl.get('BACK')}
       </Button>

@@ -45,6 +45,7 @@ const AddressSelect = ({ addresses, disabled, onSubmit }: AddressSelectProps) =>
                 {...register('address', { required: true, pattern: addressRegex })}
                 error={Boolean(errors.address)}
                 helperText={errors.address && intl.get('ADDRESS_ERROR')}
+                data-testid="address-input"
               />
             )}
           />
@@ -58,7 +59,7 @@ const AddressSelect = ({ addresses, disabled, onSubmit }: AddressSelectProps) =>
         type="submit"
         size="large"
         disabled={disabled}
-        data-testid="submit"
+        data-testid="address-submit"
         sx={{
           marginTop: '50px',
         }}

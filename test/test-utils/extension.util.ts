@@ -54,3 +54,7 @@ export async function setSwarmExtensionId(): Promise<void> {
   await getElementByTestId(settingsPage, 'settings-button')
   await settingsPage.close()
 }
+
+export function getRandomString(): string {
+  return Math.random().toString().substring(2)
+}

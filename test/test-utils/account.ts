@@ -107,6 +107,8 @@ export async function registerExisting(username: string, password: string, mnemo
 
   await waitForElementTextByTestId(page, 'complete')
 
+  console.log(`Created user ${username}/${password}`)
+
   await page.close()
 }
 
