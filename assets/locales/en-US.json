@@ -104,5 +104,9 @@
   "SELECT": "Select",
   "SELECT_ADDRESS": "Choose address to send to",
   "PROCEED": "Proceed",
-  "SENDING_TO": "Sednding to"
+  "SENDING_TO": "Sednding to",
+  "ENABLE_WALLET_LOCK": "Enable wallet lock",
+  "MINUTES": "Minutes",
+  "LOCK_INTERVAL": "Lock interval",
+  "UNLOCK_WALLET": "Enter your account password to unlock wallet."
 }

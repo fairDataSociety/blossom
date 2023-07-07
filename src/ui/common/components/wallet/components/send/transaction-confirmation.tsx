@@ -9,6 +9,7 @@ import { isAddressValid, isValueValid } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
 import { BigNumber, utils } from 'ethers'
 import ErrorMessage from '../../../error-message/error-message.component'
+import { useWalletLock } from '../../hooks/wallet-lock.hook'
 
 export interface TransactionConfirmationProps {
   address: Address
@@ -32,6 +33,7 @@ const TransactionConfirmation = ({
   onSubmit,
 }: TransactionConfirmationProps) => {
   const [gasPrice, setGasPrice] = useState<BigNumber>(BigNumber.from(0))
+  useWalletLock()
 
   const realValue = useMemo(() => BigNumber.from(value).add(gasPrice), [gasPrice])
 

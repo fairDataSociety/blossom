@@ -2,6 +2,7 @@ import { ErrorObject } from '../model/error.model'
 
 export const errorMessages = {
   ACCESS_DENIED: 'Blossom: Access denied',
+  WALLET_LOCKED: 'Blossom: Wallet is locked',
 }
 
 export enum ErrorCode {

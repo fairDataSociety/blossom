@@ -13,6 +13,7 @@ import { getWalletContacts } from '../../../../../../listeners/message-listeners
 import AmountSelect from './amount-select.component'
 import TransactionConfirmation from './transaction-confirmation'
 import TransactionCompleted from './transaction-completed'
+import { useWalletLock } from '../../hooks/wallet-lock.hook'
 
 enum STEPS {
   ADDRESS,
@@ -29,6 +30,7 @@ const WalletSend = () => {
   const [completed, setCompleted] = useState<boolean>(false)
   const { walletNetwork } = useWallet()
   const { user, error: userError } = useUser()
+  useWalletLock()
 
   const loadAddresses = async () => {
     const addresses = await getWalletContacts()

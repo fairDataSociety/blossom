@@ -1,7 +1,12 @@
 import { BigNumber, providers } from 'ethers'
 import { v4 as uuidv4 } from 'uuid'
 import BackgroundAction from '../../constants/background-actions.enum'
-import { isInternalTransaction, isTransaction } from '../../messaging/message.asserts'
+import {
+  isInternalTransaction,
+  isString,
+  isTransaction,
+  isWalletConfig,
+} from '../../messaging/message.asserts'
 import { createMessageHandler } from './message-handler'
 import { Blockchain } from '../../services/blockchain.service'
 import { AccountBalanceRequest, InternalTransaction, Transaction } from '../../model/internal-messages.model'
@@ -13,12 +18,14 @@ import { isAccountBalanceRequest } from '../../messaging/message.asserts'
 import { Address, BigNumberString } from '../../model/general.types'
 import { Storage } from '../../services/storage/storage.service'
 import { SessionService } from '../../services/session.service'
-import { Transactions } from '../../model/storage/wallet.model'
+import { Transactions, WalletConfig } from '../../model/storage/wallet.model'
+import { WalletService } from '../../services/wallet.service'
 
 const dialogs = new Dialog()
 const storage = new Storage()
 const session = new SessionService()
 const blockchain = new Blockchain()
+const wallet = new WalletService()
 const fdpStorageProvider = new SessionFdpStorageProvider()
 
 function saveTransaction(
@@ -142,6 +149,32 @@ export async function getWalletContacts(): Promise<Address[]> {
   return Object.keys(accounts)
 }
 
+export async function getWalletConfig(): Promise<WalletConfig> {
+  const { ensUserName, localUserName } = await session.load()
+
+  return storage.getWalletConfig(ensUserName || localUserName)
+}
+
+export async function setWalletConfig(config: WalletConfig): Promise<void> {
+  const { ensUserName, localUserName } = await session.load()
+
+  return storage.setWalletConfig(ensUserName || localUserName, config)
+}
+
+export function isWalletLockedHandler(): Promise<boolean> {
+  return wallet.isLocked()
+}
+
+export async function unlockWallet(password: string): Promise<void> {
+  const { password: sessionPassword } = await session.load()
+
+  if (sessionPassword !== password) {
+    throw new Error('Invalid password')
+  }
+
+  await wallet.updateLock()
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_BALANCE,
@@ -155,7 +188,7 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.SEND_TRANSACTION_INTERNAL,
     assert: isInternalTransaction,
-    handler: sendTransactionInternal,
+    handler: wallet.creatteWalletLockInterceptor(sendTransactionInternal),
   },
   {
     action: BackgroundAction.SEND_TRANSACTION,
@@ -178,6 +211,28 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.GET_WALLET_CONTACTS,
     handler: getWalletContacts,
+  },
+  {
+    action: BackgroundAction.GET_WALLET_CONFIG,
+    handler: getWalletConfig,
+  },
+  {
+    action: BackgroundAction.SET_WALLET_CONFIG,
+    assert: isWalletConfig,
+    handler: setWalletConfig,
+  },
+  {
+    action: BackgroundAction.IS_WALLET_LOCKED,
+    handler: isWalletLockedHandler,
+  },
+  {
+    action: BackgroundAction.UNLOCK_WALLET,
+    assert: isString,
+    handler: unlockWallet,
+  },
+  {
+    action: BackgroundAction.REFRESH_WALLET_LOCK,
+    handler: wallet.creatteWalletLockInterceptor(() => Promise.resolve()),
   },
 ])
 

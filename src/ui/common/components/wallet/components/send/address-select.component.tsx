@@ -6,6 +6,7 @@ import { Autocomplete, Button, TextField, Typography } from '@mui/material'
 import FieldSpinner from '../../../field-spinner/field-spinner.component'
 import { Address } from '../../../../../../model/general.types'
 import { addressRegex } from '../../../../utils/ethers'
+import { useWalletLock } from '../../hooks/wallet-lock.hook'
 
 interface AddressSelectProps {
   addresses: Address[]
@@ -18,6 +19,7 @@ interface FormFields {
 }
 
 const AddressSelect = ({ addresses, disabled, onSubmit }: AddressSelectProps) => {
+  useWalletLock()
   const {
     register,
     handleSubmit,

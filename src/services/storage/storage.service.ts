@@ -20,7 +20,13 @@ import { DappId } from '../../model/general.types'
 import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/dapps.model'
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { General } from '../../model/storage/general.model'
-import { Transaction, TransactionType, Transactions, Wallet } from '../../model/storage/wallet.model'
+import {
+  Transaction,
+  TransactionType,
+  Transactions,
+  Wallet,
+  WalletConfig,
+} from '../../model/storage/wallet.model'
 
 export type StorageType = 'local' | 'session'
 
@@ -348,6 +354,32 @@ export class Storage {
     }
 
     return wallets[accountName]
+  }
+
+  public async getWalletConfig(accountName: string): Promise<WalletConfig> {
+    const wallets = await getObject(Storage.wallets, walletsFactory)
+
+    walletTransactionsFactory(wallets, accountName)
+
+    return wallets[accountName].config
+  }
+
+  public async setWalletConfig(accountName: string, config: WalletConfig): Promise<void> {
+    const release = await Storage.walletsMutex.acquire()
+
+    try {
+      const wallets = await getObject(Storage.wallets, walletsFactory)
+
+      walletTransactionsFactory(wallets, accountName)
+
+      wallets[accountName].config = config
+
+      return updateObject(Storage.wallets, wallets)
+    } catch (error) {
+      throw error
+    } finally {
+      release()
+    }
   }
 
   public async getWalletTransactions(accountName: string, networkLabel: string): Promise<Transactions> {

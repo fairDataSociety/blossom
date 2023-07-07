@@ -19,7 +19,7 @@ import { Network } from '../model/storage/network.model'
 import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
-import { Transactions } from '../model/storage/wallet.model'
+import { Transactions, WalletConfig } from '../model/storage/wallet.model'
 
 export function login(data: LoginData): Promise<void> {
   return sendMessage<LoginData, void>(BackgroundAction.LOGIN, data)
@@ -91,6 +91,14 @@ export function getWalletTransactions(networkLabel: string): Promise<Transaction
   return sendMessage<string, Transactions>(BackgroundAction.GET_WALLET_TRANSACTIONS, networkLabel)
 }
 
+export function getWalletConfig(): Promise<WalletConfig> {
+  return sendMessage<void, WalletConfig>(BackgroundAction.GET_WALLET_CONFIG)
+}
+
+export function setWalletConfig(config: WalletConfig): Promise<void> {
+  return sendMessage<WalletConfig, void>(BackgroundAction.SET_WALLET_CONFIG, config)
+}
+
 export function clearWalletData(): Promise<void> {
   return sendMessage<void, void>(BackgroundAction.CLEAR_WALLET_DATA)
 }
@@ -133,6 +141,18 @@ export function getDappSettings(dappId: DappId): Promise<Dapp> {
 
 export function updateDappSettings(dapp: Dapp): Promise<void> {
   return sendMessage<Dapp, void>(BackgroundAction.UPDATE_DAPP_SETTINGS, dapp)
+}
+
+export function isWalletLocked(): Promise<boolean> {
+  return sendMessage<void, boolean>(BackgroundAction.IS_WALLET_LOCKED)
+}
+
+export function unlockWallet(password: string): Promise<void> {
+  return sendMessage<string, void>(BackgroundAction.UNLOCK_WALLET, password)
+}
+
+export function refreshWalletLock(): Promise<void> {
+  return sendMessage<void, void>(BackgroundAction.REFRESH_WALLET_LOCK)
 }
 
 export function getGlobalError(): Promise<string> {

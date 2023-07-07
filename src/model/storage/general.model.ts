@@ -5,4 +5,5 @@ export type Errors = Partial<Record<ErrorCode, ErrorObject>>
 
 export interface General {
   errors: Errors
+  lockStart?: number
 }

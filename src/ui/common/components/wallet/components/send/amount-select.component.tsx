@@ -9,6 +9,7 @@ import { FlexColumnDiv } from '../../../utils/utils'
 import GasEstimation from '../gas-estimation.component'
 import { isAddressValid, isValueValid, valueRegex } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
+import { useWalletLock } from '../../hooks/wallet-lock.hook'
 
 export interface AmountSelectProps {
   address: Address
@@ -23,6 +24,7 @@ export interface FormFields {
 
 const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelectProps) => {
   const [value, setValue] = useState<BigNumberString>('')
+  useWalletLock()
 
   const {
     register,

@@ -1,7 +1,7 @@
 import { networks } from '../../constants/networks'
 import { Network } from '../../model/storage/network.model'
 import { Swarm } from '../../model/storage/swarm.model'
-import { StorageSession } from '../../model/storage/session.model'
+import { Session } from '../../model/storage/session.model'
 import { AccountDapps, Dapp, Dapps } from '../../model/storage/dapps.model'
 import { Accounts } from '../../model/storage/account.model'
 import { DappId } from '../../model/general.types'
@@ -22,7 +22,7 @@ export function swarmFactory(): Swarm {
   }
 }
 
-export function sessionFactory(): StorageSession {
+export function sessionFactory(): Session {
   return null
 }
 
@@ -59,13 +59,14 @@ export function walletsFactory(): Wallets {
   return {}
 }
 
-export function walletTransactionsFactory(wallets: Wallets, accountName: string, networkLabel: string) {
+export function walletTransactionsFactory(wallets: Wallets, accountName: string, networkLabel?: string) {
   let wallet = wallets[accountName]
 
   if (!wallet) {
     wallet = wallets[accountName] = {
       transactionsByNetworkLabel: {},
       accounts: {},
+      config: {},
     }
   }
 
@@ -73,7 +74,7 @@ export function walletTransactionsFactory(wallets: Wallets, accountName: string,
     wallet.transactionsByNetworkLabel = {}
   }
 
-  if (!wallet.transactionsByNetworkLabel[networkLabel]) {
+  if (networkLabel && !wallet.transactionsByNetworkLabel[networkLabel]) {
     wallet.transactionsByNetworkLabel[networkLabel] = {
       regular: [],
       asset: [],

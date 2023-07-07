@@ -18,10 +18,16 @@ import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { Session } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
+import { WalletConfig } from '../model/storage/wallet.model'
+import { isNumber } from '../utils/asserts'
 import { BytesMessage } from './scripts.messaging'
 
 export function isString(data: unknown): data is string {
   return typeof data === 'string'
+}
+
+export function isObject(data: unknown): data is Record<string, unknown> {
+  return typeof data === 'object'
 }
 
 export function isLoginData(data: unknown): data is LoginData {
@@ -160,4 +166,10 @@ export function isAccountBalanceRequest(data: unknown): data is AccountBalanceRe
   const { address, rpcUrl } = (data || {}) as AccountBalanceRequest
 
   return isAddress(address) && (!rpcUrl || isString(rpcUrl))
+}
+
+export function isWalletConfig(data: unknown): data is WalletConfig {
+  const { lockInterval } = (data || {}) as WalletConfig
+
+  return isObject(data) && (!lockInterval || isNumber(lockInterval))
 }

@@ -16,6 +16,8 @@ enum BackgroundAction {
   SEND_TRANSACTION_INTERNAL = 'send-transaction-internal',
   GET_WALLET_TRANSACTIONS = 'get-wallet-transactions',
   CLEAR_WALLET_DATA = 'clear-wallet-data',
+  GET_WALLET_CONFIG = 'get-wallet-config',
+  SET_WALLET_CONFIG = 'set-wallet-config',
   ESTIMATE_GAS_PRICE = 'estimate-gas-price',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',
@@ -34,6 +36,9 @@ enum BackgroundAction {
   UPDATE_DAPP_SETTINGS = 'update-dapp-settings',
   GET_ERROR = 'get-error',
   GET_WALLET_CONTACTS = 'get-wallet-contacts',
+  IS_WALLET_LOCKED = 'is-wallet-locked',
+  UNLOCK_WALLET = 'unlock-wallet',
+  REFRESH_WALLET_LOCK = 'refresh-wallet-lock',
   ECHO = 'echo',
 }
 

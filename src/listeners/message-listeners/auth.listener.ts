@@ -37,7 +37,7 @@ export async function login({ username, password, network }: LoginData): Promise
 
   await fdp.account.login(username, password)
 
-  await session.open(username, null, fdp.account.wallet.address, network, fdp.account.seed)
+  await session.open(username, null, password, fdp.account.wallet.address, network, fdp.account.seed)
 
   console.log(`auth.listener: Successfully logged in user ${username}`)
 }
@@ -59,7 +59,7 @@ export async function localLogin({ name, password, network }: LocalLoginData): P
     throw error
   }
 
-  await session.open(null, name, address, network, seed)
+  await session.open(null, name, password, address, network, seed)
 
   await storage.updateAccount(name, { network })
 
@@ -84,7 +84,7 @@ export async function importAccount({ name, password, mnemonic, network }: Impor
 
     await account.create(name, wallet.address, password, seed, network)
 
-    await session.open(null, name, wallet.address, network, seed)
+    await session.open(null, name, password, wallet.address, network, seed)
 
     console.log(`auth.listener: Successfully imported account ${name}`)
   } catch (error) {
@@ -110,7 +110,7 @@ export async function register(data: RegisterData): Promise<void> {
 
     await fdp.account.register(username, password)
 
-    session.open(username, null, fdp.account.wallet.address, network, fdp.account.seed)
+    session.open(username, null, password, fdp.account.wallet.address, network, fdp.account.seed)
 
     console.log(`auth.listener: Successfully registered user ${username}`)
   } catch (error) {
