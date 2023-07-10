@@ -156,6 +156,12 @@ export async function getWalletConfig(): Promise<WalletConfig> {
 }
 
 export async function setWalletConfig(config: WalletConfig): Promise<void> {
+  const isLocked = await wallet.isLocked()
+
+  if (isLocked) {
+    throw new Error(errorMessages.WALLET_LOCKED)
+  }
+
   const { ensUserName, localUserName } = await session.load()
 
   return storage.setWalletConfig(ensUserName || localUserName, config)
@@ -188,7 +194,7 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.SEND_TRANSACTION_INTERNAL,
     assert: isInternalTransaction,
-    handler: wallet.creatteWalletLockInterceptor(sendTransactionInternal),
+    handler: wallet.createWalletLockInterceptor(sendTransactionInternal),
   },
   {
     action: BackgroundAction.SEND_TRANSACTION,
@@ -232,7 +238,7 @@ const messageHandler = createMessageHandler([
   },
   {
     action: BackgroundAction.REFRESH_WALLET_LOCK,
-    handler: wallet.creatteWalletLockInterceptor(() => Promise.resolve()),
+    handler: wallet.createWalletLockInterceptor(() => Promise.resolve()),
   },
 ])
 

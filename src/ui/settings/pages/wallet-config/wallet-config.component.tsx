@@ -8,6 +8,7 @@ import {
   clearWalletData,
   getCurrentUser,
   getWalletConfig,
+  isWalletLocked,
   setWalletConfig,
 } from '../../../../messaging/content-api.messaging'
 import { useNavigate } from 'react-router-dom'
@@ -20,16 +21,22 @@ import WalletLockInput from './wallet-lock-input'
 const WalletConfig = () => {
   const navigate = useNavigate()
   const [config, setConfig] = useState<WalletConfigModel | null>(null)
+  const [walletLocked, setWalletLocked] = useState<boolean>(false)
   const [clearDataDialogOpen, setClearDataDialogOpen] = useState<boolean>(false)
 
   const loadData = async () => {
-    const [user, config] = await Promise.all([getCurrentUser(), getWalletConfig()])
+    const [user, config, walletLocked] = await Promise.all([
+      getCurrentUser(),
+      getWalletConfig(),
+      isWalletLocked(),
+    ])
 
     if (!user) {
       navigate(RouteCodes.settings)
     }
 
     setConfig(config)
+    setWalletLocked(walletLocked)
   }
 
   const onConfigUpdate = (lockInterval: number) => {
@@ -55,7 +62,7 @@ const WalletConfig = () => {
   return (
     <FlexColumnDiv>
       <Header title={intl.get('WALLET')} image={Wallet} backRoute={RouteCodes.settings} />
-      <WalletLockInput value={config.lockInterval} onChange={onConfigUpdate} />
+      <WalletLockInput value={config.lockInterval} isLocked={walletLocked} onChange={onConfigUpdate} />
       <Section
         description={intl.get('CLEAR_ACTIVITY_DATA_DESCRIPTION')}
         image={<LayersClear />}

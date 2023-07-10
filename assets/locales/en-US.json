@@ -108,5 +108,6 @@
   "ENABLE_WALLET_LOCK": "Enable wallet lock",
   "MINUTES": "Minutes",
   "LOCK_INTERVAL": "Lock interval",
-  "UNLOCK_WALLET": "Enter your account password to unlock wallet."
+  "UNLOCK_WALLET": "Enter your account password to unlock wallet.",
+  "WALLET_SETTINGS_WARNING": "You need to unlock your wallet first in order to change this setting."
 }
