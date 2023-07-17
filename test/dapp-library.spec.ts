@@ -63,7 +63,7 @@ describe('Dapp interaction with Blossom, using the library', () => {
     test('Should successfully download file', async () => {
       await click(page, 'download-file-btn')
 
-      expect(await waitForElementText(page, '#download-file[complete="true"]')).toEqual('success')
+      expect(await waitForElementText(page, '#download-file[complete="true"]')).toEqual('Blossom')
     })
 
     test("Shouldn't create a random pod", async () => {

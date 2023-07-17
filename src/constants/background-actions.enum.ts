@@ -26,6 +26,7 @@ enum BackgroundAction {
   GET_ALL_DAPP_IDS = 'get-all-dapp-ids',
   GET_DAPP_SETTINGS = 'get-dapp-settings',
   UPDATE_DAPP_SETTINGS = 'update-dapp-settings',
+  GET_ERROR = 'get-error',
   ECHO = 'echo',
 }
 

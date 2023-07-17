@@ -8,26 +8,40 @@ import Security from '@mui/icons-material/Security'
 import Section from './section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
-import { getCurrentUser, logout, openAuthPage } from '../../../../messaging/content-api.messaging'
+import {
+  getCurrentUser,
+  getGlobalError,
+  logout,
+  openAuthPage,
+} from '../../../../messaging/content-api.messaging'
 import { UserResponse } from '../../../../model/internal-messages.model'
 import UserInfo from './user-info.component'
+import ErrorMessage from '../../../common/components/error-message/error-message.component'
 
 const Main = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState<UserResponse>(null)
+  const [globalError, setGlobalError] = useState<string | undefined>(undefined)
 
-  const loadUser = async () => {
-    const user = await getCurrentUser()
+  const loadData = async () => {
+    const [user, globalError] = await Promise.all([getCurrentUser(), getGlobalError()])
+
     setUser(user)
+    setGlobalError(globalError)
+  }
+
+  const onLoginOrRegister = async () => {
+    await openAuthPage()
+    loadData()
   }
 
   const onLogout = async () => {
     await logout()
-    setUser(null)
+    loadData()
   }
 
   useEffect(() => {
-    loadUser()
+    loadData()
   }, [])
 
   return (
@@ -35,6 +49,7 @@ const Main = () => {
       <Typography variant="h5" align="center">
         Blossom
       </Typography>
+      {globalError && <ErrorMessage>{intl.get(globalError)}</ErrorMessage>}
       <Stack spacing={3} sx={{ paddingTop: '20px' }}>
         {user ? (
           <UserInfo user={user} onLogout={onLogout} />
@@ -42,7 +57,7 @@ const Main = () => {
           <Section
             description={intl.get('LOGIN_REGISTER_DESCRIPTION')}
             image={<VpnKey />}
-            onClick={openAuthPage}
+            onClick={onLoginOrRegister}
             dataTestId="settings-registration-login"
           >
             {intl.get('LOGIN_OR_REGISTER')}

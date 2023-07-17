@@ -1,0 +1,15 @@
+title: Blossom Browser Extension Getting Started
+description: >- # this means to ignore newlines until "baseurl:"
+  Detailed instructions how to install, configure and use the
+  Blossom browser extension.
+
+defaults:
+  - scope:
+      path: 'assets/img'
+    values:
+      image: true
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed

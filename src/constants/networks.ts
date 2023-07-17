@@ -12,9 +12,13 @@ export const networks: Network[] = [
     custom: false,
   },
   {
+    ...extractNetworkConfig(Environments.SEPOLIA),
+    label: 'Sepolia',
+    custom: false,
+  },
+  {
     ...extractNetworkConfig(Environments.GOERLI),
     label: 'Görli',
-    rpc: 'https://xdai.dev.fairdatasociety.org',
     custom: false,
   },
 ]

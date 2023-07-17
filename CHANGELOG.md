@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.4.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.3.1...blossom-ext-v0.4.0) (2023-05-26)
+
+
+### Features
+
+* update manifest.json verison ([#148](https://github.com/fairDataSociety/blossom/issues/148)) ([04b5171](https://github.com/fairDataSociety/blossom/commit/04b5171db9fce5178ae6155e0438c24cf060f3b6))
+
+## [0.3.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.3...blossom-ext-v0.3.0) (2023-04-25)
+
+
+### Features
+
+* add whitelisted dapps ([#129](https://github.com/fairDataSociety/blossom/issues/129)) ([1b7a878](https://github.com/fairDataSociety/blossom/commit/1b7a8785f9042035ea1204074a05c23eb0c4afc9))
+
+
+### Bug Fixes
+
+* migration ([#126](https://github.com/fairDataSociety/blossom/issues/126)) ([3232c2e](https://github.com/fairDataSociety/blossom/commit/3232c2edd62b3c6f8063a3fcc34459d9de050e6c))
+* serialization [#130](https://github.com/fairDataSociety/blossom/issues/130) ([#131](https://github.com/fairDataSociety/blossom/issues/131)) ([12dfca3](https://github.com/fairDataSociety/blossom/commit/12dfca3b8176f3ba3bacfe28a4bd61fb22715550))
+
+## [0.2.3](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.2...blossom-ext-v0.2.3) (2023-03-20)
+
+
+### Bug Fixes
+
+* batch id ([#121](https://github.com/fairDataSociety/blossom/issues/121)) ([#122](https://github.com/fairDataSociety/blossom/issues/122)) ([84dbf06](https://github.com/fairDataSociety/blossom/commit/84dbf06a3b07e9cce09b1af010f9094c65589808))
+
+## [0.2.2](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.1...blossom-ext-v0.2.2) (2023-03-01)
+
+
+### Bug Fixes
+
+* buffer serialization ([#114](https://github.com/fairDataSociety/blossom/issues/114)) ([1616fd1](https://github.com/fairDataSociety/blossom/commit/1616fd1a06ed8fdb2bd44f4eabd8d8357fe437d7))
+
+## [0.2.1](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.2.0...blossom-ext-v0.2.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* compatibility with new fdp-storage ([#111](https://github.com/fairDataSociety/blossom/issues/111)) ([055581d](https://github.com/fairDataSociety/blossom/commit/055581dff51ba8b5a15bc758b73faa23c6f3efa5))
+
 ## [0.2.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.1.1...blossom-ext-v0.2.0) (2023-01-16)
 
 

@@ -19,6 +19,8 @@ All configuration is stored inside the `.env` file, in the root directory. That 
 - **ENVIRONMENT** - It can be set to `production` or `development` and determines how the project will be built.
 - **SWARM_EXTENSION_ID** - This ID is used to establish communication with the Swarm extension in development mode.
 
+> **_NOTE_:** Data will be loaded from bee URL defined in the Swarm extension. Check your bee URL in the Swarm extension if it is set to correct endpoint.
+
 ## Installation
 
 The extension is built by running this command:
@@ -113,6 +115,24 @@ npm test
 ```
 
 > **_NOTE_:** Tests rely on fresh state of the running services. If tests need to be run more than once, then all docker containers must be restarted as well.
+
+## Documentation
+
+To run documentation web pages locally, navigate to the `docs` directory and install all dependencies:
+
+```bash
+gem install jekyll bundler
+```
+
+```bash
+bundle install
+```
+
+Then start server:
+
+```bash
+bundle exec jekyll serve
+```
 
 ## Architecture
 

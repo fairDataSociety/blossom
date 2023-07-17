@@ -38,10 +38,11 @@ async function uploadFile() {
 }
 
 async function downloadFile() {
-  // TODO Check why content is number array
   const content = await blossom.fdpStorage.file.downloadData(blossom.dappId, '/blossom/test.txt')
 
-  setSuccess('download-file')
+  const text = await new Blob([content]).text()
+
+  setText('download-file', text)
 }
 
 async function createRandomPod(id) {
