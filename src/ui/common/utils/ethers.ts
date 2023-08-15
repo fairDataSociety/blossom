@@ -1,3 +1,4 @@
+import { BigNumber, utils } from 'ethers'
 import { Address } from '../../../model/general.types'
 
 export const valueRegex = /^\d+(\.\d+)?$/g
@@ -23,4 +24,12 @@ export function isAddressValid(address: string): boolean {
 
 export function displayAddress(address: Address): string {
   return `${address.substring(0, 5)}...${address.substring(address.length - 4)}`
+}
+
+export function convertFromDecimal(amount: string, decimals?: number): BigNumber {
+  return utils.parseUnits(amount, decimals || 'ether')
+}
+
+export function convertToDecimal(amount: BigNumber, decimals?: number): string {
+  return utils.formatUnits(amount, decimals || 'ether')
 }

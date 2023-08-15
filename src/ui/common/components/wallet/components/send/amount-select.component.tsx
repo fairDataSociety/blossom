@@ -7,14 +7,16 @@ import { Button, IconButton, Paper, TextField } from '@mui/material'
 import { Address, BigNumberString } from '../../../../../../model/general.types'
 import { FlexColumnDiv } from '../../../utils/utils'
 import GasEstimation from '../gas-estimation.component'
-import { isAddressValid, isValueValid, valueRegex } from '../../../../utils/ethers'
+import { convertFromDecimal, isAddressValid, isValueValid, valueRegex } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
+import { Token } from '../../../../../../model/storage/wallet.model'
 
 export interface AmountSelectProps {
   address: Address
   user: UserResponse
   rpcUrl: string
+  selectedToken: Token
   onCancel: () => void
   onSubmit: (value: BigNumberString) => void
 }
@@ -22,7 +24,7 @@ export interface FormFields {
   amount: string
 }
 
-const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelectProps) => {
+const AmountSelect = ({ address, user, rpcUrl, selectedToken, onCancel, onSubmit }: AmountSelectProps) => {
   const [value, setValue] = useState<BigNumberString>('')
   useWalletLock()
 
@@ -31,6 +33,14 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
+
+  const getValue = () => {
+    if (!isValueValid(value)) {
+      return '100000000000'
+    }
+
+    return convertFromDecimal(value, selectedToken?.decimals).toString()
+  }
 
   return (
     <FlexColumnDiv>
@@ -63,7 +73,8 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
         />
         <GasEstimation
           to={isAddressValid(address) ? address : user.address}
-          value={isValueValid(value) ? value : '100000000000'}
+          value={getValue()}
+          tokenAddress={selectedToken?.address}
           rpcUrl={rpcUrl}
           sx={{ margin: 'auto', marginTop: '10px' }}
         />

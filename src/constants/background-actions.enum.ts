@@ -19,6 +19,7 @@ enum BackgroundAction {
   GET_WALLET_CONFIG = 'get-wallet-config',
   SET_WALLET_CONFIG = 'set-wallet-config',
   ESTIMATE_GAS_PRICE = 'estimate-gas-price',
+  ESTIMATE_TOKEN_GAS_PRICE = 'estimate-token-gas-price',
   SETTINGS_GET_SELECTED_NETWORK = 'settings-get-selected-network',
   SETTINGS_GET_NETWORK_LIST = 'settings-get-network-list',
   SETTINGS_ADD_NETWORK = 'settings-add-network',
@@ -39,6 +40,11 @@ enum BackgroundAction {
   IS_WALLET_LOCKED = 'is-wallet-locked',
   UNLOCK_WALLET = 'unlock-wallet',
   REFRESH_WALLET_LOCK = 'refresh-wallet-lock',
+  CHECK_TOKEN_CONTRACT = 'check-token-contract',
+  IMPORT_TOKEN = 'import-token',
+  GET_WALLET_TOKENS = 'get-wallet-tokens',
+  GET_TOKEN_BALANCE = 'get-token-balance',
+  TRANSFER_TOKENS = 'transfer-tokens',
   ECHO = 'echo',
 }
 

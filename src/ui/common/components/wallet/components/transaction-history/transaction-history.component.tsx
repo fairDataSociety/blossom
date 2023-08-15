@@ -4,11 +4,14 @@ import { CircularProgress, Fade, Tab, Tabs, styled } from '@mui/material'
 import { getWalletTransactions } from '../../../../../../messaging/content-api.messaging'
 import { Box } from '@mui/system'
 import ErrorMessage from '../../../error-message/error-message.component'
-import { Transactions } from '../../../../../../model/storage/wallet.model'
+import { Token, Transactions } from '../../../../../../model/storage/wallet.model'
 import TransactionList from './transaction-list.component'
+import Tokens from './tokens/tokens.component'
 
 export interface TransactionHistoryProps {
   networkLabel: string
+  selectedToken: Token | null
+  onTokenSelect: (token: Token | null) => void
 }
 
 const TabWrapper = styled('div')(() => ({
@@ -18,9 +21,9 @@ const TabWrapper = styled('div')(() => ({
   left: 0,
 }))
 
-const TransactionHistory = ({ networkLabel }: TransactionHistoryProps) => {
+const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: TransactionHistoryProps) => {
   const [transactions, setTransactions] = useState<Transactions | null>(null)
-  const [tab, setTab] = useState<number>(0)
+  const [tab, setTab] = useState<number>(selectedToken ? 1 : 0)
   const [error, setError] = useState<string | null>(null)
 
   const loadData = async () => {
@@ -47,7 +50,7 @@ const TransactionHistory = ({ networkLabel }: TransactionHistoryProps) => {
             <Tabs value={tab} onChange={(event, tab) => setTab(tab)}>
               <Tab label={intl.get('ACTIVITY')} />
               <Tab label={intl.get('TOKENS')} />
-              <Tab label={intl.get('NFTS')} />
+              {/* <Tab label={intl.get('NFTS')} /> */}
             </Tabs>
           </Box>
           <Box sx={{ position: 'relative' }}>
@@ -57,11 +60,17 @@ const TransactionHistory = ({ networkLabel }: TransactionHistoryProps) => {
               </TabWrapper>
             </Fade>
             <Fade in={tab === 1}>
-              <TabWrapper>Tokens</TabWrapper>
+              <TabWrapper>
+                <Tokens
+                  networkLabel={networkLabel}
+                  selectedToken={selectedToken}
+                  onTokenSelect={onTokenSelect}
+                />
+              </TabWrapper>
             </Fade>
-            <Fade in={tab === 2}>
+            {/* <Fade in={tab === 2}>
               <TabWrapper>NFTs</TabWrapper>
-            </Fade>
+            </Fade> */}
           </Box>
         </>
       )}

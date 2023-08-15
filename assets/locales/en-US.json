@@ -109,5 +109,8 @@
   "MINUTES": "Minutes",
   "LOCK_INTERVAL": "Lock interval",
   "UNLOCK_WALLET": "Enter your account password to unlock wallet.",
-  "WALLET_SETTINGS_WARNING": "You need to unlock your wallet first in order to change this setting."
+  "WALLET_SETTINGS_WARNING": "You need to unlock your wallet first in order to change this setting.",
+  "IMPORT_TOKEN": "Import Token",
+  "IMPORT_TOKEN_INSTRUCTIONS": "Enter contract address to import token",
+  "IMPORT_TOKEN_SUCCESS": "Token is successfully imported"
 }

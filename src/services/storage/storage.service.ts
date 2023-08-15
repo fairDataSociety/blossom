@@ -21,6 +21,7 @@ import { AccountDapps, Dapp, Dapps, PodPermission } from '../../model/storage/da
 import { StorageAccount, Accounts } from '../../model/storage/account.model'
 import { General } from '../../model/storage/general.model'
 import {
+  Token,
   Transaction,
   TransactionType,
   Transactions,
@@ -423,6 +424,66 @@ export class Storage {
       delete wallets[accountName]
 
       return setEntry(Storage.wallets, wallets)
+    } catch (error) {
+      throw error
+    } finally {
+      release()
+    }
+  }
+
+  public async getWalletTokens(accountName: string, networkLabel: string): Promise<Token[]> {
+    const wallets = await getObject(Storage.wallets, walletsFactory)
+
+    walletTransactionsFactory(wallets, accountName, networkLabel)
+
+    return wallets[accountName].tokens[networkLabel]
+  }
+
+  public async addWalletToken(accountName: string, networkLabel: string, token: Token): Promise<void> {
+    const release = await Storage.walletsMutex.acquire()
+
+    try {
+      const wallets = await getObject(Storage.wallets, walletsFactory)
+
+      walletTransactionsFactory(wallets, accountName, networkLabel)
+
+      const tokens = wallets[accountName].tokens[networkLabel]
+
+      if (tokens.some(({ name }) => name === token.name)) {
+        return
+      }
+
+      tokens.push(token)
+
+      return updateObject(Storage.wallets, wallets)
+    } catch (error) {
+      throw error
+    } finally {
+      release()
+    }
+  }
+
+  public async deleteWalletToken(
+    accountName: string,
+    networkLabel: string,
+    tokenName: string,
+  ): Promise<void> {
+    const release = await Storage.walletsMutex.acquire()
+
+    try {
+      const wallets = await getObject(Storage.wallets, walletsFactory)
+
+      walletTransactionsFactory(wallets, accountName, networkLabel)
+
+      const tokens = wallets[accountName].tokens[networkLabel]
+
+      const index = tokens.findIndex(({ name }) => name === tokenName)
+
+      if (index >= 0) {
+        tokens.splice(index, 1)
+
+        return updateObject(Storage.wallets, wallets)
+      }
     } catch (error) {
       throw error
     } finally {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import intl from 'react-intl-universal'
 import { Card, CardContent, Grow, Typography } from '@mui/material'
 import { Address, BigNumberString } from '../../../../../model/general.types'
-import { estimateGasPrice } from '../../../../../messaging/content-api.messaging'
+import { estimateGasPrice, estimateTokenGasPrice } from '../../../../../messaging/content-api.messaging'
 import { BigNumber, utils } from 'ethers'
 import { SxProps, Theme } from '@mui/system'
 import ErrorMessage from '../../error-message/error-message.component'
@@ -13,11 +13,19 @@ export interface GasEstimationProps {
   to: Address
   value: BigNumberString
   rpcUrl: string
+  tokenAddress?: Address
   sx?: SxProps<Theme>
   onGasEstimationUpdate?: (gasPriceEstimation: BigNumber) => void
 }
 
-const GasEstimation = ({ to, value, rpcUrl, sx, onGasEstimationUpdate }: GasEstimationProps) => {
+const GasEstimation = ({
+  to,
+  value,
+  rpcUrl,
+  tokenAddress,
+  sx,
+  onGasEstimationUpdate,
+}: GasEstimationProps) => {
   const [gasPrice, setGasPrice] = useState<BigNumber | null>(null)
   const [show, setShow] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,11 +34,14 @@ const GasEstimation = ({ to, value, rpcUrl, sx, onGasEstimationUpdate }: GasEsti
   const checkGasPrice = async () => {
     try {
       setError(null)
-      const gasPrice = await estimateGasPrice({
-        to,
-        value,
-        rpcUrl,
-      })
+
+      const gasPrice = await (tokenAddress
+        ? estimateTokenGasPrice({ address: tokenAddress, to, value, rpcUrl })
+        : estimateGasPrice({
+            to,
+            value,
+            rpcUrl,
+          }))
 
       setShow(false)
       setGasPrice(gasPrice)

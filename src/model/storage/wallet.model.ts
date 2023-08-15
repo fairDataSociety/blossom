@@ -26,10 +26,20 @@ export interface WalletConfig {
   lockInterval?: number
 }
 
+export interface Token {
+  address: Address
+  name: string
+  symbol: string
+  decimals: number
+}
+
+export type TokensByNetworkLabel = Record<string, Token[]>
+
 export interface Wallet {
   config: WalletConfig
   // TODO Define contacts
   accounts: Record<Address, {}>
+  tokens: TokensByNetworkLabel
   transactionsByNetworkLabel: TransactionsByNetworkLabel
 }
 

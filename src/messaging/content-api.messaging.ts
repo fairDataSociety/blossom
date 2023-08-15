@@ -11,6 +11,8 @@ import {
   NetworkEditData,
   RegisterData,
   RegisterResponse,
+  TokenRequest,
+  TokenTransferRequest,
   UsernameCheckData,
   UserResponse,
 } from '../model/internal-messages.model'
@@ -19,7 +21,7 @@ import { Network } from '../model/storage/network.model'
 import { Swarm } from '../model/storage/swarm.model'
 import { LocaleData } from '../services/locales.service'
 import { sendMessage } from './scripts.messaging'
-import { Transactions, WalletConfig } from '../model/storage/wallet.model'
+import { Token, Transactions, WalletConfig } from '../model/storage/wallet.model'
 
 export function login(data: LoginData): Promise<void> {
   return sendMessage<LoginData, void>(BackgroundAction.LOGIN, data)
@@ -74,6 +76,15 @@ export async function getAccountBalance(address: Address, rpcUrl?: string): Prom
   return BigNumber.from(balance)
 }
 
+export async function getTokenBalance(address: Address, rpcUrl: string): Promise<BigNumber> {
+  const balance = await sendMessage<TokenRequest, string>(BackgroundAction.GET_TOKEN_BALANCE, {
+    address,
+    rpcUrl,
+  })
+
+  return BigNumber.from(balance)
+}
+
 export function sendTransaction(transaction: InternalTransaction): Promise<void> {
   return sendMessage<InternalTransaction, void>(BackgroundAction.SEND_TRANSACTION_INTERNAL, transaction)
 }
@@ -87,6 +98,19 @@ export async function estimateGasPrice(transaction: InternalTransaction): Promis
   return BigNumber.from(price)
 }
 
+export async function estimateTokenGasPrice(tokenTransferRequest: TokenTransferRequest): Promise<BigNumber> {
+  const price = await sendMessage<TokenTransferRequest, BigNumberString>(
+    BackgroundAction.ESTIMATE_TOKEN_GAS_PRICE,
+    tokenTransferRequest,
+  )
+
+  return BigNumber.from(price)
+}
+
+export function transferTokens(tokenTransferRequest: TokenTransferRequest): Promise<void> {
+  return sendMessage<TokenTransferRequest, void>(BackgroundAction.TRANSFER_TOKENS, tokenTransferRequest)
+}
+
 export function getWalletTransactions(networkLabel: string): Promise<Transactions> {
   return sendMessage<string, Transactions>(BackgroundAction.GET_WALLET_TRANSACTIONS, networkLabel)
 }
@@ -97,6 +121,10 @@ export function getWalletConfig(): Promise<WalletConfig> {
 
 export function setWalletConfig(config: WalletConfig): Promise<void> {
   return sendMessage<WalletConfig, void>(BackgroundAction.SET_WALLET_CONFIG, config)
+}
+
+export function getWalletTokens(networkLabel: string): Promise<Token[]> {
+  return sendMessage<string, Token[]>(BackgroundAction.GET_WALLET_TOKENS, networkLabel)
 }
 
 export function clearWalletData(): Promise<void> {
@@ -153,6 +181,14 @@ export function unlockWallet(password: string): Promise<void> {
 
 export function refreshWalletLock(): Promise<void> {
   return sendMessage<void, void>(BackgroundAction.REFRESH_WALLET_LOCK)
+}
+
+export function checkTokenContract(address: Address, rpcUrl: string): Promise<Token> {
+  return sendMessage<TokenRequest, Token>(BackgroundAction.CHECK_TOKEN_CONTRACT, { address, rpcUrl })
+}
+
+export function importToken(token: Token): Promise<void> {
+  return sendMessage<Token, void>(BackgroundAction.IMPORT_TOKEN, token)
 }
 
 export function getGlobalError(): Promise<string> {

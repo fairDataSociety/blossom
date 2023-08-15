@@ -5,11 +5,12 @@ import Send from '@mui/icons-material/Send'
 import { Address, BigNumberString } from '../../../../../../model/general.types'
 import { FlexDiv } from '../../../utils/utils'
 import GasEstimation from '../gas-estimation.component'
-import { isAddressValid, isValueValid } from '../../../../utils/ethers'
+import { convertToDecimal, isAddressValid, isValueValid } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
 import { BigNumber, utils } from 'ethers'
 import ErrorMessage from '../../../error-message/error-message.component'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
+import { Token } from '../../../../../../model/storage/wallet.model'
 
 export interface TransactionConfirmationProps {
   address: Address
@@ -18,6 +19,7 @@ export interface TransactionConfirmationProps {
   rpcUrl: string
   error: string
   loading: boolean
+  selectedToken?: Token
   onCancel: () => void
   onSubmit: () => void
 }
@@ -26,6 +28,7 @@ const TransactionConfirmation = ({
   address,
   value,
   user,
+  selectedToken,
   rpcUrl,
   error,
   loading,
@@ -55,7 +58,10 @@ const TransactionConfirmation = ({
           />
         </ListItem>
         <ListItem alignItems="center">
-          <ListItemText primary={utils.formatEther(realValue)} secondary={intl.get('AMOUNT')} />
+          <ListItemText
+            primary={`${convertToDecimal(realValue)}  ${selectedToken?.symbol || 'ETH'}`}
+            secondary={intl.get('AMOUNT')}
+          />
         </ListItem>
         {loading ? (
           <FlexDiv>
@@ -65,6 +71,7 @@ const TransactionConfirmation = ({
           <GasEstimation
             to={isAddressValid(address) ? address : user.address}
             value={isValueValid(value) ? value : '100000000000'}
+            tokenAddress={selectedToken?.address}
             rpcUrl={rpcUrl}
             onGasEstimationUpdate={setGasPrice}
             sx={{ margin: 'auto', marginTop: '10px' }}

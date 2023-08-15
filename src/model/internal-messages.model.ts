@@ -104,3 +104,13 @@ export interface AccountBalanceRequest {
   address: Address
   rpcUrl?: string
 }
+
+export interface TokenRequest {
+  address: Address
+  rpcUrl?: string
+}
+
+export interface TokenTransferRequest extends TokenRequest {
+  to: string
+  value: string
+}

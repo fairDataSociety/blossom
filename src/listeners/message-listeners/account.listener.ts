@@ -4,12 +4,21 @@ import BackgroundAction from '../../constants/background-actions.enum'
 import {
   isInternalTransaction,
   isString,
+  isToken,
+  isTokenRequest,
+  isTokenTransferRequest,
   isTransaction,
   isWalletConfig,
 } from '../../messaging/message.asserts'
 import { createMessageHandler } from './message-handler'
 import { Blockchain } from '../../services/blockchain.service'
-import { AccountBalanceRequest, InternalTransaction, Transaction } from '../../model/internal-messages.model'
+import {
+  AccountBalanceRequest,
+  InternalTransaction,
+  TokenRequest,
+  TokenTransferRequest,
+  Transaction,
+} from '../../model/internal-messages.model'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { Dialog } from '../../services/dialog.service'
 import { getDappId } from './listener.utils'
@@ -18,8 +27,10 @@ import { isAccountBalanceRequest } from '../../messaging/message.asserts'
 import { Address, BigNumberString } from '../../model/general.types'
 import { Storage } from '../../services/storage/storage.service'
 import { SessionService } from '../../services/session.service'
-import { Transactions, WalletConfig } from '../../model/storage/wallet.model'
+import { Token, Transactions, WalletConfig } from '../../model/storage/wallet.model'
 import { WalletService } from '../../services/wallet.service'
+import ERC20 from '../../constants/abi/ERC20.json'
+import { networks } from '../../constants/networks'
 
 const dialogs = new Dialog()
 const storage = new Storage()
@@ -129,6 +140,23 @@ export async function estimateGasPrice(transaction: InternalTransaction): Promis
   return gasEstimation.toString()
 }
 
+export async function estimateTokenGasPrice({
+  address,
+  rpcUrl,
+  to,
+  value,
+}: TokenTransferRequest): Promise<BigNumberString> {
+  const fdp = await fdpStorageProvider.getService()
+
+  const blockchain = new Blockchain(rpcUrl)
+
+  const erc20Contract = await blockchain.getContract(address, ERC20.abi, fdp.account.wallet.privateKey)
+
+  const gasEstimation = await blockchain.estimateTokenTransferGas(erc20Contract, to, BigNumber.from(value))
+
+  return gasEstimation.toString()
+}
+
 export async function getWalletTransactions(networkLabel: string): Promise<Transactions> {
   const { ensUserName, localUserName } = await session.load()
 
@@ -167,6 +195,12 @@ export async function setWalletConfig(config: WalletConfig): Promise<void> {
   return storage.setWalletConfig(ensUserName || localUserName, config)
 }
 
+export async function getWalletTokens(networkLabel: string): Promise<Token[]> {
+  const { ensUserName, localUserName } = await session.load()
+
+  return storage.getWalletTokens(ensUserName || localUserName, networkLabel)
+}
+
 export function isWalletLockedHandler(): Promise<boolean> {
   return wallet.isLocked()
 }
@@ -179,6 +213,60 @@ export async function unlockWallet(password: string): Promise<void> {
   }
 
   await wallet.updateLock()
+}
+
+export async function checkTokenContract({ address, rpcUrl }: TokenRequest): Promise<Token> {
+  const erc20Contract = await new Blockchain(rpcUrl).getContract(address, ERC20.abi)
+
+  const [name, symbol, decimals] = await Promise.all([
+    erc20Contract.name(),
+    erc20Contract.symbol(),
+    erc20Contract.decimals(),
+  ])
+
+  return {
+    address,
+    name,
+    symbol,
+    decimals,
+  }
+}
+
+export async function importToken(token: Token): Promise<void> {
+  const { ensUserName, localUserName, network } = await session.load()
+
+  return storage.addWalletToken(ensUserName || localUserName, network.label, token)
+}
+
+export async function getTokenBalance({ address, rpcUrl }: TokenRequest): Promise<string> {
+  const [{ address: userAddress }, erc20Contract] = await Promise.all([
+    session.load(),
+    await new Blockchain(rpcUrl).getContract(address, ERC20.abi),
+  ])
+
+  const balance = await erc20Contract.balanceOf(userAddress)
+
+  return balance.toString()
+}
+
+export async function transferTokens({ address, to, value, rpcUrl }: TokenTransferRequest): Promise<void> {
+  const [{ ensUserName, localUserName }, fdp] = await Promise.all([
+    session.load(),
+    fdpStorageProvider.getService(),
+  ])
+
+  const blockchain = new Blockchain(rpcUrl)
+
+  const erc20Contract = await blockchain.getContract(address, ERC20.abi, fdp.account.wallet.privateKey)
+
+  const { receipt, tx } = await blockchain.transferTokens(erc20Contract, to, BigNumber.from(value))
+
+  await saveTransaction(
+    { rpcUrl, to, data: tx.data, value },
+    receipt,
+    ensUserName || localUserName,
+    networks.find(({ rpc }) => rpc === rpcUrl).label,
+  )
 }
 
 const messageHandler = createMessageHandler([
@@ -207,6 +295,11 @@ const messageHandler = createMessageHandler([
     handler: estimateGasPrice,
   },
   {
+    action: BackgroundAction.ESTIMATE_TOKEN_GAS_PRICE,
+    assert: isTokenTransferRequest,
+    handler: estimateTokenGasPrice,
+  },
+  {
     action: BackgroundAction.GET_WALLET_TRANSACTIONS,
     handler: getWalletTransactions,
   },
@@ -228,6 +321,11 @@ const messageHandler = createMessageHandler([
     handler: setWalletConfig,
   },
   {
+    action: BackgroundAction.GET_WALLET_TOKENS,
+    assert: isString,
+    handler: getWalletTokens,
+  },
+  {
     action: BackgroundAction.IS_WALLET_LOCKED,
     handler: isWalletLockedHandler,
   },
@@ -239,6 +337,26 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.REFRESH_WALLET_LOCK,
     handler: wallet.createWalletLockInterceptor(() => Promise.resolve()),
+  },
+  {
+    action: BackgroundAction.CHECK_TOKEN_CONTRACT,
+    assert: isTokenRequest,
+    handler: checkTokenContract,
+  },
+  {
+    action: BackgroundAction.IMPORT_TOKEN,
+    assert: isToken,
+    handler: wallet.createWalletLockInterceptor(importToken),
+  },
+  {
+    action: BackgroundAction.GET_TOKEN_BALANCE,
+    assert: isTokenRequest,
+    handler: wallet.createWalletLockInterceptor(getTokenBalance),
+  },
+  {
+    action: BackgroundAction.TRANSFER_TOKENS,
+    assert: isTokenTransferRequest,
+    handler: wallet.createWalletLockInterceptor(transferTokens),
   },
 ])
 

@@ -11,6 +11,8 @@ import {
   RegisterDataBase,
   RegisterDataMnemonic,
   SignerRequest,
+  TokenRequest,
+  TokenTransferRequest,
   Transaction,
   UsernameCheckData,
 } from '../model/internal-messages.model'
@@ -18,7 +20,7 @@ import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { Session } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
-import { WalletConfig } from '../model/storage/wallet.model'
+import { Token, WalletConfig } from '../model/storage/wallet.model'
 import { isNumber } from '../utils/asserts'
 import { BytesMessage } from './scripts.messaging'
 
@@ -172,4 +174,22 @@ export function isWalletConfig(data: unknown): data is WalletConfig {
   const { lockInterval } = (data || {}) as WalletConfig
 
   return isObject(data) && (!lockInterval || isNumber(lockInterval))
+}
+
+export function isTokenRequest(data: unknown): data is TokenRequest {
+  const { address, rpcUrl } = (data || {}) as TokenRequest
+
+  return isAddress(address) && isString(rpcUrl)
+}
+
+export function isTokenTransferRequest(data: unknown): data is TokenTransferRequest {
+  const { to, value } = (data || {}) as TokenTransferRequest
+
+  return isTokenRequest(data) && isAddress(to) && isString(value)
+}
+
+export function isToken(data: unknown): data is Token {
+  const { address, name, symbol, decimals } = (data || {}) as Token
+
+  return isAddress(address) && isString(name) && isString(symbol) && isNumber(decimals)
 }

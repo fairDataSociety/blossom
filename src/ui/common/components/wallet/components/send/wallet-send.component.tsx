@@ -5,8 +5,7 @@ import { Address } from '../../../../../../model/general.types'
 import { FlexColumnDiv } from '../../../utils/utils'
 import Header from '../../../header/header.component'
 import { useWallet } from '../../context/wallet.context'
-import { sendTransaction } from '../../../../../../messaging/content-api.messaging'
-import { utils } from 'ethers'
+import { sendTransaction, transferTokens } from '../../../../../../messaging/content-api.messaging'
 import { useUser } from '../../../../hooks/user.hooks'
 import AddressSelect from './address-select.component'
 import { getWalletContacts } from '../../../../../../listeners/message-listeners/account.listener'
@@ -14,6 +13,7 @@ import AmountSelect from './amount-select.component'
 import TransactionConfirmation from './transaction-confirmation'
 import TransactionCompleted from './transaction-completed'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
+import { convertFromDecimal } from '../../../../utils/ethers'
 
 enum STEPS {
   ADDRESS,
@@ -28,7 +28,7 @@ const WalletSend = () => {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [completed, setCompleted] = useState<boolean>(false)
-  const { walletNetwork } = useWallet()
+  const { walletNetwork, selectedToken } = useWallet()
   const { user, error: userError } = useUser()
   useWalletLock()
 
@@ -47,11 +47,21 @@ const WalletSend = () => {
       setLoading(true)
       setError(null)
 
-      await sendTransaction({
-        to: address,
-        rpcUrl: getRpcUrl(),
-        value: utils.parseUnits(value, 'ether').toString(),
-      })
+      if (selectedToken) {
+        await transferTokens({
+          address: selectedToken.address,
+          to: address,
+          value: convertFromDecimal(value, selectedToken.decimals).toString(),
+          rpcUrl: getRpcUrl(),
+        })
+      } else {
+        await sendTransaction({
+          to: address,
+          rpcUrl: getRpcUrl(),
+          value: convertFromDecimal(value).toString(),
+        })
+      }
+
       setCompleted(true)
     } catch (error) {
       console.error(error)
@@ -102,6 +112,7 @@ const WalletSend = () => {
           address={address}
           user={user}
           rpcUrl={getRpcUrl()}
+          selectedToken={selectedToken}
           onSubmit={setValue}
           onCancel={() => setAddress('')}
         />
@@ -109,8 +120,9 @@ const WalletSend = () => {
       {step === STEPS.CONFIRMATION && (
         <TransactionConfirmation
           address={address}
-          value={utils.parseUnits(value, 'ether').toString()}
+          value={convertFromDecimal(value).toString()}
           rpcUrl={getRpcUrl()}
+          selectedToken={selectedToken}
           user={user}
           loading={loading}
           error={getError()}

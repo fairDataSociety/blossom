@@ -67,6 +67,7 @@ export function walletTransactionsFactory(wallets: Wallets, accountName: string,
       transactionsByNetworkLabel: {},
       accounts: {},
       config: {},
+      tokens: {},
     }
   }
 
@@ -74,10 +75,18 @@ export function walletTransactionsFactory(wallets: Wallets, accountName: string,
     wallet.transactionsByNetworkLabel = {}
   }
 
+  if (!wallet.tokens) {
+    wallet.tokens = {}
+  }
+
   if (networkLabel && !wallet.transactionsByNetworkLabel[networkLabel]) {
     wallet.transactionsByNetworkLabel[networkLabel] = {
       regular: [],
       asset: [],
     }
+  }
+
+  if (networkLabel && !wallet.tokens[networkLabel]) {
+    wallet.tokens[networkLabel] = []
   }
 }

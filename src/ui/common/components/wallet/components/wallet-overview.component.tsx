@@ -3,7 +3,7 @@ import intl from 'react-intl-universal'
 import { BigNumber, utils } from 'ethers'
 import Send from '@mui/icons-material/Send'
 import { FlexColumnDiv, FlexDiv } from '../../utils/utils'
-import { getAccountBalance } from '../../../../../messaging/content-api.messaging'
+import { getAccountBalance, getTokenBalance } from '../../../../../messaging/content-api.messaging'
 import { UserResponse } from '../../../../../model/internal-messages.model'
 import { Button, CircularProgress, Divider, MenuItem, Select, Typography } from '@mui/material'
 import { Network } from '../../../../../model/storage/network.model'
@@ -21,16 +21,21 @@ interface WalletOverviewProps {
 }
 
 const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => {
-  const { walletNetwork, setWalletNetwork } = useWallet()
+  const { walletNetwork, setWalletNetwork, selectedToken, setSelectedToken } = useWallet()
   const [selectedNetwork, setSelectedNetwork] = useState<Network>(walletNetwork || network)
   const [balance, setBalance] = useState<BigNumber | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const { networks } = useNetworks()
   const navigate = useNavigate()
 
   const loadData = async (network: Network) => {
     try {
-      const balance = await getAccountBalance(address, network.rpc)
+      setBalance(null)
+
+      const balance = await (selectedToken
+        ? getTokenBalance(selectedToken.address, network.rpc)
+        : getAccountBalance(address, network.rpc))
 
       setBalance(balance)
     } catch (error) {
@@ -38,17 +43,28 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
     }
   }
 
-  const onNetworkChange = (networkLabel: string) => {
-    const network = networks.find(({ label }) => networkLabel === label)
-    setSelectedNetwork(network)
-    setBalance(null)
-    setWalletNetwork(network)
-    loadData(network)
+  const onNetworkChange = async (networkLabel: string) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const network = networks.find(({ label }) => networkLabel === label)
+      setSelectedNetwork(network)
+      setBalance(null)
+      setWalletNetwork(network)
+      await loadData(network)
+    } catch (error) {
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    loadData(selectedNetwork)
+    onNetworkChange(selectedNetwork.label)
   }, [])
+
+  useEffect(() => {
+    loadData(selectedNetwork)
+  }, [selectedToken])
 
   if (!networks) {
     return null
@@ -58,7 +74,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
     <FlexColumnDiv sx={{ marginTop: '10px' }}>
       <Select
         defaultValue={selectedNetwork.label}
-        disabled={balance === null}
+        disabled={loading}
         variant="outlined"
         size="small"
         fullWidth
@@ -83,25 +99,37 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       </FlexDiv>
       <Divider sx={{ marginBottom: '10px' }} />
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {balance ? (
+      {loading ? (
+        <CircularProgress sx={{ margin: 'auto' }} />
+      ) : (
         <>
-          <Typography variant="h5" align="center" data-testid="balance">
-            {roundEther(utils.formatEther(balance))} ETH
-          </Typography>
+          {balance ? (
+            <Typography variant="h5" align="center" data-testid="balance">
+              {selectedToken
+                ? `${utils.formatUnits(balance, selectedToken.decimals)} ${selectedToken.symbol}`
+                : `${roundEther(utils.formatEther(balance))} ETH`}
+            </Typography>
+          ) : (
+            <CircularProgress size="small" sx={{ margin: 'auto' }} />
+          )}
+
           <Button
             variant="contained"
             endIcon={<Send />}
             onClick={() => navigate(WalletRouteCodes.send)}
             data-testid="send-button"
+            disabled={!balance}
             size="small"
             sx={{ marginTop: '20px' }}
           >
             {intl.get('SEND')}
           </Button>
-          <TransactionHistory networkLabel={selectedNetwork.label} />
+          <TransactionHistory
+            selectedToken={selectedToken}
+            onTokenSelect={setSelectedToken}
+            networkLabel={selectedNetwork.label}
+          />
         </>
-      ) : (
-        <CircularProgress sx={{ margin: 'auto' }} />
       )}
     </FlexColumnDiv>
   )
