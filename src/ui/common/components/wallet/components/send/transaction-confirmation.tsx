@@ -38,7 +38,9 @@ const TransactionConfirmation = ({
   const [gasPrice, setGasPrice] = useState<BigNumber>(BigNumber.from(0))
   useWalletLock()
 
-  const realValue = useMemo(() => BigNumber.from(value).add(gasPrice), [gasPrice])
+  const realValue = useMemo(() => {
+    return BigNumber.from(value).add(selectedToken ? 0 : gasPrice)
+  }, [gasPrice])
 
   return (
     <>

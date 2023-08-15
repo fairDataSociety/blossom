@@ -51,7 +51,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
               </StyledTableCell>
               <StyledTableCell align="right">{displayAddress(content.to)}</StyledTableCell>
               <StyledTableCell align="right">
-                {roundEther(utils.formatEther(content.value))} ETH
+                {content.value ? `${roundEther(utils.formatEther(content.value))} ETH` : '-'}
               </StyledTableCell>
               <StyledTableCell align="right">{new Date(time).toDateString()}</StyledTableCell>
             </StyledTableRow>

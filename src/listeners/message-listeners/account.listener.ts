@@ -262,7 +262,7 @@ export async function transferTokens({ address, to, value, rpcUrl }: TokenTransf
   const { receipt, tx } = await blockchain.transferTokens(erc20Contract, to, BigNumber.from(value))
 
   await saveTransaction(
-    { rpcUrl, to, data: tx.data, value },
+    { rpcUrl, to, data: tx.data },
     receipt,
     ensUserName || localUserName,
     networks.find(({ rpc }) => rpc === rpcUrl).label,

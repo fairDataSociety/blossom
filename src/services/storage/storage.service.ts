@@ -449,11 +449,13 @@ export class Storage {
 
       const tokens = wallets[accountName].tokens[networkLabel]
 
-      if (tokens.some(({ name }) => name === token.name)) {
-        return
-      }
+      const existingTokenIndex = tokens.findIndex(({ name }) => name === token.name)
 
-      tokens.push(token)
+      if (existingTokenIndex >= 0) {
+        tokens[existingTokenIndex] = token
+      } else {
+        tokens.push(token)
+      }
 
       return updateObject(Storage.wallets, wallets)
     } catch (error) {
