@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import intl from 'react-intl-universal'
 import { CircularProgress, Fade, Tab, Tabs, styled } from '@mui/material'
 import { getWalletTransactions } from '../../../../../../messaging/content-api.messaging'
 import { Box } from '@mui/system'
 import ErrorMessage from '../../../error-message/error-message.component'
-import { Token, Transactions } from '../../../../../../model/storage/wallet.model'
+import { Token, Transaction, Transactions } from '../../../../../../model/storage/wallet.model'
 import TransactionList from './transaction-list.component'
 import Tokens from './tokens/tokens.component'
 
@@ -25,6 +25,16 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
   const [transactions, setTransactions] = useState<Transactions | null>(null)
   const [tab, setTab] = useState<number>(selectedToken ? 1 : 0)
   const [error, setError] = useState<string | null>(null)
+
+  const displayedTransactions: Transaction[] = useMemo(() => {
+    if (!transactions) {
+      return []
+    }
+
+    return selectedToken
+      ? transactions.asset.filter(({ token }) => token?.name === selectedToken.name)
+      : transactions.regular
+  }, [transactions, selectedToken])
 
   const loadData = async () => {
     try {
@@ -56,7 +66,7 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
           <Box sx={{ position: 'relative' }}>
             <Fade in={tab === 0}>
               <TabWrapper>
-                <TransactionList transactions={transactions.regular} />
+                <TransactionList transactions={displayedTransactions} />
               </TabWrapper>
             </Fade>
             <Fade in={tab === 1}>

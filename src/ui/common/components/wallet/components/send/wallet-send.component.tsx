@@ -49,7 +49,7 @@ const WalletSend = () => {
 
       if (selectedToken) {
         await transferTokens({
-          address: selectedToken.address,
+          token: selectedToken,
           to: address,
           value: convertFromDecimal(value, selectedToken.decimals).toString(),
           rpcUrl: getRpcUrl(),

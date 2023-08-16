@@ -14,6 +14,7 @@ export interface Transaction {
     gasPrice: BigNumberString
     data?: HexStringVariate
   }
+  token?: Token
 }
 
 export type TransactionType = 'regular' | 'asset'

@@ -15,6 +15,7 @@ import WalletRouteCodes from '../routes/wallet-route-codes'
 import { useWallet } from '../context/wallet.context'
 import ErrorMessage from '../../error-message/error-message.component'
 import TransactionHistory from './transaction-history/transaction-history.component'
+import { Token } from '../../../../../model/storage/wallet.model'
 
 interface WalletOverviewProps {
   user: UserResponse
@@ -29,12 +30,12 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
   const { networks } = useNetworks()
   const navigate = useNavigate()
 
-  const loadData = async (network: Network) => {
+  const loadData = async (network: Network, token: Token) => {
     try {
       setBalance(null)
 
-      const balance = await (selectedToken
-        ? getTokenBalance(selectedToken.address, network.rpc)
+      const balance = await (token
+        ? getTokenBalance(token, network.rpc)
         : getAccountBalance(address, network.rpc))
 
       setBalance(balance)
@@ -48,10 +49,11 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       setLoading(true)
       setError(null)
       const network = networks.find(({ label }) => networkLabel === label)
+      setSelectedToken(null)
       setSelectedNetwork(network)
       setBalance(null)
       setWalletNetwork(network)
-      await loadData(network)
+      await loadData(network, null)
     } catch (error) {
     } finally {
       setLoading(false)
@@ -63,7 +65,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
   }, [])
 
   useEffect(() => {
-    loadData(selectedNetwork)
+    loadData(selectedNetwork, selectedToken)
   }, [selectedToken])
 
   if (!networks) {

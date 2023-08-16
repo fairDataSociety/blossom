@@ -112,5 +112,6 @@
   "WALLET_SETTINGS_WARNING": "You need to unlock your wallet first in order to change this setting.",
   "IMPORT_TOKEN": "Import Token",
   "IMPORT_TOKEN_INSTRUCTIONS": "Enter contract address to import token",
-  "IMPORT_TOKEN_SUCCESS": "Token is successfully imported"
+  "IMPORT_TOKEN_SUCCESS": "Token is successfully imported",
+  "NOT_ENOUGH_BALANCE": "Your current balance is too low for this transaction"
 }

@@ -11,6 +11,7 @@ import {
   NetworkEditData,
   RegisterData,
   RegisterResponse,
+  TokenCheckRequest,
   TokenRequest,
   TokenTransferRequest,
   UsernameCheckData,
@@ -76,9 +77,9 @@ export async function getAccountBalance(address: Address, rpcUrl?: string): Prom
   return BigNumber.from(balance)
 }
 
-export async function getTokenBalance(address: Address, rpcUrl: string): Promise<BigNumber> {
+export async function getTokenBalance(token: Token, rpcUrl: string): Promise<BigNumber> {
   const balance = await sendMessage<TokenRequest, string>(BackgroundAction.GET_TOKEN_BALANCE, {
-    address,
+    token,
     rpcUrl,
   })
 
@@ -184,7 +185,7 @@ export function refreshWalletLock(): Promise<void> {
 }
 
 export function checkTokenContract(address: Address, rpcUrl: string): Promise<Token> {
-  return sendMessage<TokenRequest, Token>(BackgroundAction.CHECK_TOKEN_CONTRACT, { address, rpcUrl })
+  return sendMessage<TokenCheckRequest, Token>(BackgroundAction.CHECK_TOKEN_CONTRACT, { address, rpcUrl })
 }
 
 export function importToken(token: Token): Promise<void> {

@@ -11,6 +11,7 @@ import {
   RegisterDataBase,
   RegisterDataMnemonic,
   SignerRequest,
+  TokenCheckRequest,
   TokenRequest,
   TokenTransferRequest,
   Transaction,
@@ -176,10 +177,16 @@ export function isWalletConfig(data: unknown): data is WalletConfig {
   return isObject(data) && (!lockInterval || isNumber(lockInterval))
 }
 
-export function isTokenRequest(data: unknown): data is TokenRequest {
-  const { address, rpcUrl } = (data || {}) as TokenRequest
+export function isTokenCheckRequest(data: unknown): data is TokenCheckRequest {
+  const { address, rpcUrl } = (data || {}) as TokenCheckRequest
 
   return isAddress(address) && isString(rpcUrl)
+}
+
+export function isTokenRequest(data: unknown): data is TokenRequest {
+  const { token, rpcUrl } = (data || {}) as TokenRequest
+
+  return isToken(token) && isString(rpcUrl)
 }
 
 export function isTokenTransferRequest(data: unknown): data is TokenTransferRequest {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import intl from 'react-intl-universal'
 import { Button, TextField, Typography } from '@mui/material'
+import WalletImage from '@mui/icons-material/Wallet'
 import { checkTokenContract, importToken } from '../../../../../../../messaging/content-api.messaging'
 import ErrorMessage from '../../../../error-message/error-message.component'
 import { useWalletLock } from '../../../hooks/wallet-lock.hook'
@@ -14,6 +15,7 @@ import { useUser } from '../../../../../hooks/user.hooks'
 import { Token } from '../../../../../../../model/storage/wallet.model'
 import TokenInfo from './token-info.component'
 import { useNavigate } from 'react-router-dom'
+import Header from '../../../../header/header.component'
 
 interface FormFields {
   address: Address
@@ -73,62 +75,65 @@ const TokenImport = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      {importDone ? (
-        <>
-          <Typography variant="body1" sx={{ marginBottom: '10px' }}>
-            {intl.get('IMPORT_TOKEN_SUCCESS')}:
-          </Typography>
-          <TokenInfo token={token} />
-          <Button
-            color="primary"
-            variant="contained"
-            sx={{
-              marginTop: '20px',
-            }}
-            onClick={() => navigate('..')}
-            data-testid="back-button"
-          >
-            {intl.get('BACK')}
-          </Button>
-        </>
-      ) : (
-        <>
-          <Typography variant="body1" sx={{ marginBottom: '10px' }}>
-            {intl.get('IMPORT_TOKEN_INSTRUCTIONS')}:
-          </Typography>
-          <TextField
-            label={intl.get('ADDRESS')}
-            placeholder="0x..."
-            disabled={loading}
-            {...register('address', {
-              required: true,
-              pattern: addressRegex,
-              onChange: (event) => checkContract(event.target.value),
-            })}
-            error={Boolean(errors.address)}
-            helperText={errors.address && intl.get('ADDRESS_ERROR')}
-            data-testid="address-input"
-          />
-          {token && <TokenInfo token={token} />}
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            size="large"
-            disabled={loading || !token}
-            data-testid="address-submit"
-            sx={{
-              marginTop: '50px',
-            }}
-          >
-            {intl.get('IMPORT')}
-            {loading && <FieldSpinner />}
-          </Button>
-        </>
-      )}
-    </Form>
+    <>
+      <Header title={intl.get('WALLET')} image={WalletImage} showOpenPage />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        {importDone ? (
+          <>
+            <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+              {intl.get('IMPORT_TOKEN_SUCCESS')}:
+            </Typography>
+            <TokenInfo token={token} />
+            <Button
+              color="primary"
+              variant="contained"
+              sx={{
+                marginTop: '20px',
+              }}
+              onClick={() => navigate('..')}
+              data-testid="back-button"
+            >
+              {intl.get('BACK')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+              {intl.get('IMPORT_TOKEN_INSTRUCTIONS')}:
+            </Typography>
+            <TextField
+              label={intl.get('ADDRESS')}
+              placeholder="0x..."
+              disabled={loading}
+              {...register('address', {
+                required: true,
+                pattern: addressRegex,
+                onChange: (event) => checkContract(event.target.value),
+              })}
+              error={Boolean(errors.address)}
+              helperText={errors.address && intl.get('ADDRESS_ERROR')}
+              data-testid="address-input"
+            />
+            {token && <TokenInfo token={token} />}
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <Button
+              color="primary"
+              variant="contained"
+              type="submit"
+              size="large"
+              disabled={loading || !token}
+              data-testid="address-submit"
+              sx={{
+                marginTop: '50px',
+              }}
+            >
+              {intl.get('IMPORT')}
+              {loading && <FieldSpinner />}
+            </Button>
+          </>
+        )}
+      </Form>
+    </>
   )
 }
 

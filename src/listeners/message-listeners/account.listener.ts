@@ -5,6 +5,7 @@ import {
   isInternalTransaction,
   isString,
   isToken,
+  isTokenCheckRequest,
   isTokenRequest,
   isTokenTransferRequest,
   isTransaction,
@@ -15,6 +16,7 @@ import { Blockchain } from '../../services/blockchain.service'
 import {
   AccountBalanceRequest,
   InternalTransaction,
+  TokenCheckRequest,
   TokenRequest,
   TokenTransferRequest,
   Transaction,
@@ -44,6 +46,7 @@ function saveTransaction(
   transactionContent: providers.TransactionReceipt,
   accountName: string,
   networkLabel: string,
+  token?: Token,
 ): Promise<void> {
   return storage.addWalletTransaction(
     {
@@ -52,16 +55,17 @@ function saveTransaction(
       direction: 'sent',
       content: {
         from: transactionContent.from,
-        to: transactionContent.to,
+        to: token ? transaction.to : transactionContent.to,
         value: transaction.value,
         data: transaction.data,
         gas: transactionContent.gasUsed.toString(),
         gasPrice: transactionContent.effectiveGasPrice.toString(),
       },
+      token,
     },
     accountName,
     networkLabel,
-    'regular',
+    token ? 'asset' : 'regular',
   )
 }
 
@@ -141,7 +145,7 @@ export async function estimateGasPrice(transaction: InternalTransaction): Promis
 }
 
 export async function estimateTokenGasPrice({
-  address,
+  token: { address },
   rpcUrl,
   to,
   value,
@@ -215,7 +219,7 @@ export async function unlockWallet(password: string): Promise<void> {
   await wallet.updateLock()
 }
 
-export async function checkTokenContract({ address, rpcUrl }: TokenRequest): Promise<Token> {
+export async function checkTokenContract({ address, rpcUrl }: TokenCheckRequest): Promise<Token> {
   const erc20Contract = await new Blockchain(rpcUrl).getContract(address, ERC20.abi)
 
   const [name, symbol, decimals] = await Promise.all([
@@ -238,7 +242,7 @@ export async function importToken(token: Token): Promise<void> {
   return storage.addWalletToken(ensUserName || localUserName, network.label, token)
 }
 
-export async function getTokenBalance({ address, rpcUrl }: TokenRequest): Promise<string> {
+export async function getTokenBalance({ token: { address }, rpcUrl }: TokenRequest): Promise<string> {
   const [{ address: userAddress }, erc20Contract] = await Promise.all([
     session.load(),
     await new Blockchain(rpcUrl).getContract(address, ERC20.abi),
@@ -249,7 +253,7 @@ export async function getTokenBalance({ address, rpcUrl }: TokenRequest): Promis
   return balance.toString()
 }
 
-export async function transferTokens({ address, to, value, rpcUrl }: TokenTransferRequest): Promise<void> {
+export async function transferTokens({ token, to, value, rpcUrl }: TokenTransferRequest): Promise<void> {
   const [{ ensUserName, localUserName }, fdp] = await Promise.all([
     session.load(),
     fdpStorageProvider.getService(),
@@ -257,15 +261,16 @@ export async function transferTokens({ address, to, value, rpcUrl }: TokenTransf
 
   const blockchain = new Blockchain(rpcUrl)
 
-  const erc20Contract = await blockchain.getContract(address, ERC20.abi, fdp.account.wallet.privateKey)
+  const erc20Contract = await blockchain.getContract(token.address, ERC20.abi, fdp.account.wallet.privateKey)
 
   const { receipt, tx } = await blockchain.transferTokens(erc20Contract, to, BigNumber.from(value))
 
   await saveTransaction(
-    { rpcUrl, to, data: tx.data },
+    { rpcUrl, to, data: tx.data, value },
     receipt,
     ensUserName || localUserName,
     networks.find(({ rpc }) => rpc === rpcUrl).label,
+    token,
   )
 }
 
@@ -340,7 +345,7 @@ const messageHandler = createMessageHandler([
   },
   {
     action: BackgroundAction.CHECK_TOKEN_CONTRACT,
-    assert: isTokenRequest,
+    assert: isTokenCheckRequest,
     handler: checkTokenContract,
   },
   {

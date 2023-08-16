@@ -6,6 +6,7 @@ import { estimateGasPrice, estimateTokenGasPrice } from '../../../../../messagin
 import { BigNumber, utils } from 'ethers'
 import { SxProps, Theme } from '@mui/system'
 import ErrorMessage from '../../error-message/error-message.component'
+import { Token } from '../../../../../model/storage/wallet.model'
 
 const CHECK_INTERVAL = 30000
 
@@ -13,19 +14,12 @@ export interface GasEstimationProps {
   to: Address
   value: BigNumberString
   rpcUrl: string
-  tokenAddress?: Address
+  token?: Token
   sx?: SxProps<Theme>
   onGasEstimationUpdate?: (gasPriceEstimation: BigNumber) => void
 }
 
-const GasEstimation = ({
-  to,
-  value,
-  rpcUrl,
-  tokenAddress,
-  sx,
-  onGasEstimationUpdate,
-}: GasEstimationProps) => {
+const GasEstimation = ({ to, value, rpcUrl, token, sx, onGasEstimationUpdate }: GasEstimationProps) => {
   const [gasPrice, setGasPrice] = useState<BigNumber | null>(null)
   const [show, setShow] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,8 +29,8 @@ const GasEstimation = ({
     try {
       setError(null)
 
-      const gasPrice = await (tokenAddress
-        ? estimateTokenGasPrice({ address: tokenAddress, to, value, rpcUrl })
+      const gasPrice = await (token
+        ? estimateTokenGasPrice({ token, to, value, rpcUrl })
         : estimateGasPrice({
             to,
             value,

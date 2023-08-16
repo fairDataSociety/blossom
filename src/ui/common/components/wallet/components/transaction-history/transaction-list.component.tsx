@@ -11,8 +11,8 @@ import {
 } from '@mui/material'
 import Send from '@mui/icons-material/Send'
 import { Transaction } from '../../../../../../model/storage/wallet.model'
-import { displayAddress, roundEther } from '../../../../utils/ethers'
-import { utils } from 'ethers'
+import { convertToDecimal, displayAddress } from '../../../../utils/ethers'
+import { BigNumber } from 'ethers'
 
 export interface TransactionListProps {
   transactions: Transaction[]
@@ -44,14 +44,16 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
     <TableContainer component={Paper}>
       <Table size="small">
         <TableBody data-testid="transaction-history">
-          {transactions.map(({ id, time, content }) => (
+          {transactions.map(({ id, time, content, token }) => (
             <StyledTableRow key={id}>
               <StyledTableCell component="th" scope="row">
                 <Send />
               </StyledTableCell>
               <StyledTableCell align="right">{displayAddress(content.to)}</StyledTableCell>
               <StyledTableCell align="right">
-                {content.value ? `${roundEther(utils.formatEther(content.value))} ETH` : '-'}
+                {`${convertToDecimal(BigNumber.from(content.value), token?.decimals)} ${
+                  token ? token.symbol : 'ETH'
+                }`}
               </StyledTableCell>
               <StyledTableCell align="right">{new Date(time).toDateString()}</StyledTableCell>
             </StyledTableRow>

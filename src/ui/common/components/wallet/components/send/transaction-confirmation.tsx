@@ -7,7 +7,7 @@ import { FlexDiv } from '../../../utils/utils'
 import GasEstimation from '../gas-estimation.component'
 import { convertToDecimal, isAddressValid, isValueValid } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
-import { BigNumber, utils } from 'ethers'
+import { BigNumber } from 'ethers'
 import ErrorMessage from '../../../error-message/error-message.component'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
 import { Token } from '../../../../../../model/storage/wallet.model'
@@ -73,7 +73,7 @@ const TransactionConfirmation = ({
           <GasEstimation
             to={isAddressValid(address) ? address : user.address}
             value={isValueValid(value) ? value : '100000000000'}
-            tokenAddress={selectedToken?.address}
+            token={selectedToken}
             rpcUrl={rpcUrl}
             onGasEstimationUpdate={setGasPrice}
             sx={{ margin: 'auto', marginTop: '10px' }}

@@ -1,6 +1,7 @@
 import { Network } from './storage/network.model'
 import { Address, BigNumberString, HexStringVariate, Mnemonic, PrivateKey } from './general.types'
 import { RequireAtLeastOne } from './utils/require-at-least-one'
+import { Token } from './storage/wallet.model'
 
 export interface LoginData {
   username: string
@@ -105,8 +106,13 @@ export interface AccountBalanceRequest {
   rpcUrl?: string
 }
 
-export interface TokenRequest {
+export interface TokenCheckRequest {
   address: Address
+  rpcUrl?: string
+}
+
+export interface TokenRequest {
+  token: Token
   rpcUrl?: string
 }
 
