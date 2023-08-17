@@ -80,7 +80,7 @@ const TokenImport = () => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         {importDone ? (
           <>
-            <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+            <Typography variant="body1" sx={{ marginBottom: '10px' }} data-testid="success-message">
               {intl.get('IMPORT_TOKEN_SUCCESS')}:
             </Typography>
             <TokenInfo token={token} />

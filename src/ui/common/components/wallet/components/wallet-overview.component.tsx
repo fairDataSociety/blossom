@@ -93,6 +93,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
         <Typography
           align="center"
           variant="body2"
+          data-testid="address"
           sx={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {address}

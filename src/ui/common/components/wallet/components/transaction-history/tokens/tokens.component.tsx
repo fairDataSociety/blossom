@@ -52,7 +52,7 @@ const Tokens = ({ networkLabel, selectedToken, onTokenSelect }: TokensProps) => 
         </>
       ) : (
         <>
-          <List>
+          <List data-testid="token-list">
             {tokens.map((token) => (
               <ListItemButton key={token.name} onClick={() => onTokenSelect(token)}>
                 <ListItemAvatar>
@@ -66,6 +66,7 @@ const Tokens = ({ networkLabel, selectedToken, onTokenSelect }: TokensProps) => 
             variant="text"
             onClick={() => navigate(WalletRouteCodes.importToken)}
             sx={{ fontWeight: 'bold' }}
+            data-testid="import-token-btn"
           >
             {intl.get('IMPORT_TOKEN')}
           </Button>

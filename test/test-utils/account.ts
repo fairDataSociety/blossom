@@ -147,3 +147,7 @@ export async function register(username: string, password: string): Promise<void
 
   await page.close()
 }
+
+export async function getWalletAddress(page: Page): Promise<string> {
+  return waitForElementTextByTestId(page, 'address')
+}

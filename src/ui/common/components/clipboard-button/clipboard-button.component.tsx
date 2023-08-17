@@ -34,7 +34,7 @@ const ClipboardButton = ({ text }: ClipboardButtonProps) => {
 
   return (
     <>
-      <IconButton aria-label="delete" size="large" onClick={onClick}>
+      <IconButton size="large" onClick={onClick} data-testid="copy-btn">
         <ContentCopy />
       </IconButton>
       <Snackbar

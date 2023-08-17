@@ -58,8 +58,8 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tab} onChange={(event, tab) => setTab(tab)}>
-              <Tab label={intl.get('ACTIVITY')} />
-              <Tab label={intl.get('TOKENS')} />
+              <Tab label={intl.get('ACTIVITY')} data-testid="activity-tab" />
+              <Tab label={intl.get('TOKENS')} data-testid="tokens-tab" />
               {/* <Tab label={intl.get('NFTS')} /> */}
             </Tabs>
           </Box>
