@@ -39,7 +39,7 @@ export type TokensByNetworkLabel = Record<string, Token[]>
 export interface Wallet {
   config: WalletConfig
   // TODO Define contacts
-  accounts: Record<Address, {}>
+  accounts: Record<Address, unknown>
   tokens: TokensByNetworkLabel
   transactionsByNetworkLabel: TransactionsByNetworkLabel
 }
