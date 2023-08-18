@@ -55,7 +55,9 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
                   token ? token.symbol : 'ETH'
                 }`}
               </StyledTableCell>
-              <StyledTableCell align="right">{new Date(time).toDateString()}</StyledTableCell>
+              <StyledTableCell align="right" sx={{ minWidth: '100px' }}>
+                {new Date(time).toDateString()}
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

@@ -72,7 +72,7 @@ const TransactionConfirmation = ({
         ) : (
           <GasEstimation
             to={isAddressValid(address) ? address : user.address}
-            value={isValueValid(value) ? value : '100000000000'}
+            value={isValueValid(value) ? value : '1'}
             token={selectedToken}
             rpcUrl={rpcUrl}
             onGasEstimationUpdate={setGasPrice}
@@ -85,7 +85,7 @@ const TransactionConfirmation = ({
             variant="contained"
             disabled={loading}
             onClick={onCancel}
-            sx={{ width: '200px' }}
+            sx={{ width: '150px' }}
           >
             {intl.get('CANCEL')}
           </Button>
@@ -94,7 +94,7 @@ const TransactionConfirmation = ({
             variant="contained"
             disabled={loading}
             onClick={onSubmit}
-            sx={{ width: '200px' }}
+            sx={{ width: '150px' }}
             data-testid="send-button"
           >
             {intl.get('SEND')}

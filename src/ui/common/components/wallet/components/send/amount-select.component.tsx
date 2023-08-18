@@ -3,7 +3,7 @@ import intl from 'react-intl-universal'
 import Close from '@mui/icons-material/Close'
 import Form from '../../../form/form.component'
 import { useForm } from 'react-hook-form'
-import { Button, IconButton, Paper, TextField, Typography } from '@mui/material'
+import { Button, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material'
 import { Address, BigNumberString } from '../../../../../../model/general.types'
 import { FlexColumnDiv } from '../../../utils/utils'
 import GasEstimation from '../gas-estimation.component'
@@ -46,7 +46,7 @@ const AmountSelect = ({
 
   const getValue = () => {
     if (!isValueValid(value)) {
-      return '100000000000'
+      return '1'
     }
 
     return convertFromDecimal(value, selectedToken?.decimals).toString()
@@ -77,6 +77,9 @@ const AmountSelect = ({
           variant="outlined"
           fullWidth
           placeholder="0.0"
+          InputProps={{
+            endAdornment: <InputAdornment position="end">{selectedToken?.symbol || 'ETH'}</InputAdornment>,
+          }}
           {...register('amount', { required: true, min: 0.000000001, pattern: valueRegex })}
           onChange={(event) => setValue(event.target.value)}
           error={Boolean(errors.amount)}
