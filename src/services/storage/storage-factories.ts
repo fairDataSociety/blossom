@@ -7,6 +7,7 @@ import { Accounts } from '../../model/storage/account.model'
 import { DappId } from '../../model/general.types'
 import { General } from '../../model/storage/general.model'
 import { Wallets } from '../../model/storage/wallet.model'
+import { DEFAULT_BEE_URL, LOCAL_BEE_URL } from '../../constants/constants'
 
 export function networkFactory(): Network {
   return { ...networks[0] }
@@ -18,6 +19,8 @@ export function networkListFactory(): Network[] {
 
 export function swarmFactory(): Swarm {
   return {
+    extensionEnabled: false,
+    swarmUrl: process.env.ENVIRONMENT === 'development' ? LOCAL_BEE_URL : DEFAULT_BEE_URL,
     extensionId: process.env.SWARM_EXTENSION_ID,
   }
 }
