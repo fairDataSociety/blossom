@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
-import { BigNumber, utils } from 'ethers'
+import { BigNumber } from 'ethers'
 import Send from '@mui/icons-material/Send'
 import { FlexColumnDiv, FlexDiv } from '../../utils/utils'
 import { getAccountBalance, getTokenBalance } from '../../../../../messaging/content-api.messaging'
@@ -8,7 +8,7 @@ import { UserResponse } from '../../../../../model/internal-messages.model'
 import { Button, CircularProgress, Divider, MenuItem, Select, Typography } from '@mui/material'
 import { Network } from '../../../../../model/storage/network.model'
 import { useNetworks } from '../../../hooks/networks.hooks'
-import { roundEther } from '../../../utils/ethers'
+import { displayBalance } from '../../../utils/ethers'
 import ClipboardButton from '../../clipboard-button/clipboard-button.component'
 import { useNavigate } from 'react-router-dom'
 import WalletRouteCodes from '../routes/wallet-route-codes'
@@ -16,6 +16,7 @@ import { useWallet } from '../context/wallet.context'
 import ErrorMessage from '../../error-message/error-message.component'
 import TransactionHistory from './transaction-history/transaction-history.component'
 import { Token } from '../../../../../model/storage/wallet.model'
+import ErrorModal from '../../error-modal/error-modal.component'
 
 interface WalletOverviewProps {
   user: UserResponse
@@ -27,6 +28,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
   const [balance, setBalance] = useState<BigNumber | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false)
   const { networks } = useNetworks()
   const navigate = useNavigate()
 
@@ -40,6 +42,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
 
       setBalance(balance)
     } catch (error) {
+      console.error(error)
       setError(String(error))
     }
   }
@@ -101,16 +104,18 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
         <ClipboardButton text={address} />
       </FlexDiv>
       <Divider sx={{ marginBottom: '10px' }} />
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {error && (
+        <ErrorMessage onClick={() => setErrorModalOpen(true)}>
+          {intl.get('NETWORK_UNAVAILABLE_ERROR')}
+        </ErrorMessage>
+      )}
       {loading ? (
         <CircularProgress sx={{ margin: 'auto' }} />
       ) : (
         <>
           {balance ? (
             <Typography variant="h5" align="center" data-testid="balance">
-              {selectedToken
-                ? `${utils.formatUnits(balance, selectedToken.decimals)} ${selectedToken.symbol}`
-                : `${roundEther(utils.formatEther(balance))} ETH`}
+              {displayBalance(balance, selectedToken)}
             </Typography>
           ) : (
             <CircularProgress size="small" sx={{ margin: 'auto' }} />
@@ -134,6 +139,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
           />
         </>
       )}
+      <ErrorModal open={errorModalOpen} onClose={() => setErrorModalOpen(false)} error={error} />
     </FlexColumnDiv>
   )
 }

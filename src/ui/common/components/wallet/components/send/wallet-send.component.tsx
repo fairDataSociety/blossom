@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import intl from 'react-intl-universal'
 import WalletImage from '@mui/icons-material/Wallet'
 import { Address } from '../../../../../../model/general.types'
@@ -14,6 +14,8 @@ import TransactionConfirmation from './transaction-confirmation'
 import TransactionCompleted from './transaction-completed'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
 import { convertFromDecimal } from '../../../../utils/ethers'
+import { providers } from 'ethers'
+import { useNetworks } from '../../../../hooks/networks.hooks'
 
 enum STEPS {
   ADDRESS,
@@ -27,9 +29,10 @@ const WalletSend = () => {
   const [addresses, setAddresses] = useState<Address[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [completed, setCompleted] = useState<boolean>(false)
+  const [transaction, setTransaction] = useState<providers.TransactionReceipt | null>(null)
   const { walletNetwork, selectedToken } = useWallet()
   const { user, error: userError } = useUser()
+  const { networks } = useNetworks()
   useWalletLock()
 
   const loadAddresses = async () => {
@@ -40,6 +43,16 @@ const WalletSend = () => {
 
   const getRpcUrl = () => walletNetwork?.rpc || user.network.rpc
 
+  const blockExplorerUrl: string = useMemo(() => {
+    if (!user) {
+      return ''
+    }
+
+    const currentNetwork = (networks || []).find(({ rpc }) => rpc === getRpcUrl())
+
+    return currentNetwork?.blockExplorerUrl
+  }, [networks, walletNetwork, user])
+
   const getError = () => userError || error
 
   const onSubmit = async () => {
@@ -47,22 +60,24 @@ const WalletSend = () => {
       setLoading(true)
       setError(null)
 
+      let transaction: providers.TransactionReceipt
+
       if (selectedToken) {
-        await transferTokens({
+        transaction = await transferTokens({
           token: selectedToken,
           to: address,
           value: convertFromDecimal(value, selectedToken.decimals).toString(),
           rpcUrl: getRpcUrl(),
         })
       } else {
-        await sendTransaction({
+        transaction = await sendTransaction({
           to: address,
           rpcUrl: getRpcUrl(),
           value: convertFromDecimal(value).toString(),
         })
       }
 
-      setCompleted(true)
+      setTransaction(transaction)
     } catch (error) {
       console.error(error)
       setError(error)
@@ -80,7 +95,7 @@ const WalletSend = () => {
       return STEPS.VALUE
     }
 
-    if (!completed) {
+    if (!transaction) {
       return STEPS.CONFIRMATION
     }
 
@@ -91,7 +106,7 @@ const WalletSend = () => {
     setValue('')
     setAddress('')
     setError('')
-    setCompleted(false)
+    setTransaction(null)
   }
 
   useEffect(() => {
@@ -105,7 +120,7 @@ const WalletSend = () => {
       <Header title={intl.get('WALLET')} image={WalletImage} showOpenPage />
 
       {step === STEPS.ADDRESS && (
-        <AddressSelect disabled={loading} addresses={addresses} onSubmit={setAddress} />
+        <AddressSelect disabled={loading} addresses={addresses} token={selectedToken} onSubmit={setAddress} />
       )}
       {step === STEPS.VALUE && (
         <AmountSelect
@@ -130,7 +145,15 @@ const WalletSend = () => {
           onSubmit={onSubmit}
         />
       )}
-      {step === STEPS.COMPLETED && <TransactionCompleted onReset={reset} />}
+      {step === STEPS.COMPLETED && (
+        <TransactionCompleted
+          onReset={reset}
+          value={value}
+          token={selectedToken}
+          transaction={transaction}
+          blockExplorerUrl={blockExplorerUrl}
+        />
+      )}
     </FlexColumnDiv>
   )
 }

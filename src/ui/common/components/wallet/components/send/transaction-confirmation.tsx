@@ -61,7 +61,9 @@ const TransactionConfirmation = ({
         </ListItem>
         <ListItem alignItems="center">
           <ListItemText
-            primary={`${convertToDecimal(realValue)}  ${selectedToken?.symbol || 'ETH'}`}
+            primary={`${convertToDecimal(realValue)}  ${
+              selectedToken ? `${selectedToken.symbol} (${selectedToken.name})` : 'ETH'
+            }`}
             secondary={intl.get('AMOUNT')}
           />
         </ListItem>

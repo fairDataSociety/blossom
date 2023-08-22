@@ -1,5 +1,6 @@
 import { BigNumber, utils } from 'ethers'
 import { Address } from '../../../model/general.types'
+import { Token } from '../../../model/storage/wallet.model'
 
 export const valueRegex = /^\d+(\.\d+)?$/g
 export const addressRegex = /^0x[a-fA-F0-9]{40}$/g
@@ -32,4 +33,16 @@ export function convertFromDecimal(amount: string, decimals?: number): BigNumber
 
 export function convertToDecimal(amount: BigNumber, decimals?: number): string {
   return utils.formatUnits(amount, decimals || 'ether')
+}
+
+export function constructBlockExplorerUrl(blockExplorerBaseUrl: string, txHash: string): string {
+  return blockExplorerBaseUrl.endsWith('/')
+    ? `${blockExplorerBaseUrl}${txHash}`
+    : `${blockExplorerBaseUrl}/${txHash}`
+}
+
+export function displayBalance(balance: BigNumber, token?: Token): string {
+  return token
+    ? `${utils.formatUnits(balance, token.decimals)} ${token.symbol}`
+    : `${roundEther(utils.formatEther(balance))} ETH`
 }

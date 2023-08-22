@@ -15,10 +15,12 @@ export const networks: Network[] = [
     ...extractNetworkConfig(Environments.SEPOLIA),
     label: 'Sepolia',
     custom: false,
+    blockExplorerUrl: 'https://sepolia.etherscan.io/tx/',
   },
   {
     ...extractNetworkConfig(Environments.GOERLI),
     label: 'Görli',
     custom: false,
+    blockExplorerUrl: 'https://goerli.etherscan.io/tx/',
   },
 ]

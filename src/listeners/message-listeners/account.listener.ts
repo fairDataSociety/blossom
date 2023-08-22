@@ -19,7 +19,6 @@ import {
   TokenCheckRequest,
   TokenRequest,
   TokenTransferRequest,
-  Transaction,
 } from '../../model/internal-messages.model'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { Dialog } from '../../services/dialog.service'
@@ -42,7 +41,7 @@ const wallet = new WalletService()
 const fdpStorageProvider = new SessionFdpStorageProvider()
 
 function saveTransaction(
-  transaction: Transaction | InternalTransaction,
+  transaction: InternalTransaction,
   transactionContent: providers.TransactionReceipt,
   accountName: string,
   networkLabel: string,
@@ -60,6 +59,7 @@ function saveTransaction(
         data: transaction.data,
         gas: transactionContent.gasUsed.toString(),
         gasPrice: transactionContent.effectiveGasPrice.toString(),
+        hash: transactionContent.transactionHash,
       },
       token,
     },
@@ -253,7 +253,12 @@ export async function getTokenBalance({ token: { address }, rpcUrl }: TokenReque
   return balance.toString()
 }
 
-export async function transferTokens({ token, to, value, rpcUrl }: TokenTransferRequest): Promise<void> {
+export async function transferTokens({
+  token,
+  to,
+  value,
+  rpcUrl,
+}: TokenTransferRequest): Promise<providers.TransactionReceipt> {
   const [{ ensUserName, localUserName }, fdp] = await Promise.all([
     session.load(),
     fdpStorageProvider.getService(),
@@ -272,6 +277,8 @@ export async function transferTokens({ token, to, value, rpcUrl }: TokenTransfer
     networks.find(({ rpc }) => rpc === rpcUrl).label,
     token,
   )
+
+  return receipt
 }
 
 const messageHandler = createMessageHandler([

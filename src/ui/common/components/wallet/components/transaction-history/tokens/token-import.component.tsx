@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import intl from 'react-intl-universal'
 import { Button, TextField, Typography } from '@mui/material'
 import WalletImage from '@mui/icons-material/Wallet'
-import { checkTokenContract, importToken } from '../../../../../../../messaging/content-api.messaging'
+import {
+  checkTokenContract,
+  getTokenBalance,
+  importToken,
+} from '../../../../../../../messaging/content-api.messaging'
 import ErrorMessage from '../../../../error-message/error-message.component'
 import { useWalletLock } from '../../../hooks/wallet-lock.hook'
 import { useForm } from 'react-hook-form'
@@ -16,6 +20,7 @@ import { Token } from '../../../../../../../model/storage/wallet.model'
 import TokenInfo from './token-info.component'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../header/header.component'
+import { BigNumber } from 'ethers'
 
 interface FormFields {
   address: Address
@@ -26,10 +31,10 @@ const TokenImport = () => {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<FormFields>()
   const [token, setToken] = useState<Token | null>(null)
+  const [balance, setBalance] = useState<BigNumber | null>(null)
   const [importDone, setImportDone] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -48,8 +53,12 @@ const TokenImport = () => {
       setLoading(true)
       setError(null)
       setToken(null)
-      const token = await checkTokenContract(address, getRpcUrl())
+      const rpc = getRpcUrl()
+      const token = await checkTokenContract(address, rpc)
 
+      const balance = await getTokenBalance(token, rpc)
+
+      setBalance(balance)
       setToken(token)
     } catch (error) {
       console.error(error)
@@ -83,7 +92,7 @@ const TokenImport = () => {
             <Typography variant="body1" sx={{ marginBottom: '10px' }} data-testid="success-message">
               {intl.get('IMPORT_TOKEN_SUCCESS')}:
             </Typography>
-            <TokenInfo token={token} />
+            <TokenInfo token={token} balance={balance} />
             <Button
               color="primary"
               variant="contained"
@@ -114,7 +123,7 @@ const TokenImport = () => {
               helperText={errors.address && intl.get('ADDRESS_ERROR')}
               data-testid="address-input"
             />
-            {token && <TokenInfo token={token} />}
+            {token && <TokenInfo token={token} balance={balance} />}
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <Button
               color="primary"

@@ -37,7 +37,7 @@ const Tokens = ({ networkLabel, selectedToken, onTokenSelect }: TokensProps) => 
   }, [networkLabel])
 
   return (
-    <FlexColumnDiv>
+    <FlexColumnDiv sx={{ maxHeight: 200 }}>
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {selectedToken ? (
         <>
