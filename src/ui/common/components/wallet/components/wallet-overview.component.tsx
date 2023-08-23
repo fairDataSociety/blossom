@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import { BigNumber } from 'ethers'
 import Send from '@mui/icons-material/Send'
+import ArrowBackIosNew from '@mui/icons-material/ArrowBackIosNew'
 import { FlexColumnDiv, FlexDiv } from '../../utils/utils'
 import { getAccountBalance, getTokenBalance } from '../../../../../messaging/content-api.messaging'
 import { UserResponse } from '../../../../../model/internal-messages.model'
-import { Button, CircularProgress, Divider, MenuItem, Select, Typography } from '@mui/material'
+import { Button, CircularProgress, Divider, IconButton, MenuItem, Select, Typography } from '@mui/material'
 import { Network } from '../../../../../model/storage/network.model'
 import { useNetworks } from '../../../hooks/networks.hooks'
 import { displayAddress, displayBalance } from '../../../utils/ethers'
@@ -18,12 +19,14 @@ import TransactionHistory from './transaction-history/transaction-history.compon
 import { Token } from '../../../../../model/storage/wallet.model'
 import ErrorModal from '../../error-modal/error-modal.component'
 import { useUser } from '../../../hooks/user.hooks'
+import { useWalletLock } from '../hooks/wallet-lock.hook'
 
 interface WalletOverviewProps {
   user: UserResponse
+  onLock: () => void
 }
 
-const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => {
+const WalletOverview = ({ user: { address, network }, onLock }: WalletOverviewProps) => {
   const { walletNetwork, setWalletNetwork, selectedToken, setSelectedToken } = useWallet()
   const [selectedNetwork, setSelectedNetwork] = useState<Network>(walletNetwork || network)
   const [balance, setBalance] = useState<BigNumber | null>(null)
@@ -33,6 +36,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
   const { networks } = useNetworks()
   const { user } = useUser()
   const navigate = useNavigate()
+  const { checkLockError } = useWalletLock()
 
   const loadData = async (network: Network, token: Token) => {
     try {
@@ -45,6 +49,11 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       setBalance(balance)
     } catch (error) {
       console.error(error)
+      const locked = await checkLockError(error)
+
+      if (locked) {
+        onLock()
+      }
       setError(String(error))
     }
   }
@@ -126,9 +135,16 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
       ) : (
         <>
           {balance ? (
-            <Typography variant="h5" align="center" data-testid="balance">
-              {displayBalance(balance, selectedToken)}
-            </Typography>
+            <FlexDiv>
+              {selectedToken && (
+                <IconButton size="large" onClick={() => setSelectedToken(null)}>
+                  <ArrowBackIosNew />
+                </IconButton>
+              )}
+              <Typography variant="h5" align="center" data-testid="balance" sx={{ margin: 'auto' }}>
+                {displayBalance(balance, selectedToken)}
+              </Typography>
+            </FlexDiv>
           ) : (
             <CircularProgress size="small" sx={{ margin: 'auto' }} />
           )}

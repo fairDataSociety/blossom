@@ -33,7 +33,7 @@ const WalletSend = () => {
   const { walletNetwork, selectedToken } = useWallet()
   const { user, error: userError } = useUser()
   const { networks } = useNetworks()
-  useWalletLock()
+  const { checkLockError } = useWalletLock()
 
   const loadAddresses = async () => {
     const addresses = await getWalletContacts()
@@ -80,6 +80,7 @@ const WalletSend = () => {
       setTransaction(transaction)
     } catch (error) {
       console.error(error)
+      await checkLockError(error)
       setError(error)
     } finally {
       setLoading(false)

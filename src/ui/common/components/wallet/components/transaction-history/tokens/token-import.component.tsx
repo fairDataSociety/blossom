@@ -27,7 +27,7 @@ interface FormFields {
 }
 
 const TokenImport = () => {
-  useWalletLock()
+  const { checkLockError } = useWalletLock()
   const {
     register,
     handleSubmit,
@@ -62,6 +62,7 @@ const TokenImport = () => {
       setToken(token)
     } catch (error) {
       console.error(error)
+      await checkLockError(error)
       setError(String(error))
     } finally {
       setLoading(false)
@@ -77,6 +78,7 @@ const TokenImport = () => {
       setImportDone(true)
     } catch (error) {
       console.error(error)
+      await checkLockError(error)
       setError(String(error))
     } finally {
       setLoading(false)

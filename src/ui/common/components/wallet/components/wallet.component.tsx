@@ -32,7 +32,11 @@ const Wallet = () => {
       <Header title={intl.get('WALLET')} image={WalletImage} showOpenPage />
       {user &&
         locked !== null &&
-        (locked ? <WalletLock onUnlock={() => setLocked(false)} /> : <WalletOverview user={user} />)}
+        (locked ? (
+          <WalletLock onUnlock={() => setLocked(false)} />
+        ) : (
+          <WalletOverview user={user} onLock={() => setLocked(true)} />
+        ))}
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </FlexColumnDiv>
   )
