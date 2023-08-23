@@ -32,7 +32,10 @@ const AddressSelect = ({ addresses, disabled, token, onSubmit }: AddressSelectPr
   return (
     <Form onSubmit={handleSubmit(({ address }) => onSubmit(address))}>
       <Typography variant="body1" sx={{ marginBottom: '20px' }}>
-        {token ? intl.get('SELECT_ADDRESS_TOKEN', { tokenName: token.name }) : intl.get('SELECT_ADDRESS')}:
+        {token
+          ? intl.get('SELECT_ADDRESS_TOKEN', { tokenName: `${token.name} (${token.symbol})` })
+          : intl.get('SELECT_ADDRESS')}
+        :
       </Typography>
       <Controller
         render={() => (

@@ -14,7 +14,7 @@ import {
 import { Box } from '@mui/system'
 import Close from '@mui/icons-material/Close'
 import { Transaction } from '../../../../../../model/storage/wallet.model'
-import { displayAddress, displayBalance } from '../../../../utils/ethers'
+import { constructBlockExplorerUrl, displayAddress, displayBalance } from '../../../../utils/ethers'
 import { BigNumber, utils } from 'ethers'
 import ClipboardButton from '../../../clipboard-button/clipboard-button.component'
 
@@ -22,9 +22,15 @@ export interface TransactionDetailsProps {
   open: boolean
   onClose: () => void
   transaction: Transaction
+  blockExplorerUrl?: string
 }
 
-const TransactionDetailsModal = ({ open, onClose, transaction }: TransactionDetailsProps) => {
+const TransactionDetailsModal = ({
+  open,
+  onClose,
+  transaction,
+  blockExplorerUrl,
+}: TransactionDetailsProps) => {
   const gasCost = useMemo(() => {
     try {
       return utils
@@ -101,7 +107,16 @@ const TransactionDetailsModal = ({ open, onClose, transaction }: TransactionDeta
                 <TableRow tabIndex={-1}>
                   <TableCell align="left">{intl.get('TRANSCTION_HASH')}</TableCell>
                   <TableCell align="right">
-                    {displayAddress(transaction.content.hash as string)}
+                    {blockExplorerUrl ? (
+                      <a
+                        target="_blank"
+                        href={constructBlockExplorerUrl(blockExplorerUrl, transaction.content.hash)}
+                      >
+                        {displayAddress(transaction.content.hash as string)}
+                      </a>
+                    ) : (
+                      displayAddress(transaction.content.hash as string)
+                    )}
                     <ClipboardButton text={transaction.content.hash} size="small" />
                   </TableCell>
                 </TableRow>

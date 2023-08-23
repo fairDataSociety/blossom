@@ -8,7 +8,7 @@ import { UserResponse } from '../../../../../model/internal-messages.model'
 import { Button, CircularProgress, Divider, MenuItem, Select, Typography } from '@mui/material'
 import { Network } from '../../../../../model/storage/network.model'
 import { useNetworks } from '../../../hooks/networks.hooks'
-import { displayBalance } from '../../../utils/ethers'
+import { displayAddress, displayBalance } from '../../../utils/ethers'
 import ClipboardButton from '../../clipboard-button/clipboard-button.component'
 import { useNavigate } from 'react-router-dom'
 import WalletRouteCodes from '../routes/wallet-route-codes'
@@ -17,6 +17,7 @@ import ErrorMessage from '../../error-message/error-message.component'
 import TransactionHistory from './transaction-history/transaction-history.component'
 import { Token } from '../../../../../model/storage/wallet.model'
 import ErrorModal from '../../error-modal/error-modal.component'
+import { useUser } from '../../../hooks/user.hooks'
 
 interface WalletOverviewProps {
   user: UserResponse
@@ -30,6 +31,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
   const [error, setError] = useState<string | null>(null)
   const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false)
   const { networks } = useNetworks()
+  const { user } = useUser()
   const navigate = useNavigate()
 
   const loadData = async (network: Network, token: Token) => {
@@ -92,17 +94,27 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
           </MenuItem>
         ))}
       </Select>
-      <FlexDiv sx={{ alignItems: 'center', margin: '10px auto' }}>
+      <FlexColumnDiv sx={{ alignItems: 'center', margin: '10px auto' }}>
         <Typography
           align="center"
           variant="body2"
-          data-testid="address"
+          fontWeight="bold"
           sx={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
-          {address}
+          {user?.ensUserName}
         </Typography>
-        <ClipboardButton text={address} />
-      </FlexDiv>
+        <FlexDiv sx={{ alignItems: 'center' }}>
+          <Typography
+            align="center"
+            variant="body2"
+            data-testid="address"
+            sx={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
+            {displayAddress(address)}
+          </Typography>
+          <ClipboardButton text={address} />
+        </FlexDiv>
+      </FlexColumnDiv>
       <Divider sx={{ marginBottom: '10px' }} />
       {error && (
         <ErrorMessage onClick={() => setErrorModalOpen(true)}>
@@ -135,7 +147,7 @@ const WalletOverview = ({ user: { address, network } }: WalletOverviewProps) => 
           <TransactionHistory
             selectedToken={selectedToken}
             onTokenSelect={setSelectedToken}
-            networkLabel={selectedNetwork.label}
+            network={selectedNetwork}
           />
         </>
       )}

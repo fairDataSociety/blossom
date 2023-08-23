@@ -16,6 +16,7 @@ import TransactionDetailsModal from './transaction-details.component'
 
 export interface TransactionListProps {
   transactions: Transaction[]
+  blockExplorerUrl?: string
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -39,7 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-const TransactionList = ({ transactions }: TransactionListProps) => {
+const TransactionList = ({ transactions, blockExplorerUrl }: TransactionListProps) => {
   const [displayedTransaction, setDisplayedTransaction] = useState<Transaction | null>(null)
 
   return (
@@ -73,6 +74,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
         open={Boolean(displayedTransaction)}
         onClose={() => setDisplayedTransaction(null)}
         transaction={displayedTransaction}
+        blockExplorerUrl={blockExplorerUrl}
       />
     </>
   )
