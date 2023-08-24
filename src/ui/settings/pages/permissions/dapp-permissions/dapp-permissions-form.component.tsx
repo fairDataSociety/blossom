@@ -18,6 +18,7 @@ const DappPermissionsForm = ({ dapp, disabled, onUpdate }: DappPermissionsFormPr
     ...dapp.podPermissions,
   })
   const [fullStorageAccess, setFullStorageAccess] = useState<boolean>(dapp.fullStorageAccess)
+  const [accountInfoAccess, setAccountInfoAccess] = useState<boolean>(dapp.accountInfoAccess)
   const { dappId } = dapp
 
   const onPodPermissionDelete = (podName: string) => {
@@ -32,6 +33,7 @@ const DappPermissionsForm = ({ dapp, disabled, onUpdate }: DappPermissionsFormPr
     onUpdate({
       ...dapp,
       fullStorageAccess,
+      accountInfoAccess,
       podPermissions,
     })
   }
@@ -44,6 +46,18 @@ const DappPermissionsForm = ({ dapp, disabled, onUpdate }: DappPermissionsFormPr
       <Typography variant="caption" sx={{ color: theme.palette.grey[500] }}>
         {dappId}
       </Typography>
+      <FormControlLabel
+        control={
+          <Checkbox
+            value={accountInfoAccess}
+            defaultChecked={dapp.accountInfoAccess}
+            onChange={() => setAccountInfoAccess(!accountInfoAccess)}
+          />
+        }
+        disabled={disabled}
+        label={intl.get('ACCOUNT_INFORMATION_ACCESS')}
+        sx={{ margin: '20px 0 0 0' }}
+      />
       <FormControlLabel
         control={
           <Checkbox

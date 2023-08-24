@@ -16,6 +16,7 @@ export interface PodPermission {
 export interface Dapp {
   podPermissions: Record<string, PodPermission>
   fullStorageAccess: boolean
+  accountInfoAccess: boolean
   dappId: DappId
 }
 
