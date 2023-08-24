@@ -44,7 +44,7 @@ To load the extension in Chrome browser:
 
 ### Swarm extension
 
-The Blossom extension can be configured to retreive Bee URL and Bee debug URL directly from the Swarm extension. That is requred for running tests successfully. Before running tests, the required environment must be executed first.
+The Blossom extension can be configured to retrieve Bee URL and Bee debug URL directly from the Swarm extension. That is requred for running tests successfully. Before running tests, the required environment must be executed first.
 
 The [Swarm extension](https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia) must be installed in the same browser as where the Blossom extension. You can install it from the browser's extension store page, or you can build it locally.
 
