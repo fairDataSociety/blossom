@@ -21,6 +21,7 @@ import TokenInfo from './token-info.component'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../header/header.component'
 import { BigNumber } from 'ethers'
+import ErrorModal from '../../../../error-modal/error-modal.component'
 
 interface FormFields {
   address: Address
@@ -38,6 +39,7 @@ const TokenImport = () => {
   const [importDone, setImportDone] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false)
   const { user } = useUser()
   const { walletNetwork } = useWallet()
   const navigate = useNavigate()
@@ -126,7 +128,11 @@ const TokenImport = () => {
               data-testid="address-input"
             />
             {token && <TokenInfo token={token} balance={balance} />}
-            {error && <ErrorMessage>{error}</ErrorMessage>}
+            {error && (
+              <ErrorMessage onClick={() => setErrorModalOpen(true)}>
+                {intl.get('TOKEN_IMPORT_ERROR')}
+              </ErrorMessage>
+            )}
             <Button
               color="primary"
               variant="contained"
@@ -144,6 +150,7 @@ const TokenImport = () => {
           </>
         )}
       </Form>
+      <ErrorModal open={errorModalOpen} onClose={() => setErrorModalOpen(false)} error={error} />
     </>
   )
 }

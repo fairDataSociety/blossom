@@ -105,7 +105,7 @@
   "SELECT_ADDRESS": "Choose address to send to",
   "SELECT_ADDRESS_TOKEN": "Choose address to send {tokenName} to",
   "PROCEED": "Proceed",
-  "SENDING_TO": "Sednding to",
+  "SENDING_TO": "Sending to",
   "ENABLE_WALLET_LOCK": "Enable wallet lock",
   "MINUTES": "Minutes",
   "LOCK_INTERVAL": "Lock interval",
@@ -125,5 +125,7 @@
   "DATA": "Data",
   "TIME": "Time",
   "DIALOG_DAPP_ACCOUNT_INFO": "dApp with ID {dappId} asks to access your account information (address and ENS name).\nDo you allow access to your account information?",
-  "ACCOUNT_INFORMATION_ACCESS": "Account Information Access"
+  "ACCOUNT_INFORMATION_ACCESS": "Account Information Access",
+  "TOKEN_IMPORT_ERROR": "Couldn't get token data.",
+  "TRANSACTION_ERROR": "The transaction failed. Click here to see the details."
 }
