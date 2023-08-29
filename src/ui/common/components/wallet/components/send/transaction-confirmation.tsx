@@ -11,6 +11,7 @@ import { BigNumber } from 'ethers'
 import ErrorMessage from '../../../error-message/error-message.component'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
 import { Token } from '../../../../../../model/storage/wallet.model'
+import ErrorModal from '../../../error-modal/error-modal.component'
 
 export interface TransactionConfirmationProps {
   address: Address
@@ -36,6 +37,7 @@ const TransactionConfirmation = ({
   onSubmit,
 }: TransactionConfirmationProps) => {
   const [gasPrice, setGasPrice] = useState<BigNumber>(BigNumber.from(0))
+  const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false)
   useWalletLock()
 
   const realValue = useMemo(() => {
@@ -44,7 +46,9 @@ const TransactionConfirmation = ({
 
   return (
     <>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {error && (
+        <ErrorMessage onClick={() => setErrorModalOpen(true)}>{intl.get('TRANSACTION_ERROR')}</ErrorMessage>
+      )}
 
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <ListItem>
@@ -61,7 +65,9 @@ const TransactionConfirmation = ({
         </ListItem>
         <ListItem alignItems="center">
           <ListItemText
-            primary={`${convertToDecimal(realValue)}  ${selectedToken?.symbol || 'ETH'}`}
+            primary={`${convertToDecimal(realValue)}  ${
+              selectedToken ? `${selectedToken.symbol} (${selectedToken.name})` : 'ETH'
+            }`}
             secondary={intl.get('AMOUNT')}
           />
         </ListItem>
@@ -101,6 +107,7 @@ const TransactionConfirmation = ({
           </Button>
         </FlexDiv>
       </List>
+      <ErrorModal open={errorModalOpen} onClose={() => setErrorModalOpen(false)} error={error} />
     </>
   )
 }

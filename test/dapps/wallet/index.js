@@ -6,6 +6,15 @@ function setText(id, text) {
   element.setAttribute('complete', 'true')
 }
 
+async function getAccountInfo(elementId) {
+  try {
+    const { address } = await blossom.wallet.getAccountInfo()
+    setText(elementId, address)
+  } catch (error) {
+    setText(elementId, error.toString())
+  }
+}
+
 async function getBalance(elementId) {
   try {
     const balance = await blossom.wallet.getUserBalance()
@@ -23,6 +32,14 @@ async function sendTransaction(elementId) {
   } catch (error) {
     setText(elementId, error.toString())
   }
+}
+
+function getAccountInfo1() {
+  return getAccountInfo('account-info-1')
+}
+
+function getAccountInfo2() {
+  return getAccountInfo('account-info-2')
 }
 
 function getInitialBalance() {

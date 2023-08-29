@@ -7,10 +7,12 @@ import FieldSpinner from '../../../field-spinner/field-spinner.component'
 import { Address } from '../../../../../../model/general.types'
 import { addressRegex } from '../../../../utils/ethers'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
+import { Token } from '../../../../../../model/storage/wallet.model'
 
 interface AddressSelectProps {
   addresses: Address[]
   disabled: boolean
+  token?: Token
   onSubmit: (address: string) => void
 }
 
@@ -18,7 +20,7 @@ interface FormFields {
   address: Address
 }
 
-const AddressSelect = ({ addresses, disabled, onSubmit }: AddressSelectProps) => {
+const AddressSelect = ({ addresses, disabled, token, onSubmit }: AddressSelectProps) => {
   useWalletLock()
   const {
     register,
@@ -30,7 +32,10 @@ const AddressSelect = ({ addresses, disabled, onSubmit }: AddressSelectProps) =>
   return (
     <Form onSubmit={handleSubmit(({ address }) => onSubmit(address))}>
       <Typography variant="body1" sx={{ marginBottom: '20px' }}>
-        {intl.get('SELECT_ADDRESS')}:
+        {token
+          ? intl.get('SELECT_ADDRESS_TOKEN', { tokenName: `${token.name} (${token.symbol})` })
+          : intl.get('SELECT_ADDRESS')}
+        :
       </Typography>
       <Controller
         render={() => (

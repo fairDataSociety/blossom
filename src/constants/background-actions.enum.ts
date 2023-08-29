@@ -9,6 +9,7 @@ enum BackgroundAction {
   GENERATE_WALLET = 'generate-wallet',
   OPEN_AUTH_PAGE = 'open-auth-page',
   GET_CURRENT_USER = 'get-current-user',
+  GET_USER_INFO = 'get-user-info',
   GET_LOCAL_ACCOUNTS = 'get-local-accounts',
   GET_BALANCE = 'get-balance',
   GET_USER_BALANCE = 'get-user-balance',

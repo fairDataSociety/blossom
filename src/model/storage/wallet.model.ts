@@ -1,4 +1,4 @@
-import { Address, BigNumberString, HexStringVariate } from '../general.types'
+import { Address, BigNumberString, HexString, HexStringVariate } from '../general.types'
 
 export type TransactionDirection = 'sent' | 'received'
 
@@ -13,6 +13,7 @@ export interface Transaction {
     gas: BigNumberString
     gasPrice: BigNumberString
     data?: HexStringVariate
+    hash: HexString<64>
   }
   token?: Token
 }

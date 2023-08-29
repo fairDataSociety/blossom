@@ -10,7 +10,7 @@ export interface WalletLockInputProps {
   onChange: (value: number) => void
 }
 
-const INTERVAL_OPTIONS = [1, 5, 10, 15, 30, 45, 60]
+const INTERVAL_OPTIONS = [5, 10, 15, 30, 45, 60]
 
 const WalletLockInput = ({ value, isLocked, onChange }: WalletLockInputProps) => {
   const minutes = useMemo(() => {

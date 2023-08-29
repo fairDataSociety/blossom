@@ -15,6 +15,7 @@ import {
   LoginData,
   RegisterData,
   RegisterResponse,
+  UserInfo,
   UsernameCheckData,
   UserResponse,
 } from '../../model/internal-messages.model'
@@ -24,9 +25,13 @@ import { SessionService } from '../../services/session.service'
 import { Storage } from '../../services/storage/storage.service'
 import { openTab } from '../../utils/tabs'
 import { createMessageHandler } from './message-handler'
+import { getDappId } from './listener.utils'
+import { Dialog } from '../../services/dialog.service'
+import { errorMessages } from '../../constants/errors'
 
 let fdpStorageProvider = new SessionlessFdpStorageProvider()
 const storage = new Storage()
+const dialogs = new Dialog()
 const session = new SessionService()
 const account = new AccountService()
 
@@ -182,6 +187,29 @@ export function logout(): Promise<void> {
   return session.close()
 }
 
+export async function getUserInfo(data, sender: chrome.runtime.MessageSender): Promise<UserInfo> {
+  const [sessionData, dappId] = await Promise.all([session.load(), getDappId(sender)])
+
+  const dapp = await storage.getDappBySession(dappId, sessionData)
+
+  if (!dapp.accountInfoAccess) {
+    const confirmed = await dialogs.ask('DIALOG_DAPP_ACCOUNT_INFO', { dappId })
+
+    if (!confirmed) {
+      throw new Error(errorMessages.ACCESS_DENIED)
+    }
+
+    await storage.updateDappBySession(dappId, { accountInfoAccess: true }, sessionData)
+  }
+
+  const { ensUserName: ensName, address } = sessionData
+
+  return {
+    ensName,
+    address,
+  }
+}
+
 const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGIN,
@@ -228,6 +256,10 @@ const messageHandler = createMessageHandler([
   {
     action: BackgroundAction.LOGOUT,
     handler: logout,
+  },
+  {
+    action: BackgroundAction.GET_USER_INFO,
+    handler: getUserInfo,
   },
 ])
 

@@ -41,6 +41,7 @@ export function dappFactory(dappId: DappId): Dapp {
   return {
     podPermissions: {},
     fullStorageAccess: false,
+    accountInfoAccess: false,
     dappId,
   }
 }

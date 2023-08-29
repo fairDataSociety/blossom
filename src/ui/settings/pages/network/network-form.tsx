@@ -26,6 +26,7 @@ interface FormFields {
   ensRegistry: string
   fdsRegistrar: string
   publicResolver: string
+  blockExplorerUrl: string
 }
 
 const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: NetworkFormProps) => {
@@ -37,6 +38,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
     defaultValues: {
       label: String(network.label),
       rpc: network.rpc,
+      blockExplorerUrl: network.blockExplorerUrl,
       ensRegistry: network.ensRegistry as unknown as string,
       fdsRegistrar: network.fdsRegistrar as unknown as string,
       publicResolver: network.publicResolver as unknown as string,
@@ -55,6 +57,7 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
         ensRegistry: fields.ensRegistry || undefined,
         fdsRegistrar: fields.fdsRegistrar || undefined,
         publicResolver: fields.publicResolver || undefined,
+        blockExplorerUrl: fields.blockExplorerUrl || undefined,
         custom: true,
       } as unknown as Network)
     } catch (error) {
@@ -99,12 +102,22 @@ const NetworkForm = ({ network, disabled, canDelete, onChange, onDelete }: Netwo
         disabled={disabled}
         sx={{ marginBottom: FIELD_MARGIN }}
       />
+      <TextField
+        label={intl.get('BLOCK_EXPLORER_URL_LABEL')}
+        variant="standard"
+        fullWidth
+        {...register('blockExplorerUrl')}
+        error={Boolean(errors.blockExplorerUrl)}
+        helperText={errors.blockExplorerUrl && intl.get('FIELD_REQUIRED')}
+        data-testid="blockExplorerUrl"
+        disabled={disabled}
+        sx={{ marginBottom: FIELD_MARGIN }}
+      />
       <FormControlLabel
         control={
           <Checkbox
             value={contractsEnabled}
             onChange={() => setContractsEnabled(!contractsEnabled)}
-            disabled={disabled}
             data-testid="show-contract-addresses-checkbox"
           />
         }
