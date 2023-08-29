@@ -94,6 +94,7 @@ const SwarmComponent = () => {
               })}
             />
           }
+          data-testid="swarm-extension-checkbox"
           label={intl.get('USE_SWARM_EXTENSION')}
           sx={{ marginBottom: '20px' }}
         />

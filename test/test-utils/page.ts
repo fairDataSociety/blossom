@@ -9,6 +9,10 @@ export async function openPage(url: string): Promise<Page> {
   return page
 }
 
+export async function getElementIfExists(page: Page, selector: string): Promise<ElementHandle<Element>> {
+  return page.$(selector)
+}
+
 export async function waitForElementText(page: Page, selector: string): Promise<string> {
   await page.waitForSelector(selector)
 
