@@ -23,4 +23,16 @@ export const networks: Network[] = [
     custom: false,
     blockExplorerUrl: 'https://goerli.etherscan.io/tx/',
   },
+  {
+    ...extractNetworkConfig(Environments.OPTIMISM_GOERLI),
+    label: 'Optimism Goerli',
+    custom: false,
+    blockExplorerUrl: 'https://goerli-optimism.etherscan.io/tx/',
+  },
+  {
+    ...extractNetworkConfig(Environments.ARBITRUM_GOERLI),
+    label: 'Arbitrum Goerli',
+    custom: false,
+    blockExplorerUrl: 'https://goerli.arbiscan.io/tx/',
+  },
 ]
