@@ -132,6 +132,34 @@ describe('Dapp interaction with Blossom, using the library', () => {
       expect(`0.${balance.substring(0, 2)}`).toEqual(expectedBalance)
     }
 
+    test("Shouldn't get account info if user didn't allow", async () => {
+      await click(page, 'get-account-info-btn-1')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-cancel-btn')
+
+      expect(await waitForElementText(page, '#account-info-1[complete="true"]')).toEqual(
+        'Error: Blossom: Access denied',
+      )
+    })
+
+    test('Should get account info', async () => {
+      await click(page, 'get-account-info-btn-2')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-confirm-btn')
+
+      const wallet = Wallet.fromMnemonic(mnemonic)
+
+      expect(await waitForElementText(page, '#account-info-2[complete="true"]')).toEqual(wallet.address)
+    })
+
     test('Should get initial balance', async () => {
       await click(page, 'get-balance-btn')
 

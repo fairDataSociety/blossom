@@ -1,6 +1,6 @@
 import { ElementHandle, Page } from 'puppeteer'
 import { openExtensionOptionsPage } from './test-utils/extension.util'
-import { getWalletAddress, login, registerExisting } from './test-utils/account'
+import { login, registerExisting } from './test-utils/account'
 import {
   click,
   dataTestId,
@@ -14,7 +14,7 @@ import {
 } from './test-utils/page'
 import { getRandomString } from './test-utils/extension.util'
 import deployContracts, { transferToken } from './config/contract-deployment'
-import { BigNumber } from 'ethers'
+import { BigNumber, Wallet } from 'ethers'
 import { sendFunds } from './test-utils/ethers'
 import { PRIVATE_KEY } from './config/constants'
 
@@ -138,7 +138,7 @@ describe('Wallet tokens tests', () => {
     await deployContracts()
     await login(username, password)
     page = await openExtensionOptionsPage(blossomId, 'wallet.html')
-    walletAddress = await getWalletAddress(page)
+    walletAddress = Wallet.fromMnemonic(mnemonic).address
     await sendFunds(PRIVATE_KEY, walletAddress, '0.1')
     await transferToken(
       global.__TEST_TOKEN_ADDRESS__,

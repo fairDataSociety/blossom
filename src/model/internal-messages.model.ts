@@ -120,3 +120,8 @@ export interface TokenTransferRequest extends TokenRequest {
   to: string
   value: string
 }
+
+export interface UserInfo {
+  address: Address
+  ensName?: string
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Paper,
   Table,
@@ -9,13 +9,14 @@ import {
   styled,
   tableCellClasses,
 } from '@mui/material'
-import Send from '@mui/icons-material/Send'
 import { Transaction } from '../../../../../../model/storage/wallet.model'
 import { convertToDecimal, displayAddress } from '../../../../utils/ethers'
 import { BigNumber } from 'ethers'
+import TransactionDetailsModal from './transaction-details.component'
 
 export interface TransactionListProps {
   transactions: Transaction[]
+  blockExplorerUrl?: string
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -39,30 +40,43 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-const TransactionList = ({ transactions }: TransactionListProps) => {
+const TransactionList = ({ transactions, blockExplorerUrl }: TransactionListProps) => {
+  const [displayedTransaction, setDisplayedTransaction] = useState<Transaction | null>(null)
+
   return (
-    <TableContainer component={Paper}>
-      <Table size="small">
-        <TableBody data-testid="transaction-history">
-          {transactions.map(({ id, time, content, token }) => (
-            <StyledTableRow key={id}>
-              <StyledTableCell component="th" scope="row">
-                <Send />
-              </StyledTableCell>
-              <StyledTableCell align="right">{displayAddress(content.to)}</StyledTableCell>
-              <StyledTableCell align="right">
-                {`${convertToDecimal(BigNumber.from(content.value), token?.decimals)} ${
-                  token ? token.symbol : 'ETH'
-                }`}
-              </StyledTableCell>
-              <StyledTableCell align="right" sx={{ minWidth: '100px' }}>
-                {new Date(time).toDateString()}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
+        <Table size="small">
+          <TableBody data-testid="transaction-history">
+            {transactions.map((transsaction) => (
+              <StyledTableRow
+                hover
+                key={transsaction.id}
+                onClick={() => setDisplayedTransaction(transsaction)}
+                sx={{ cursor: 'pointer' }}
+              >
+                <StyledTableCell align="right">{displayAddress(transsaction.content.to)}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {`${convertToDecimal(
+                    BigNumber.from(transsaction.content.value),
+                    transsaction.token?.decimals,
+                  )} ${transsaction.token ? transsaction.token.symbol : 'ETH'}`}
+                </StyledTableCell>
+                <StyledTableCell align="right" sx={{ minWidth: '100px' }}>
+                  {new Date(transsaction.time).toDateString()}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TransactionDetailsModal
+        open={Boolean(displayedTransaction)}
+        onClose={() => setDisplayedTransaction(null)}
+        transaction={displayedTransaction}
+        blockExplorerUrl={blockExplorerUrl}
+      />
+    </>
   )
 }
 

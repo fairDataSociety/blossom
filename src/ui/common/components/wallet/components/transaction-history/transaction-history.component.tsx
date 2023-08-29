@@ -7,9 +7,10 @@ import ErrorMessage from '../../../error-message/error-message.component'
 import { Token, Transaction, Transactions } from '../../../../../../model/storage/wallet.model'
 import TransactionList from './transaction-list.component'
 import Tokens from './tokens/tokens.component'
+import { Network } from '../../../../../../model/storage/network.model'
 
 export interface TransactionHistoryProps {
-  networkLabel: string
+  network: Network
   selectedToken: Token | null
   onTokenSelect: (token: Token | null) => void
 }
@@ -21,7 +22,7 @@ const TabWrapper = styled('div')(() => ({
   left: 0,
 }))
 
-const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: TransactionHistoryProps) => {
+const TransactionHistory = ({ selectedToken, network, onTokenSelect }: TransactionHistoryProps) => {
   const [transactions, setTransactions] = useState<Transactions | null>(null)
   const [tab, setTab] = useState<number>(selectedToken ? 1 : 0)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +39,7 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
 
   const loadData = async () => {
     try {
-      const transactions = await getWalletTransactions(networkLabel)
+      const transactions = await getWalletTransactions(network.label)
 
       setTransactions(transactions)
     } catch (error) {
@@ -48,7 +49,7 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
 
   useEffect(() => {
     loadData()
-  }, [networkLabel])
+  }, [network])
 
   return (
     <>
@@ -66,13 +67,16 @@ const TransactionHistory = ({ selectedToken, networkLabel, onTokenSelect }: Tran
           <Box sx={{ position: 'relative' }}>
             <Fade in={tab === 0}>
               <TabWrapper>
-                <TransactionList transactions={displayedTransactions} />
+                <TransactionList
+                  transactions={displayedTransactions}
+                  blockExplorerUrl={network.blockExplorerUrl}
+                />
               </TabWrapper>
             </Fade>
             <Fade in={tab === 1}>
               <TabWrapper>
                 <Tokens
-                  networkLabel={networkLabel}
+                  networkLabel={network.label}
                   selectedToken={selectedToken}
                   onTokenSelect={onTokenSelect}
                 />

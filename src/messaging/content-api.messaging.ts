@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 import BackgroundAction from '../constants/background-actions.enum'
 import { Address, BigNumberString, DappId } from '../model/general.types'
 import {
@@ -86,8 +86,11 @@ export async function getTokenBalance(token: Token, rpcUrl: string): Promise<Big
   return BigNumber.from(balance)
 }
 
-export function sendTransaction(transaction: InternalTransaction): Promise<void> {
-  return sendMessage<InternalTransaction, void>(BackgroundAction.SEND_TRANSACTION_INTERNAL, transaction)
+export function sendTransaction(transaction: InternalTransaction): Promise<providers.TransactionReceipt> {
+  return sendMessage<InternalTransaction, providers.TransactionReceipt>(
+    BackgroundAction.SEND_TRANSACTION_INTERNAL,
+    transaction,
+  )
 }
 
 export async function estimateGasPrice(transaction: InternalTransaction): Promise<BigNumber> {
@@ -108,8 +111,13 @@ export async function estimateTokenGasPrice(tokenTransferRequest: TokenTransferR
   return BigNumber.from(price)
 }
 
-export function transferTokens(tokenTransferRequest: TokenTransferRequest): Promise<void> {
-  return sendMessage<TokenTransferRequest, void>(BackgroundAction.TRANSFER_TOKENS, tokenTransferRequest)
+export function transferTokens(
+  tokenTransferRequest: TokenTransferRequest,
+): Promise<providers.TransactionReceipt> {
+  return sendMessage<TokenTransferRequest, providers.TransactionReceipt>(
+    BackgroundAction.TRANSFER_TOKENS,
+    tokenTransferRequest,
+  )
 }
 
 export function getWalletTransactions(networkLabel: string): Promise<Transactions> {

@@ -13,3 +13,7 @@ export const whitelistedDapps: Array<{ url: string; dappId: string }> = [
   { url: 'https://fairdrive.dev.fairdatasociety.org/apps/slidezz', dappId: 'slidezz-dev' },
   { url: 'https://fairdrive.fairdatasociety.org/apps/slidezz', dappId: 'slidezz' },
 ]
+
+if (process.env.ENVIRONMENT === 'development') {
+  whitelistedDapps.push({ url: 'http://localhost:3000', dappId: 'fairdrive-local' })
+}

@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import intl from 'react-intl-universal'
 import { Button, TextField, Typography } from '@mui/material'
 import WalletImage from '@mui/icons-material/Wallet'
-import { checkTokenContract, importToken } from '../../../../../../../messaging/content-api.messaging'
+import {
+  checkTokenContract,
+  getTokenBalance,
+  importToken,
+} from '../../../../../../../messaging/content-api.messaging'
 import ErrorMessage from '../../../../error-message/error-message.component'
 import { useWalletLock } from '../../../hooks/wallet-lock.hook'
 import { useForm } from 'react-hook-form'
@@ -16,23 +20,26 @@ import { Token } from '../../../../../../../model/storage/wallet.model'
 import TokenInfo from './token-info.component'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../header/header.component'
+import { BigNumber } from 'ethers'
+import ErrorModal from '../../../../error-modal/error-modal.component'
 
 interface FormFields {
   address: Address
 }
 
 const TokenImport = () => {
-  useWalletLock()
+  const { checkLockError } = useWalletLock()
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<FormFields>()
   const [token, setToken] = useState<Token | null>(null)
+  const [balance, setBalance] = useState<BigNumber | null>(null)
   const [importDone, setImportDone] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false)
   const { user } = useUser()
   const { walletNetwork } = useWallet()
   const navigate = useNavigate()
@@ -48,11 +55,16 @@ const TokenImport = () => {
       setLoading(true)
       setError(null)
       setToken(null)
-      const token = await checkTokenContract(address, getRpcUrl())
+      const rpc = getRpcUrl()
+      const token = await checkTokenContract(address, rpc)
 
+      const balance = await getTokenBalance(token, rpc)
+
+      setBalance(balance)
       setToken(token)
     } catch (error) {
       console.error(error)
+      await checkLockError(error)
       setError(String(error))
     } finally {
       setLoading(false)
@@ -68,6 +80,7 @@ const TokenImport = () => {
       setImportDone(true)
     } catch (error) {
       console.error(error)
+      await checkLockError(error)
       setError(String(error))
     } finally {
       setLoading(false)
@@ -83,7 +96,7 @@ const TokenImport = () => {
             <Typography variant="body1" sx={{ marginBottom: '10px' }} data-testid="success-message">
               {intl.get('IMPORT_TOKEN_SUCCESS')}:
             </Typography>
-            <TokenInfo token={token} />
+            <TokenInfo token={token} balance={balance} />
             <Button
               color="primary"
               variant="contained"
@@ -114,8 +127,12 @@ const TokenImport = () => {
               helperText={errors.address && intl.get('ADDRESS_ERROR')}
               data-testid="address-input"
             />
-            {token && <TokenInfo token={token} />}
-            {error && <ErrorMessage>{error}</ErrorMessage>}
+            {token && <TokenInfo token={token} balance={balance} />}
+            {error && (
+              <ErrorMessage onClick={() => setErrorModalOpen(true)}>
+                {intl.get('TOKEN_IMPORT_ERROR')}
+              </ErrorMessage>
+            )}
             <Button
               color="primary"
               variant="contained"
@@ -133,6 +150,7 @@ const TokenImport = () => {
           </>
         )}
       </Form>
+      <ErrorModal open={errorModalOpen} onClose={() => setErrorModalOpen(false)} error={error} />
     </>
   )
 }
