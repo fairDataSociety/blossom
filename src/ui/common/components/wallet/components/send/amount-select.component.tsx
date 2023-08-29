@@ -10,7 +10,7 @@ import GasEstimation from '../gas-estimation.component'
 import { convertFromDecimal, isAddressValid, isValueValid, valueRegex } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
-import { BigNumber, utils } from 'ethers'
+import { BigNumber } from 'ethers'
 import { useWallet } from '../../context/wallet.context'
 import { getAccountBalance, getTokenBalance } from '../../../../../../messaging/content-api.messaging'
 
@@ -71,7 +71,7 @@ const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelec
   let notEnoughBalance: boolean
 
   try {
-    notEnoughBalance = balance ? utils.parseEther(value || '0').gt(balance) : false
+    notEnoughBalance = balance ? convertFromDecimal(value || '0', selectedToken?.decimals).gt(balance) : false
   } catch (error) {
     // ignore
   }
