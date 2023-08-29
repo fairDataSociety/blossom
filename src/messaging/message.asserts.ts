@@ -90,9 +90,9 @@ export function isNetworkEditData(data: unknown): data is NetworkEditData {
 }
 
 export function isSwarm(data: unknown): data is Swarm {
-  const { extensionId } = (data || {}) as Swarm
+  const { extensionId, swarmUrl } = (data || {}) as Swarm
 
-  return typeof extensionId === 'string'
+  return isString(extensionId) || isString(swarmUrl)
 }
 
 export function isSession(data: unknown): data is Session {

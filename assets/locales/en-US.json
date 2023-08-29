@@ -115,6 +115,8 @@
   "IMPORT_TOKEN_INSTRUCTIONS": "Enter contract address to import token",
   "IMPORT_TOKEN_SUCCESS": "Token is successfully imported",
   "NOT_ENOUGH_BALANCE": "Your current balance is too low for this transaction",
+  "USE_SWARM_EXTENSION": "Retrieve Bee URL from Swarm extension",
+  "BEE_URL": "Bee URL",
   "NETWORK_UNAVAILABLE_ERROR": "Network RPC is not reachable.",
   "ERROR_DESCRIPTION": "Error description",
   "BLOCK_EXPLORER_URL_LABEL": "Block Explorer URL (Optional)",
