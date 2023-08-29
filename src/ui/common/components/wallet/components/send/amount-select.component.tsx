@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import Close from '@mui/icons-material/Close'
 import Form from '../../../form/form.component'
@@ -10,15 +10,14 @@ import GasEstimation from '../gas-estimation.component'
 import { convertFromDecimal, isAddressValid, isValueValid, valueRegex } from '../../../../utils/ethers'
 import { UserResponse } from '../../../../../../model/internal-messages.model'
 import { useWalletLock } from '../../hooks/wallet-lock.hook'
-import { Token } from '../../../../../../model/storage/wallet.model'
-import { BigNumber } from 'ethers'
+import { BigNumber, utils } from 'ethers'
+import { useWallet } from '../../context/wallet.context'
+import { getAccountBalance, getTokenBalance } from '../../../../../../messaging/content-api.messaging'
 
 export interface AmountSelectProps {
   address: Address
   user: UserResponse
   rpcUrl: string
-  selectedToken: Token
-  balance?: BigNumber
   onCancel: () => void
   onSubmit: (value: BigNumberString) => void
 }
@@ -26,16 +25,14 @@ export interface FormFields {
   amount: string
 }
 
-const AmountSelect = ({
-  balance,
-  address,
-  user,
-  rpcUrl,
-  selectedToken,
-  onCancel,
-  onSubmit,
-}: AmountSelectProps) => {
+const AmountSelect = ({ address, user, rpcUrl, onCancel, onSubmit }: AmountSelectProps) => {
   const [value, setValue] = useState<BigNumberString>('')
+  const [balance, setBalance] = useState<BigNumber | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const { walletNetwork, selectedToken } = useWallet()
+
+  const selectedNetwork = walletNetwork || user.network
+
   useWalletLock()
 
   const {
@@ -43,6 +40,21 @@ const AmountSelect = ({
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
+
+  const loadBalance = async () => {
+    try {
+      const balance = await (selectedToken
+        ? getTokenBalance(selectedToken, selectedNetwork.rpc)
+        : getAccountBalance(user.address, selectedNetwork.rpc))
+
+      setBalance(balance)
+    } catch (error) {
+      // Not a critical error
+      console.warn(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const getValue = () => {
     if (!isValueValid(value)) {
@@ -52,7 +64,17 @@ const AmountSelect = ({
     return convertFromDecimal(value, selectedToken?.decimals).toString()
   }
 
-  const notEnoughBalance = balance ? BigNumber.from(value).gt(balance) : false
+  useEffect(() => {
+    loadBalance()
+  }, [])
+
+  let notEnoughBalance: boolean
+
+  try {
+    notEnoughBalance = balance ? utils.parseEther(value || '0').gt(balance) : false
+  } catch (error) {
+    // ignore
+  }
 
   return (
     <FlexColumnDiv>
@@ -99,14 +121,18 @@ const AmountSelect = ({
           type="submit"
           size="large"
           data-testid="amount-submit"
-          disabled={notEnoughBalance}
+          disabled={notEnoughBalance || loading}
           sx={{
             marginTop: '50px',
           }}
         >
           {intl.get('SEND')}
         </Button>
-        {notEnoughBalance && <Typography variant="body2">{intl.get('NOT_ENOUGH_BALANCE')}</Typography>}
+        {notEnoughBalance && (
+          <Typography variant="body2" color="gray" sx={{ marginTop: '5px' }}>
+            {intl.get('NOT_ENOUGH_BALANCE')}
+          </Typography>
+        )}
       </Form>
     </FlexColumnDiv>
   )

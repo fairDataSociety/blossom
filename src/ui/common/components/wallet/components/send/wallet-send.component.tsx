@@ -128,7 +128,6 @@ const WalletSend = () => {
           address={address}
           user={user}
           rpcUrl={getRpcUrl()}
-          selectedToken={selectedToken}
           onSubmit={setValue}
           onCancel={() => setAddress('')}
         />
