@@ -9,7 +9,7 @@ export async function openPage(url: string): Promise<Page> {
   return page
 }
 
-export async function getElementIfExists(page: Page, selector: string): Promise<ElementHandle<Element>> {
+export function getElementIfExists(page: Page, selector: string): Promise<ElementHandle<Element>> {
   return page.$(selector)
 }
 
