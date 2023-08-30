@@ -1,7 +1,8 @@
 import { styled } from '@mui/system'
 
 const MenuWrapper = styled('div')(() => ({
-  minWidth: '300px',
+  minWidth: '350px',
+  maxWidth: '350px',
   minHeight: '500px',
   maxHeight: '500px',
   height: '500px',

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import { Stack, Typography } from '@mui/material'
-import Router from '@mui/icons-material/Router'
+import Settings from '@mui/icons-material/Settings'
 import VpnKey from '@mui/icons-material/VpnKey'
-import Hive from '@mui/icons-material/Hive'
 import Security from '@mui/icons-material/Security'
-import Section from './section.component'
+import Wallet from '@mui/icons-material/Wallet'
+import Section from '../../components/section/section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
 import {
@@ -63,32 +63,34 @@ const Main = () => {
             {intl.get('LOGIN_OR_REGISTER')}
           </Section>
         )}
-        <Section
-          description={intl.get('NETWORK_SETTINGS_DESCRIPTION')}
-          image={<Router />}
-          onClick={() => navigate(RouteCodes.network)}
-          dataTestId="settings-network"
-        >
-          {intl.get('NETWORK')}
-        </Section>
-        <Section
-          description={intl.get('SWARM_DESCRIPTION')}
-          image={<Hive />}
-          onClick={() => navigate(RouteCodes.swarm)}
-          dataTestId="settings-swarm"
-        >
-          {intl.get('SWARM')}
-        </Section>
         {user && (
-          <Section
-            description={intl.get('DAPP_PERMISSIONS_DESCRIPTION')}
-            image={<Security />}
-            onClick={() => navigate(RouteCodes.permissions)}
-            dataTestId="settings-permissions"
-          >
-            {intl.get('DAPP_PERMISSIONS')}
-          </Section>
+          <>
+            <Section
+              description={intl.get('DAPP_PERMISSIONS_DESCRIPTION')}
+              image={<Security />}
+              onClick={() => navigate(RouteCodes.permissions)}
+              dataTestId="settings-permissions"
+            >
+              {intl.get('DAPP_PERMISSIONS')}
+            </Section>
+            <Section
+              description={intl.get('WALLET_DESCRIPTION')}
+              image={<Wallet />}
+              onClick={() => navigate(RouteCodes.wallet)}
+              dataTestId="wallet"
+            >
+              {intl.get('WALLET')}
+            </Section>
+          </>
         )}
+        <Section
+          description={intl.get('SETTINGS_DESCRIPTION')}
+          image={<Settings />}
+          onClick={() => navigate(RouteCodes.settings)}
+          dataTestId="settings"
+        >
+          {intl.get('SETTINGS')}
+        </Section>
       </Stack>
     </>
   )

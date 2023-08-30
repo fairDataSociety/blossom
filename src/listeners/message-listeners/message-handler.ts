@@ -1,5 +1,7 @@
 import BackgroundAction from '../../constants/background-actions.enum'
 
+export type ListenerHandler<Data> = (data: Data, sender?: chrome.runtime.MessageSender) => Promise<unknown>
+
 /**
  * This interface describes how an action should be processed and how data should be validated
  * for that action
@@ -7,7 +9,7 @@ import BackgroundAction from '../../constants/background-actions.enum'
 export interface ActionHandler<Data> {
   action: BackgroundAction
   assert?: (data: unknown) => data is Data
-  handler: (data: Data, sender?: chrome.runtime.MessageSender) => Promise<unknown>
+  handler: ListenerHandler<Data>
 }
 
 /**

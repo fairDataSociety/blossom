@@ -9,6 +9,10 @@ export async function openPage(url: string): Promise<Page> {
   return page
 }
 
+export function getElementIfExists(page: Page, selector: string): Promise<ElementHandle<Element>> {
+  return page.$(selector)
+}
+
 export async function waitForElementText(page: Page, selector: string): Promise<string> {
   await page.waitForSelector(selector)
 
@@ -72,4 +76,12 @@ export async function getPageByTitle(title: string): Promise<Page> {
   const blossomPageIndex = pageTitles.findIndex((pageTitle) => pageTitle === title)
 
   return pages[blossomPageIndex]
+}
+
+export async function getNetworkElementsFromSelect(page: Page): Promise<ElementHandle<Element>[]> {
+  await (await (await getElementByTestId(page, 'network-select')).$('fieldset')).click()
+
+  await wait(500)
+
+  return getElementChildren(await (await getElementBySelector(page, '#menu-')).$('ul'))
 }

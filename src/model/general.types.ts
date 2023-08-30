@@ -9,3 +9,5 @@ export type PrivateKey = FlavoredType<string, 'PrivateKey'>
 export type DappId = FlavoredType<string, 'DappId'>
 export type Bytes<length extends number> = FlavoredType<Uint8Array, length>
 export type HexString<length extends number> = FlavoredType<string, length>
+export type HexStringVariate = FlavoredType<string, 'HexStringVariate'>
+export type BigNumberString = FlavoredType<string, 'BigNumberString'>

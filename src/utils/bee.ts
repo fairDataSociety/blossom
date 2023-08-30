@@ -8,6 +8,10 @@ import { NULL_BATCH_ID } from '../constants/constants'
  */
 export async function getBatchId(beeDebugUrl: string): Promise<string> {
   try {
+    if (!beeDebugUrl) {
+      return NULL_BATCH_ID
+    }
+
     const beeDebug = new BeeDebug(beeDebugUrl)
 
     const batches = await beeDebug.getAllPostageBatch()

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import intl from 'react-intl-universal'
 import { AppBar, Button, GlobalStyles, Typography } from '@mui/material'
 import { FlexDiv } from '../../common/components/utils/utils'
@@ -54,7 +54,15 @@ const Dialog = () => {
       </AppBar>
       <FlexDiv sx={{ marginTop: '50px', padding: '20px' }}>
         <Typography variant="body1" sx={{ margin: 'auto', marginTop: '20px' }}>
-          {intl.get(question, placeholders)}
+          {intl
+            .get(question, placeholders)
+            .split('\n')
+            .map((line, index) => (
+              <Fragment key={index}>
+                {line}
+                <br />
+              </Fragment>
+            ))}
         </Typography>
       </FlexDiv>
       <FlexDiv

@@ -7,4 +7,5 @@ export interface Network {
   fdsRegistrar?: Address
   publicResolver?: Address
   custom: boolean
+  blockExplorerUrl?: string
 }

@@ -5,9 +5,10 @@ import ContentCopy from '@mui/icons-material/ContentCopy'
 
 export interface ClipboardButtonProps {
   text: string
+  size?: 'large' | 'medium' | 'small'
 }
 
-const ClipboardButton = ({ text }: ClipboardButtonProps) => {
+const ClipboardButton = ({ text, size }: ClipboardButtonProps) => {
   const [open, setOpen] = useState<boolean>(false)
   const [closeTimeoutHandle, setCloseTimeoutHandle] = useState<NodeJS.Timeout>(null)
 
@@ -34,7 +35,7 @@ const ClipboardButton = ({ text }: ClipboardButtonProps) => {
 
   return (
     <>
-      <IconButton aria-label="delete" size="large" onClick={onClick}>
+      <IconButton onClick={onClick} size={size || 'medium'} data-testid="copy-btn">
         <ContentCopy />
       </IconButton>
       <Snackbar
