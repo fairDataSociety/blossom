@@ -15,6 +15,9 @@ export abstract class FdpStorageProvider {
     const batchId = await getBatchId(beeDebugApiUrl)
     const { ensRegistry, fdsRegistrar, publicResolver, rpc } = network
     const options = {
+      cacheOptions: {
+        isUseCache: false,
+      },
       ensOptions: {
         rpcUrl: rpc,
         contractAddresses: {
