@@ -78,9 +78,13 @@ describe('Wallet tests', () => {
 
     await typeToInput(page, 'amount-input', '0.')
 
+    await wait(1000)
+
     await (await getElementByTestId(page, 'amount-submit')).click()
 
     await typeToInput(page, 'amount-input', '0.01')
+
+    await wait(1000)
 
     await (await getElementByTestId(page, 'amount-submit')).click()
 
@@ -194,6 +198,8 @@ describe('Wallet tokens tests', () => {
     await (await getElementByTestId(page, 'address-submit')).click()
 
     await typeToInput(page, 'amount-input', '1.0')
+
+    await wait(1000)
 
     await (await getElementByTestId(page, 'amount-submit')).click()
 
