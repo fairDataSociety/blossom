@@ -113,7 +113,7 @@ export async function register(data: RegisterData): Promise<void> {
       throw new Error('Private key or mnemonic must be set in order to register account')
     }
 
-    await fdp.account.register(username, password)
+    await fdp.account.register(fdp.account.createRegistrationRequest(username, password))
 
     session.open(username, null, password, fdp.account.wallet.address, network, fdp.account.seed)
 
