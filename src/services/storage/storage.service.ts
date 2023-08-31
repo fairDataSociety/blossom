@@ -271,7 +271,11 @@ export class Storage {
       dappId,
     }
 
-    if (!updatedDapp.fullStorageAccess && Object.keys(updatedDapp.podPermissions).length === 0) {
+    if (
+      !updatedDapp.fullStorageAccess &&
+      !updatedDapp.accountInfoAccess &&
+      Object.keys(updatedDapp.podPermissions).length === 0
+    ) {
       delete dapps[dappId]
     } else {
       dapps[dappId] = updatedDapp
