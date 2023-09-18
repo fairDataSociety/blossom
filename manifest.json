@@ -22,6 +22,6 @@
     }
   ],
   "options_page": "auth.html",
-  "permissions": ["storage", "cookies"],
+  "permissions": ["storage"],
   "host_permissions": ["https://*/*", "http://*/*"]
 }
