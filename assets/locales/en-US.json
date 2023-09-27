@@ -129,5 +129,9 @@
   "DIALOG_DAPP_ACCOUNT_INFO": "dApp with ID {dappId} asks to access your account information (address and ENS name).\nDo you allow access to your account information?",
   "ACCOUNT_INFORMATION_ACCESS": "Account Information Access",
   "TOKEN_IMPORT_ERROR": "Couldn't get token data.",
-  "TRANSACTION_ERROR": "The transaction failed. Click here to see the details."
+  "TRANSACTION_ERROR": "The transaction failed. Click here to see the details.",
+  "ABOUT": "About",
+  "ABOUT_DESCRIPTION": "See details about the Blossom extension",
+  "VERSION": "Version",
+  "PRIVACY_POLICY": "Privacy Policy"
 }
