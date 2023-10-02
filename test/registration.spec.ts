@@ -8,7 +8,7 @@ import {
   logout,
 } from './test-utils/account'
 import { sendFunds } from './test-utils/ethers'
-import { openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
+import { getRandomString, openExtensionOptionsPage, setSwarmExtensionId } from './test-utils/extension.util'
 import {
   click,
   dataTestId,
@@ -26,7 +26,7 @@ async function assertUserLogin(username: string): Promise<void> {
 }
 
 const blossomId: string = global.__BLOSSOM_ID__
-const username = 'testuser'
+const username = 'testuser-' + getRandomString()
 const password = 'pass12345'
 let mnemonic: string[]
 
@@ -115,7 +115,7 @@ describe('Unsuccessful registration tests', () => {
 
 describe('Registration with an existing account', () => {
   let page: Page
-  const username = 'testuser2'
+  const username = 'testuser2-' + getRandomString()
 
   beforeAll(async () => {
     page = await openExtensionOptionsPage(blossomId, 'auth.html')
@@ -172,7 +172,7 @@ describe('Login tests', () => {
 
     await fillUsernamePasswordForm(page, username, password)
 
-    await wait(100)
+    await wait(500)
 
     await assertUserLogin(username)
 

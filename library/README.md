@@ -104,6 +104,32 @@ dApps can sign any data using their default pod's private key.
 const signature = await blossom.signer.signMessage(blossom.dappId, 'Data...')
 ```
 
+### Wallet
+
+Library provides methods for interaction with Blossom wallet.
+
+To get information about the user:
+
+```typescript
+const info = await blossom.wallet.getAccountInfo()
+console.log(info.address) // user's address
+```
+
+> **_NOTE_:** The user must allow access to this information, othrwise an "Access denied" error is thrown
+
+To get balance of currently logged in user:
+
+```typescript
+const balanceString = await blossom.wallet.getUserBalance()
+console.log(BigNumber.from(balanceString)) // result can be converted to BigNumber object
+```
+
+dApp can send funds as well, but the user must allow it:
+
+```typescript
+await blossom.wallet.sendTransaction('0x1234...', '1000000000')
+```
+
 ### Terminating connection
 
 Once when the instance of the Blossom class is not needed anymore, connection with the extension can be

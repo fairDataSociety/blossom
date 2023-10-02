@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer'
-import { getElementByTestId, typeToInput } from './page'
+import { dataTestId, getElementByTestId, getElementIfExists, typeToInput, wait } from './page'
 
 export async function getExtensionId(extensionName: string): Promise<string> {
   const page = await global.__BROWSER__.newPage()
@@ -42,12 +42,27 @@ export async function openExtensionOptionsPage(extensionId: string, page: string
 
 export async function setSwarmExtensionId(): Promise<void> {
   const settingsPage = await openExtensionOptionsPage(global.__BLOSSOM_ID__, 'settings.html')
+
+  await (await getElementByTestId(settingsPage, 'settings-button')).click()
+
   await (await getElementByTestId(settingsPage, 'settings-swarm-button')).click()
+
+  await wait(500)
+
+  if (!(await getElementIfExists(settingsPage, dataTestId('swarm-extension-id-input')))) {
+    await (await getElementByTestId(settingsPage, 'swarm-extension-checkbox')).click()
+  }
+
+  await wait(200)
 
   await typeToInput(settingsPage, 'swarm-extension-id-input', global.__SWARM_ID__)
 
   await (await getElementByTestId(settingsPage, 'swarm-extension-id-submit')).click()
 
-  await getElementByTestId(settingsPage, 'settings-swarm-button')
+  await getElementByTestId(settingsPage, 'settings-button')
   await settingsPage.close()
+}
+
+export function getRandomString(): string {
+  return Math.random().toString().substring(2)
 }

@@ -8,25 +8,19 @@ exclude: true
 
 # Introduction
 
-The Blossom extension is a "Single Sign-On" solution for Web3 applications. It provides security and helps dApps to avoid implementing account management. By managing dApp permissions, users have complete control of the dApps they are using.
+The Blossom extension is a "Single Sign-On" solution for Web3 applications. It provides security and helps dApps to avoid implementing account management. It also provides wallet functionalities. By managing dApp permissions, users have complete control of the dApps they are using.
+
+# Installation
+
+The Blossom extension can be installed from this link in [Google Web Store page](https://chrome.google.com/webstore/detail/blossom/caedjloenbhibmaeffockkiallpngmmd){:target="\_blank"}.
 
 # Prerequisites
 
-In order to function properly, the Blossom extension requires the Swarm extension to be installed and configured.
+There is no any specific prerequisites for running the Blossom extension.
 
-Open the [Google Web Store page](https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia){:target="\_blank"} and install the Swarm extension first.
+If the user is running their own Bee node, then the Blossom extension can be configured to retrieve Bee URL and Bee Debug URL from the Swarm extension.
 
-The Swarm extension provides security context for dApps that are loaded from bzz links.
-
-## Swarm Extension Configuration
-
-Configure your Swarm extension, by setting the correct URL of your Bee node. Later the Blossom will use this URL as storage.
-
-If you are running a local Bee node on the default port, then no changes are needed. Otherwise update it to correct URL.
-
-![Swarm Extension URL config](/assets/img/swarm-extension-bee-url.png){:width="70%"}
-
-If you don't have a running Bee node, you can use the FDS gateway:
+If you don't have a running Bee node, you can use the FDS gateway by default:
 
 ```
 https://bee-1.fairdatasociety.org
@@ -34,9 +28,25 @@ https://bee-1.fairdatasociety.org
 
 > **_NOTE:_** If you use a public gateway, you do not have control over data persistence and lose some privacy, as the gateway can see the traffic you generate.
 
-# Installation
+## Swarm Extension Configuration
 
-Now when the Swarm extension is installed and configured, to install the Blossom extension open the [Google Web Store page](https://chrome.google.com/webstore/detail/blossom/caedjloenbhibmaeffockkiallpngmmd){:target="\_blank"}.
+To install the Swarm extension, open the [Google Web Store page](https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia){:target="\_blank"}.
+
+The Swarm extension provides security context for dApps that are loaded from bzz links.
+
+Configure your Swarm extension, by setting the correct URL of your Bee node. Later you can configure the Blossom to use this URL as storage.
+
+If you are running a local Bee node on the default port, then no changes are needed. Otherwise update it to correct URL.
+
+![Swarm Extension URL config](/assets/img/swarm-extension-bee-url.png){:width="70%"}
+
+Once when the Swarm extension is installed and configured, to configure the Blossom extension to use it, open the main menu by clicking on the Blossom extension icon.
+
+![Blossom menu](/assets/img/blossom-not-logged-in.png){:width="50%"}
+
+Click the `SETTINGS` button and then the `SWARM` button. To enable communication with the Swarm extension, activate the `Retrieve Bee URL from Swarm extension` checkbox. The field with Swarm extension ID will become visible with default extension ID. The extension ID should be `afpgelfcknfbbfnipnomfdbbnbbemnia`, if not, overwrite it. Click `SAVE`. Now the Blossom extension will use Bee URL defined in the Swarm extension.
+
+![Blossom menu](/assets/img/swarm-extension-config.png){:width="50%"}
 
 ## Creating an account
 
@@ -54,7 +64,7 @@ There is also an option to create a local account, which is not stored in the Sw
 
 ### Creating a portable account
 
-To create a portable account click on the `REGISTER` button. In the next screen, first choose the blockchain you want to register the account to. At the moment there are only `FDP-Play`, `Sepolia` and `Görli` blockchains.
+To create a portable account click on the `REGISTER` button. In the next screen, first choose the blockchain you want to register the account to. There are several networks available, so choose the one that is suitable.
 
 > **_NOTE:_** For FDP-Play option, the fdp-play environment must be running locally. Check [its repo](https://github.com/fairDataSociety/fdp-play){:target="\_blank"} for more information.
 
@@ -76,14 +86,14 @@ At this point you need to transfer some amount of ETH to the account that is sho
 
 Install the Metamask extension from the [Google Web Store page](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn){:target="\_blank"} if you haven't already.
 
-Once when the onboarding process is completed, add `Sepolia` blockchain. Click on the Metamask icon, then on the network dropdown and the `Add network` button.
+Once when the onboarding process is completed, add the network you want to register your account to. In the following example the `Sepolia` blockchain will be used. Click on the Metamask icon, then on the network dropdown and the `Add network` button.
 
 ![Metamask add network](/assets/img/metamask-add-network.png){:width="50%"}
 
 A list of all available networks will appear. Click on the `Add a network manually` at the bottom. Set the following values to the form fields:
 
 - Network name - `Sepolia`
-- New RPC URL - `https://rpc.sepolia.org` or your RPC provider URL
+- New RPC URL - `https://sepolia.dev.fairdatasociety.org/` or your RPC provider URL
 - Chain ID - enter `1` and an error will appear saying that the chain ID is not valid providing the correct value. Now enter that suggested value instead.
 - Currency symbol - `ETH`
 
@@ -123,7 +133,7 @@ A window will appear asking you to allow the Fairdrive full access to your perso
 
 Each permission granted by the user can be viewed and edited from the Blossom extension.
 
-Open the extension menu and click on the `DAPP PERMISSIONS` button. A list of all dApps that have permmissions will appear. Select one of them to see the details.
+Open the extension menu and click on the `DAPP PERMISSIONS` button. There you can see a list of all dApps that have permmissions. Select one of them to see the details.
 
 ![Blossom account created](/assets/img/blossom-permissions.png){:width="50%"}
 
@@ -132,6 +142,8 @@ There you can see whether the dApp has full access to your personal storage. And
 Here you can revoke access to any of the dApps.
 
 If a dApp has access to a specific pod, that means it can read, write and delete files and folders in that pod. If a dApp has full access, that means it can access any pod and all files in the personal storage.
+
+dApps can ask you to access your account information, like address and ENS name.
 
 ## Logging in and out
 
@@ -151,11 +163,42 @@ To add a custom blockchain network select the `NETWORK` button. There you can se
 
 - Network name - Name of the network that will be displayed in the list
 - RPC provider address - URL of an RPC provider
+- Block explorer URL - Optianal URL of block explorer for the network
 - Addresses of the ENS smart contracts
 
 Click the `SAVE` button and the new network will appear in the list. This network now can be used to register new account or to log in.
 
 > **_NOTE:_** This option is mostly ment for experimentation and testing.
+
+# Blossom Wallet
+
+While you are logged in, you can use the Blossom extension as a wallet as well.
+
+## Sending
+
+To send ether, open the menu, click the `WALLET` button and then the `SEND` button.
+
+You can send tokens the completely same way, just before clicking the `SEND` button, select the right token from the `Tokens` tab.
+
+![Blossom account created](/assets/img/wallet-overview.png){:width="50%"}
+
+Choose the address that will receive the transaction and click `SELECT`. Then enter amount you want to send and click `SEND`. Before confirming the transaction, check if all information is correct. If not you can cancel the transaction and correct it. If everything is correct click `SEND`. After a short period of time, if the transaction is processed successfully the following screen will show up:
+
+![Blossom account created](/assets/img/transaction-sent.png){:width="50%"}
+
+If you go back to the wallet overview page, you can see transaction details if you click on a transaction in the `Activity` tab.
+
+## Tokens
+
+To import a token, go to the `Tokens` tab and click the `IMPORT TOKEN` button. Enter the token address and you should automatically see the token details as well as balance.
+
+![Blossom account created](/assets/img/import-token.png){:width="50%"}
+
+Confirm import and the token will be added to the `Tokens` tab.
+
+If you click on a token, that token will become selected. Clicking the `SEND` button afterwards will start a process of sending that token instead of ether. You can deselect a token by clicking the back arrow in front of balance.
+
+![Blossom account created](/assets/img/token-select.png){:width="50%"}
 
 # Updates and new versions
 

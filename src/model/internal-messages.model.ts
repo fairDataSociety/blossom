@@ -1,5 +1,7 @@
 import { Network } from './storage/network.model'
-import { Address, Mnemonic, PrivateKey } from './general.types'
+import { Address, BigNumberString, HexStringVariate, Mnemonic, PrivateKey } from './general.types'
+import { RequireAtLeastOne } from './utils/require-at-least-one'
+import { Token } from './storage/wallet.model'
 
 export interface LoginData {
   username: string
@@ -82,4 +84,44 @@ export interface FdpStorageRequest {
 export interface DialogQuestion {
   question: string
   placeholders: Record<string, string>
+}
+
+export interface TransactionBase {
+  to: Address
+}
+
+export type Transaction = TransactionBase &
+  RequireAtLeastOne<{
+    // in wei
+    value?: BigNumberString
+    data?: HexStringVariate
+  }>
+
+export type InternalTransaction = {
+  rpcUrl: string
+} & Transaction
+
+export interface AccountBalanceRequest {
+  address: Address
+  rpcUrl?: string
+}
+
+export interface TokenCheckRequest {
+  address: Address
+  rpcUrl?: string
+}
+
+export interface TokenRequest {
+  token: Token
+  rpcUrl?: string
+}
+
+export interface TokenTransferRequest extends TokenRequest {
+  to: string
+  value: string
+}
+
+export interface UserInfo {
+  address: Address
+  ensName?: string
 }

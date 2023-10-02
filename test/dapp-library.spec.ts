@@ -7,12 +7,14 @@ import { BEE_URL } from './config/constants'
 import { login, logout, registerExisting } from './test-utils/account'
 import { removeZeroFromHex } from './test-utils/ethers'
 import { click, getPageByTitle, openPage, wait, waitForElementText } from './test-utils/page'
+import { getRandomString } from './test-utils/extension.util'
 
 const FDP_STORAGE_PAGE_URL = `${BEE_URL}/bzz/${global.FDP_STORAGE_PAGE_REFERENCE}/`
+const WALLET_PAGE_URL = `${BEE_URL}/bzz/${global.WALLET_PAGE_REFERENCE}/`
 
 describe('Dapp interaction with Blossom, using the library', () => {
   let page: Page
-  const username = 'fdpuser'
+  const username = 'fdpuser-' + getRandomString()
   const password = 'pass12345'
   const mnemonic = 'screen series sponsor unfair wear measure idle strike flame zone gain process'
 
@@ -116,6 +118,78 @@ describe('Dapp interaction with Blossom, using the library', () => {
       const hash = await wallet.signMessage('Blossom')
 
       expect(await waitForElementText(page, '#sign-message[complete="true"]')).toEqual(hash)
+    })
+  })
+
+  describe('Wallet tests', () => {
+    beforeAll(async () => {
+      await page.goto(WALLET_PAGE_URL)
+    })
+
+    // balance in wei, expectedBalance rounded value in ETH
+    const assertBalance = (balance: string, expectedBalance: string) => {
+      expect(balance.length).toEqual(17)
+      expect(`0.${balance.substring(0, 2)}`).toEqual(expectedBalance)
+    }
+
+    test("Shouldn't get account info if user didn't allow", async () => {
+      await click(page, 'get-account-info-btn-1')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-cancel-btn')
+
+      expect(await waitForElementText(page, '#account-info-1[complete="true"]')).toEqual(
+        'Error: Blossom: Access denied',
+      )
+    })
+
+    test('Should get account info', async () => {
+      await click(page, 'get-account-info-btn-2')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-confirm-btn')
+
+      const wallet = Wallet.fromMnemonic(mnemonic)
+
+      expect(await waitForElementText(page, '#account-info-2[complete="true"]')).toEqual(wallet.address)
+    })
+
+    test('Should get initial balance', async () => {
+      await click(page, 'get-balance-btn')
+
+      assertBalance(await waitForElementText(page, '#balance[complete="true"]'), '0.99')
+    })
+
+    test("Shouldn't send transaction if user didn't confirm", async () => {
+      await click(page, 'send-transaction-btn-1')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-cancel-btn')
+
+      expect(await waitForElementText(page, '#updated-balance-1[complete="true"]')).toEqual(
+        'Error: Blossom: Access denied',
+      )
+    })
+
+    test('Should successfully send funds', async () => {
+      await click(page, 'send-transaction-btn-2')
+
+      await wait(5000)
+
+      const blossomPage = await getPageByTitle('Blossom')
+
+      await click(blossomPage, 'dialog-confirm-btn')
+
+      assertBalance(await waitForElementText(page, '#updated-balance-2[complete="true"]'), '0.89')
     })
   })
 })

@@ -6,8 +6,8 @@ import { BEE_DEBUG_URL, BEE_URL } from './constants'
 
 const libraryPath = path.join('library', 'build', 'index.js')
 const dappsPath = path.join('test', 'dapps')
-const dapps = ['fdp-storage']
-const dappReferenceVariables = ['FDP_STORAGE_PAGE_REFERENCE']
+const dapps = ['fdp-storage', 'wallet']
+const dappReferenceVariables = ['FDP_STORAGE_PAGE_REFERENCE', 'WALLET_PAGE_REFERENCE']
 
 function execPromise(command: string): Promise<void> {
   return new Promise((resolve, reject) => {

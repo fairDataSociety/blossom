@@ -11,27 +11,18 @@ import {
   getPodNameFromParams,
   isPodBasedMethod,
 } from '../../services/fdp-storage/fdp-storage-access'
-import { dappUrlToId } from '../../services/fdp-storage/fdp-storage.utils'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { SessionService } from '../../services/session.service'
 import { Storage } from '../../services/storage/storage.service'
-import { SwarmExtension } from '../../swarm-api/swarm-extension'
 import { isPodActionAllowed } from '../../utils/permissions'
 import { createMessageHandler } from './message-handler'
+import { errorMessages } from '../../constants/errors'
+import { getDappId } from './listener.utils'
 
 const fdpStorageProvider = new SessionFdpStorageProvider()
 const dialogs = new Dialog()
 const storage = new Storage()
 const sessionService = new SessionService()
-
-async function getDappId(sender: chrome.runtime.MessageSender): Promise<DappId> {
-  const { extensionId } = await storage.getSwarm()
-  const swarmExtension = new SwarmExtension(extensionId)
-
-  const { beeApiUrl } = await swarmExtension.beeAddress()
-
-  return dappUrlToId(sender.url, beeApiUrl)
-}
 
 async function handleFullAccessRequest(dappId: DappId, dapp: Dapp, session: Session): Promise<boolean> {
   if (dapp && dapp.fullStorageAccess) {
@@ -64,7 +55,7 @@ async function handlePodBasedMethod(
     const confirmed = await dialogs.ask('DIALOG_CREATE_POD', { dappId, podName })
 
     if (!confirmed) {
-      throw new Error('Blossom: Access denied')
+      throw new Error(errorMessages.ACCESS_DENIED)
     }
 
     await storage.setDappPodPermissionBySession(

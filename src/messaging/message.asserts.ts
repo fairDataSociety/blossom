@@ -1,7 +1,9 @@
 import { Address } from '../model/general.types'
 import {
+  AccountBalanceRequest,
   FdpStorageRequest,
   ImportAccountData,
+  InternalTransaction,
   LocalLoginData,
   LoginData,
   NetworkEditData,
@@ -9,16 +11,26 @@ import {
   RegisterDataBase,
   RegisterDataMnemonic,
   SignerRequest,
+  TokenCheckRequest,
+  TokenRequest,
+  TokenTransferRequest,
+  Transaction,
   UsernameCheckData,
 } from '../model/internal-messages.model'
 import { Dapp, PodActions, PodPermission } from '../model/storage/dapps.model'
 import { Network } from '../model/storage/network.model'
 import { Session } from '../model/storage/session.model'
 import { Swarm } from '../model/storage/swarm.model'
+import { Token, WalletConfig } from '../model/storage/wallet.model'
+import { isNumber } from '../utils/asserts'
 import { BytesMessage } from './scripts.messaging'
 
 export function isString(data: unknown): data is string {
   return typeof data === 'string'
+}
+
+export function isObject(data: unknown): data is Record<string, unknown> {
+  return typeof data === 'object'
 }
 
 export function isLoginData(data: unknown): data is LoginData {
@@ -78,9 +90,9 @@ export function isNetworkEditData(data: unknown): data is NetworkEditData {
 }
 
 export function isSwarm(data: unknown): data is Swarm {
-  const { extensionId } = (data || {}) as Swarm
+  const { extensionId, swarmUrl } = (data || {}) as Swarm
 
-  return typeof extensionId === 'string'
+  return isString(extensionId) || isString(swarmUrl)
 }
 
 export function isSession(data: unknown): data is Session {
@@ -139,4 +151,52 @@ export function isSerializedUint8Array(data: unknown): data is BytesMessage {
   const { type, value } = (data || {}) as BytesMessage
 
   return type === 'bytes' && isString(value)
+}
+
+export function isInternalTransaction(data: unknown): data is InternalTransaction {
+  const { to, value, data: txData, rpcUrl } = (data || {}) as InternalTransaction
+
+  return isAddress(to) && isString(rpcUrl) && (isString(value) || isString(txData))
+}
+
+export function isTransaction(data: unknown): data is Transaction {
+  const { to, value, data: txData } = (data || {}) as Transaction
+
+  return isAddress(to) && (isString(value) || isString(txData))
+}
+
+export function isAccountBalanceRequest(data: unknown): data is AccountBalanceRequest {
+  const { address, rpcUrl } = (data || {}) as AccountBalanceRequest
+
+  return isAddress(address) && (!rpcUrl || isString(rpcUrl))
+}
+
+export function isWalletConfig(data: unknown): data is WalletConfig {
+  const { lockInterval } = (data || {}) as WalletConfig
+
+  return isObject(data) && (!lockInterval || isNumber(lockInterval))
+}
+
+export function isTokenCheckRequest(data: unknown): data is TokenCheckRequest {
+  const { address, rpcUrl } = (data || {}) as TokenCheckRequest
+
+  return isAddress(address) && isString(rpcUrl)
+}
+
+export function isTokenRequest(data: unknown): data is TokenRequest {
+  const { token, rpcUrl } = (data || {}) as TokenRequest
+
+  return isToken(token) && isString(rpcUrl)
+}
+
+export function isTokenTransferRequest(data: unknown): data is TokenTransferRequest {
+  const { to, value } = (data || {}) as TokenTransferRequest
+
+  return isTokenRequest(data) && isAddress(to) && isString(value)
+}
+
+export function isToken(data: unknown): data is Token {
+  const { address, name, symbol, decimals } = (data || {}) as Token
+
+  return isAddress(address) && isString(name) && isString(symbol) && isNumber(decimals)
 }

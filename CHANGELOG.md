@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.4.0...blossom-ext-v0.5.0) (2023-08-30)
+
+
+### Features
+
+* add wallet functionalities
+* improve default configuration
+* add global errors ([4568cbc](https://github.com/fairDataSociety/blossom/commit/4568cbcb20aa2b2c4aa72038640fdfc82fe230ed))
+* add global errors ([#150](https://github.com/fairDataSociety/blossom/issues/150)) ([4568cbc](https://github.com/fairDataSociety/blossom/commit/4568cbcb20aa2b2c4aa72038640fdfc82fe230ed))
+* improve session handling ([#153](https://github.com/fairDataSociety/blossom/issues/153)) ([d58336f](https://github.com/fairDataSociety/blossom/commit/d58336f0e7e2e82c2531b33def03f5d51a1e6272))
+
 ## [0.4.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.3.1...blossom-ext-v0.4.0) (2023-05-26)
 
 

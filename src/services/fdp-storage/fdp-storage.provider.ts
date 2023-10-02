@@ -15,6 +15,9 @@ export abstract class FdpStorageProvider {
     const batchId = await getBatchId(beeDebugApiUrl)
     const { ensRegistry, fdsRegistrar, publicResolver, rpc } = network
     const options = {
+      cacheOptions: {
+        isUseCache: false,
+      },
       ensOptions: {
         rpcUrl: rpc,
         contractAddresses: {
@@ -55,7 +58,7 @@ export abstract class FdpStorageProvider {
     beeApiUrl: string
     beeDebugApiUrl: string
   }> {
-    let beeApiUrl = 'http://localhost:1633',
+    let beeApiUrl = swarm.swarmUrl || 'http://localhost:1633',
       beeDebugApiUrl = 'http://localhost:1635'
 
     if (process.env.CI_TESTS === 'true') {
@@ -63,6 +66,10 @@ export abstract class FdpStorageProvider {
         beeApiUrl: 'http://172.18.0.1:1633',
         beeDebugApiUrl: 'http://172.18.0.1:1635',
       }
+    }
+
+    if (!swarm.extensionEnabled) {
+      return { beeApiUrl, beeDebugApiUrl: null }
     }
 
     try {

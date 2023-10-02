@@ -3,7 +3,6 @@ import { ErrorObject } from '../model/error.model'
 import { removeWarningBadge, setWarningBadge } from '../utils/extension'
 import { Storage } from './storage/storage.service'
 import { Errors as ErrorsModel } from '../model/storage/general.model'
-import { Locales } from './locales.service'
 
 export class Errors {
   private storage: Storage = new Storage()

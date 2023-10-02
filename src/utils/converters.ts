@@ -68,3 +68,11 @@ export async function uint8ArrayToSerializedParameter(bytes: Uint8Array): Promis
     value: await uint8ArrayToBase64(bytes),
   }
 }
+
+export function millisecondsToMinutes(milliseconds: number): number {
+  return milliseconds / (60 * 1000)
+}
+
+export function minutesToMilliseconds(minutes: number): number {
+  return minutes * 60 * 1000
+}

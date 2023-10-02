@@ -13,6 +13,7 @@ export class SessionService {
   public async open(
     ensUserName: string,
     localUserName: string,
+    password: string,
     address: Address,
     network: Network,
     seed: Uint8Array,
@@ -22,6 +23,7 @@ export class SessionService {
     return this.storage.setSession({
       ensUserName,
       localUserName,
+      password,
       network,
       address,
       seed,

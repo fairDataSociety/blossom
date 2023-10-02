@@ -7,6 +7,7 @@ import { Dialog } from '../../services/dialog.service'
 import { SessionFdpStorageProvider } from '../../services/fdp-storage/session-fdp-storage.provider'
 import { isOtherExtension } from '../../utils/extension'
 import { createMessageHandler } from './message-handler'
+import { errorMessages } from '../../constants/errors'
 
 const dialogs = new Dialog()
 const dappService = new DappService()
@@ -22,7 +23,7 @@ async function signMessage(
 
   // TODO should check permissions
   if (podName !== dappId) {
-    throw new Error('Blossom: Access denied')
+    throw new Error(errorMessages.ACCESS_DENIED)
   }
 
   const podWallet = await fdp.personalStorage.getPodWallet(fdp.account.seed, podName)
@@ -37,7 +38,7 @@ async function signMessage(
   )
 
   if (!confirmed) {
-    throw new Error('Blossom: Access denied')
+    throw new Error(errorMessages.ACCESS_DENIED)
   }
 
   return new Wallet(podWallet.privateKey).signMessage(message)

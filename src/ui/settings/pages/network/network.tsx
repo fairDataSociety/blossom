@@ -2,10 +2,11 @@ import React from 'react'
 import intl from 'react-intl-universal'
 import { Router } from '@mui/icons-material'
 import { FlexColumnDiv } from '../../../common/components/utils/utils'
-import Header from '../../components/header/header.component'
+import Header from '../../../common/components/header/header.component'
 import NetworkList from './network-list'
 import { useNavigate } from 'react-router-dom'
 import { useNetworks } from '../../../common/hooks/networks.hooks'
+import RouteCodes from '../../routes/route-codes'
 
 const NetworkComponent = () => {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ const NetworkComponent = () => {
 
   return (
     <FlexColumnDiv>
-      <Header title={intl.get('NETWORK')} image={Router} />
+      <Header title={intl.get('NETWORK')} image={Router} showOpenPage backRoute={RouteCodes.settings} />
       <NetworkList onSelect={({ label }) => navigate(label)} networks={networks} />
     </FlexColumnDiv>
   )
