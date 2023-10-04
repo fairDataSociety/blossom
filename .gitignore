@@ -5,3 +5,4 @@ swarm-extension
 extension.zip
 test/**/blossom.js
 test/**/*.tar.gz
+.DS_Store
