@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.5.0...blossom-ext-v0.6.0) (2023-10-05)
+
+
+### Features
+
+* about page ([#177](https://github.com/fairDataSociety/blossom/issues/177)) ([0b18f22](https://github.com/fairDataSociety/blossom/commit/0b18f228f1f170d94828bbbbb0a1dc11c02cb6d4))
+
+
+### Bug Fixes
+
+* dapp permissions ([#171](https://github.com/fairDataSociety/blossom/issues/171)) ([055bc4d](https://github.com/fairDataSociety/blossom/commit/055bc4db590b32ff9f70152b1dde4f5085f128ee))
+
 ## [0.5.0](https://github.com/fairDataSociety/blossom/compare/blossom-ext-v0.4.0...blossom-ext-v0.5.0) (2023-08-30)
 
 
