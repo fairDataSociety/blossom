@@ -9,6 +9,8 @@ enum RouteCodes {
   permissions = '/permissions',
   permissionsEdit = '/permissions/:dappId',
   wallet = '/wallet',
+  about = '/about',
+  privacyPolicy = '/privacy-policy',
 }
 
 export default RouteCodes

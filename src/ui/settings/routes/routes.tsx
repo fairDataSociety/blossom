@@ -11,6 +11,8 @@ import RouteCodes from './route-codes'
 import WalletRoutes from '../../common/components/wallet/routes/wallet-routes'
 import Configuration from '../pages/configuration/configuration.component'
 import WalletConfig from '../pages/wallet-config/wallet-config.component'
+import About from '../pages/about/about'
+import PrivacyPolicy from '../pages/privacy-policy/privacy-plicy'
 
 const Routes = () => {
   return (
@@ -26,6 +28,8 @@ const Routes = () => {
         <Route path={RouteCodes.permissions} element={<Permissions />} />
         <Route path={RouteCodes.permissionsEdit} element={<DappPermissions />} />
         <Route path={`${RouteCodes.wallet}/*`} element={<WalletRoutes />} />
+        <Route path={RouteCodes.about} element={<About />} />
+        <Route path={RouteCodes.privacyPolicy} element={<PrivacyPolicy />} />
       </ReactRoutes>
     </>
   )

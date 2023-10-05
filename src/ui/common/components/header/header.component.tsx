@@ -20,7 +20,7 @@ const Header = (props: HeaderProps) => {
   const navigate = useNavigate()
 
   return (
-    <FlexDiv sx={{ alignItems: 'center' }}>
+    <FlexDiv sx={{ alignItems: 'center', position: 'relative' }}>
       <IconButton onClick={() => navigate(backRoute || '..')}>
         <ArrowBack />
       </IconButton>
@@ -28,7 +28,7 @@ const Header = (props: HeaderProps) => {
         {title}
       </Typography>
       {showOpenPage && <OpenPageButton />}
-      <Image sx={{ color: '#ddd' }} />
+      <Image sx={{ color: '#ddd', width: 40 }} />
     </FlexDiv>
   )
 }

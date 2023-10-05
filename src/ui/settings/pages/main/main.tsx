@@ -5,6 +5,7 @@ import Settings from '@mui/icons-material/Settings'
 import VpnKey from '@mui/icons-material/VpnKey'
 import Security from '@mui/icons-material/Security'
 import Wallet from '@mui/icons-material/Wallet'
+import Info from '@mui/icons-material/Info'
 import Section from '../../components/section/section.component'
 import { useNavigate } from 'react-router-dom'
 import RouteCodes from '../../routes/route-codes'
@@ -90,6 +91,15 @@ const Main = () => {
           dataTestId="settings"
         >
           {intl.get('SETTINGS')}
+        </Section>
+
+        <Section
+          description={intl.get('ABOUT_DESCRIPTION')}
+          image={<Info />}
+          onClick={() => navigate(RouteCodes.about)}
+          dataTestId="about"
+        >
+          {intl.get('ABOUT')}
         </Section>
       </Stack>
     </>

@@ -23,7 +23,12 @@ const OpenPageButton = () => {
 
   return (
     <Tooltip title={intl.get('OPEN_PAGE_BUTTON_TITLE')}>
-      <IconButton aria-label="open-page" size="large" onClick={onClick}>
+      <IconButton
+        style={{ position: 'absolute', right: 40 }}
+        aria-label="open-page"
+        size="large"
+        onClick={onClick}
+      >
         <Fullscreen />
       </IconButton>
     </Tooltip>
