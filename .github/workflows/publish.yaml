@@ -8,6 +8,9 @@ on:
       - blossom-lib*
   workflow_dispatch:
 
+env:
+  EXTENSION_ID: 'caedjloenbhibmaeffockkiallpngmmd'
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -44,10 +47,22 @@ jobs:
       - name: Copy configuration
         run: cp .prod.env .env
 
+      - name: Update manifest version
+        run: node ./scripts/update-manifest-version.js
+
       - name: Build
         run: npm run build
 
-      # TODO Publish the extension
+      - name: Publish
+        run: ./scripts/publish-extension.sh
+
+      - name: Commit new manifest.json
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: CI
+          author_email: actions@github.com
+          message: 'chore: update manifest.json version'
+          add: 'manifest.json'
 
   placeholder:
     runs-on: ubuntu-latest
